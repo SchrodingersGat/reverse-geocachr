@@ -1,8 +1,13 @@
 **.autosave
-GUI/ReverseGeocachr/release/
-GUI/ReverseGeocachr/debug/
+Code/GUI/ReverseGeocachr/release/
+Code/GUI/ReverseGeocachr/debug/
 **.clue
-Firmware/Debug/
-Firmware/Release
+Code/Firmware/Debug/
+Code/Firmware/Release
 **.o
 **.cpp.*
+Tools/
+Old/
+scripts/
+Datasheets/
+PCB/gerber/
