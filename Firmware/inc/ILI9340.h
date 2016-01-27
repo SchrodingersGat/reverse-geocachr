@@ -15,7 +15,7 @@
 #include "spi.h"
 
 #include "ILI9340_defines.h"
-#include "ILI9340_font.h"
+#include "..\..\common\ILI9340_font.h"
 
 //Pin functions
 void CS_Low();

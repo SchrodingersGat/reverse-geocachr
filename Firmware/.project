@@ -27,6 +27,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>src/ILI9340_font.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/ILI9340_font.c</locationURI>
+		</link>
+		<link>
 			<name>src/box_messages.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/common/box_messages.c</locationURI>

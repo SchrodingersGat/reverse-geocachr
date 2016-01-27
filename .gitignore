@@ -4,3 +4,5 @@ GUI/ReverseGeocachr/debug/
 **.clue
 Firmware/Debug/
 Firmware/Release
+**.o
+**.cpp.*
