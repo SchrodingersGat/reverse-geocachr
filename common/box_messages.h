@@ -12,63 +12,48 @@
 #include <stdint.h>
 
 #include "waypoint.h"
+#include "box_defines.h"
+
+#define HID_VID 0x1FC9
+#define HID_PID 0x81
+#define HID_REPORT_SIZE 64
+
+typedef char HIDBuffer[HID_REPORT_SIZE];
 
 #define BOX_LOCKED 0xFA
 
 #define START_MESSAGE 100
 #define END_MESSAGE   200
 
-enum BoxReportTypes
-{
-    BOX_MSG_SYSTEM_INFO = 0xA0,
+enum BoxReportTypes {
+	BOX_MSG_SYSTEM_INFO = 0xA0,
 
-    BOX_MSG_GET_CLUE_INFO = 0xB0,
-    BOX_MSG_SET_CLUE_INFO,
+	BOX_MSG_CLUE_INFO = 0xB0,
+	BOX_MSG_REQUEST_CLUE_INFO,
 
-    BOX_MSG_GET_CLUE_LINE = 0xC0,
-    BOX_MSG_SET_CLUE_LINE,
+	BOX_MSG_CLUE_LINE = 0xC0,
+	BOX_MSG_REQUEST_CLUE_LINE,
 
-    BOX_MSG_COMMAND = 0xD0
+	BOX_MSG_LOCK = 0xD0,
+	BOX_MSG_UNLOCK,
+
+	BOX_MSG_NEXT_CLUE = 0xE0,
+	BOX_MSG_PREV_CLUE,
+	BOX_MSG_FIRST_CLUE,
+	BOX_MSG_LAST_CLUE,
+
+	BOX_MSG_SET_NUMBER_OF_CLUES = 0xF0
 };
 
-enum BoxCommands
-{
-    BOX_CMD_LOCK = 0x10,    //!< Lock the box
-    BOX_CMD_UNLOCK,         //!< Unlock the box
 
-//    BOX_CMD_PROTECT = 0x20, //password protect
-//    BOX_CMD_UNPROTECT,
+void Form_BoxInfo_Message(HIDBuffer buf, BoxInfo_t *info);
+bool Decode_BoxInfo_Message(HIDBuffer buf, BoxInfo_t *info);
 
-    BOX_CMD_NEXT_CLUE_TEMP = 0x30, //!< Temporarily show the next clue (for revision)
-    BOX_CMD_PREV_CLUE_TEMP,        //!< Temporarily show the previous clue (for revision)
+void Form_Waypoint_Message(HIDBuffer buf, uint8_t id, Waypoint_t *w);
+bool Decode_Waypoint_Message(HIDBuffer buf, Waypoint_t *w);
 
-    BOX_CMD_SKIP_NEXT_CLUE = 0x40,  //!< Skip to the next clue (and save)
-    BOX_CMD_SKIP_PREV_CLUE,         //!< Skip to the previous clue (and save)
-    BOX_CMD_RESET_TO_FIRST,         //!< Skip to the first clue (and save)
-
-    BOX_CMD_SET_NUMBER_OF_CLUES = 0x40  //!< Set the number of clues in the box
-};
-
-typedef enum
-{
-    INDEX_COMMAND = 0,
-    INDEX_CLUE_ID,
-    INDEX_CONFIG_1,
-    INDEX_CONFIG_2,
-    INDEX_DATA
-} CommandIndex;
-
-bool Handle_USB_Message(uint8_t *rxBuf, uint8_t *txBuf);
-bool Handle_Box_Command(uint8_t *rxBuf, uint8_t *txBuf);
-
-void Receive_Waypoint_Message(uint8_t *buf, Waypoint_t *w);
-
-void Form_BoxInfo_Message(uint8_t *buf);
-
-void Form_Waypoint_Message(uint8_t *buf, uint8_t id, Waypoint_t *w);
-void Decode_Waypoint_Message(uint8_t *buf, Waypoint_t *w);
-
-void Decode_WaypointClue_Message(uint8_t *buf, uint8_t line, Waypoint_t *w);
-void Form_WaypointClue_Message(uint8_t *buf, uint8_t id, uint8_t line, Waypoint_t *w);
+void Form_WaypointClue_Message(HIDBuffer buf, uint8_t id, uint8_t line,
+		Waypoint_t *w);
+void Decode_WaypointClue_Message(HIDBuffer buf, uint8_t line, Waypoint_t *w);
 
 #endif /* INC_BOX_MESSAGES_H_ */
