@@ -1,1 +1,6 @@
 **.autosave
+GUI/ReverseGeocachr/release/
+GUI/ReverseGeocachr/debug/
+**.clue
+Firmware/Debug/
+Firmware/Release
