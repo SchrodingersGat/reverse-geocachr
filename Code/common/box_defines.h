@@ -28,6 +28,7 @@ typedef struct {
 #define BOX_WELCOME_MSG 0
 #define BOX_FIRST_CLUE 1
 #define BOX_COMPLETE_MSG (BOX_MAX_CLUES + 1)
+#define BOX_ARRAY_SIZE (BOX_MAX_CLUES + 2)
 
 #define MAX_CLUES 10
 
@@ -58,4 +59,8 @@ enum ClueOptions_t {
     CLUE_OPTION_CENTER_TEXT = 0x01,     //!< Display clue text centered
 };
 
+//Display options
+#define LCD_BAR_HEIGHT 28
+#define LCD_FOOTER_X 160
+#define LCD_FOOTER_Y 215
 #endif

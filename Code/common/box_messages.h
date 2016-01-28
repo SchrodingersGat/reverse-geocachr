@@ -45,6 +45,10 @@ enum BoxReportTypes {
 	BOX_MSG_SET_NUMBER_OF_CLUES = 0xF0
 };
 
+//Common functions
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void Form_BoxInfo_Message(HIDBuffer buf, BoxInfo_t *info);
 bool Decode_BoxInfo_Message(HIDBuffer buf, BoxInfo_t *info);
@@ -55,5 +59,9 @@ bool Decode_Waypoint_Message(HIDBuffer buf, Waypoint_t *w);
 void Form_WaypointClue_Message(HIDBuffer buf, uint8_t id, uint8_t line,
 		Waypoint_t *w);
 void Decode_WaypointClue_Message(HIDBuffer buf, uint8_t line, Waypoint_t *w);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_BOX_MESSAGES_H_ */

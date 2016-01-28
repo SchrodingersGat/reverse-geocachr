@@ -1,6 +1,8 @@
 #ifndef _LCD_FONT_H
 #define _LCD_FONT_H
 
+#include <stdint.h>
+
 enum FontOptions
 {
 	TEXT_DEFAULT 		= 0x0000,	//!< No special options
@@ -31,10 +33,18 @@ typedef struct
 extern const unsigned char FONT_DATA[];
 extern const LCD_CHAR_INFO CHAR_LOOKUP[];
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 unsigned char char_offset(char c);
 unsigned char char_width(char c);
 unsigned short char_address(char c);
 
 unsigned short line_width(char *c);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

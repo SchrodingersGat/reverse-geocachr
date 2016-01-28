@@ -2,14 +2,13 @@
 
 */
 
-#ifndef INC_WAYPOINT_H
-#define INC_WAYPOINT_H
+#ifndef _INC_WAYPOINT_H
+#define _INC_WAYPOINT_H
+
 
 #include <stdint.h>
 
 #include "box_defines.h"
-
-
 
 typedef struct {
     
@@ -27,6 +26,10 @@ typedef struct {
     
 } Waypoint_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void Waypoint_Init(Waypoint_t *waypoint);
 
 uint8_t Waypoint_Validate(Waypoint_t *waypoint);
@@ -36,6 +39,10 @@ double Waypoint_Distance(double lat, double lng, Waypoint_t *w);
 double Waypoint_Heading(double lat, double lng, Waypoint_t *w);
 
 void Waypoint_SetLine(Waypoint_t *w, uint8_t line, char *text);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 
