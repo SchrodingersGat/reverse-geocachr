@@ -1,5 +1,7 @@
 #include "waypoint.h"
 
+#include <math.h>
+
 #define PI 3.14159265359
 
 void Waypoint_Init(Waypoint_t *waypoint) {
