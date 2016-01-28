@@ -25,6 +25,7 @@ SOURCES += main.cpp\
     ../../common/waypoint.c \
     ../../common/ILI9340_font.c \
     ../../common/box_messages.c \
+    debug.cpp
 
 HEADERS  += mainwindow.h \
     ui_mainwindow.h \
@@ -37,6 +38,7 @@ HEADERS  += mainwindow.h \
     ../../common/ILI9340_font.h \
     ../../common/box_messages.h \
     ../../common/box_defines.h \
+    debug.h
 
 
 win32:

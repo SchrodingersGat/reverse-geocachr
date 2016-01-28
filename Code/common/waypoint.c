@@ -1,8 +1,11 @@
 #include "waypoint.h"
 
+#define PI 3.14159265359
+
 void Waypoint_Init(Waypoint_t *waypoint) {
     
     uint8_t i = 0;
+    uint8_t j = 0;
     
     waypoint->lat = 0;
     waypoint->lng = 0;
@@ -11,7 +14,9 @@ void Waypoint_Init(Waypoint_t *waypoint) {
     waypoint->options = 0x00;
     
     for (i=0;i<NUM_CLUE_LINES;i++) {
-        waypoint->lines[i][0] = 0; //zero-out the text
+        for (j=0;j<CLUE_LINE_LEN_MAX;j++) {
+            waypoint->lines[i][j] = 0; //zero-out the text
+        }
     }
     
     waypoint->checksum = 0x00; //Invalid checksum to start
@@ -39,8 +44,45 @@ uint16_t Waypoint_CalculateChecksum(Waypoint_t *waypoint) {
     return checksum;
 }
 
+//Return distance to waypoint in metres
 double Waypoint_Distance(double lat, double lng, Waypoint_t *w) {
-    return 0;
+
+    double dLat;
+    double dLng;
+
+    double a1;
+    double a2;
+    double a3;
+
+    double c;
+
+    dLat = w->lat - lat;
+    dLat *= (PI / 180);
+
+    dLng = w->lng - lng;
+    dLng *= (PI / 180);
+
+    a1 = sin(dLat/2);
+    a1 = pow(a1,2);
+
+    // a1 = pow(sin(dLat/2),2);
+    a2 = sin(dLng/2);
+    a2 = pow(a2,2);
+    // a2 = pow(sin(dLon/2),2);
+    a3 = cos(lat * PI / 180);
+    a2 *= a3;
+    a3 = cos(w->lat * PI / 180);
+    a2 *= a3;
+
+    a1 += a2;
+
+    a2 = sqrt(a1);
+    a3 = sqrt(1-a1);
+
+    c = atan2(a2,a3);
+    c *= 2;
+
+    return c * 6371 * 1000;
 }
 
 double Waypoint_Heading(double lat, double lng, Waypoint_t *w) {

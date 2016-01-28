@@ -46,7 +46,6 @@ enum ClueType_t {
     CLUE_NO_HINT = 0,       //!< Don't give any extra hint
     CLUE_SHOW_DISTANCE,     //!< Show the distance to target
     CLUE_WARMER_COOLER,     //!< Display 'warmer' or 'cooler'
-    CLUE_SHOW_POSITION,     //!< Show the GPS position of the target
     CLUE_SHOW_HEADING,      //!< Show the heading (degrees)
     CLUE_SHOW_CARDINAL,     //!< Give cardinal direction hints
 

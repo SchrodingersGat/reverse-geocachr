@@ -581,6 +581,7 @@ public:
 
         clueType = new QComboBox(editClues);
         clueType->setObjectName(QStringLiteral("clueType"));
+        clueType->setMinimumSize(QSize(125, 0));
         clueType->setFont(font2);
 
         horizontalLayout_3->addWidget(clueType);
@@ -685,7 +686,7 @@ public:
         latString_3->setText(QApplication::translate("MainWindow", "Version", 0));
         boxStatus_3->setText(QApplication::translate("MainWindow", "Reverse Geocache Software ", 0));
         boxStatus_2->setText(QApplication::translate("MainWindow", "Version: 1.0.0", 0));
-        label->setText(QApplication::translate("MainWindow", "Display Preview", 0));
+        label->setText(QApplication::translate("MainWindow", "LCD Display Preview", 0));
 #ifndef QT_NO_TOOLTIP
         LCD->setToolTip(QApplication::translate("MainWindow", "This is what the box display will show", 0));
 #endif // QT_NO_TOOLTIP

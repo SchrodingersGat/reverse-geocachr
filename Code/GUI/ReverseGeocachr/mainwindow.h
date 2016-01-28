@@ -53,6 +53,8 @@ public slots:
     void jsUpdateMap() { jsExecute("redrawClues();"); }
     void jsFitMapToClues();
 
+    void updateClues();
+
     //Local functions
     void clearMap();
     void updateClueList();
@@ -63,18 +65,12 @@ public slots:
 
     void setThreshold();
 
-    void moveClueUp();
-    void moveClueDown();
-    void makeFirst();
-    void makeLast();
-
     void clueTypeChanged(int newType);
 
     void setupClueTable();
     void reloadClueTable();
 
     void refreshDisplay();
-    void updateLCD();
 
     void cluesEdited(QTableWidgetItem *item);
     void saveCurrentClue();

@@ -31,6 +31,10 @@ public:
     bool AddWaypoint(Waypoint_t wp);
     bool ValidWaypoint(double lat, double lng);
 
+    bool IsClueSelected();
+    uint8_t ClueIndex();
+    uint8_t ClueCount();
+
     //Public Data
     Waypoint_t welcomeMessage;
     QList<Waypoint_t> waypoints;
@@ -38,19 +42,32 @@ public:
 
 public slots:
 
+    //Set which clue is selected
     void SelectClue(uint8_t index);
     void SelectNext();
     void SelectPrev();
     void SelectLast();
     void SelectFirst();
 
+    //Move clues around
+    void MoveClueUp();
+    void MoveClueDown();
+    void MoveClueFirst();
+    void MoveClueLast();
+
 private:
     //Private data / functions
     uint8_t currentClue;
+
+signals:
+    void clueUpdated();
 
 };
 
 extern WaypointList waypoints;
 
+//Other waypoint functions
+void Waypoint_SetLineText(Waypoint_t *w, uint8_t line, QString text);
+QString Waypoint_GetLineText(Waypoint_t *w, uint8_t line);
 #endif // CLUE_LIST_H
 

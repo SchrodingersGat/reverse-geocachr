@@ -2,10 +2,11 @@
 
 #include "waypoints.h"
 
+#include "debug.h"
+
 #define LCD_W 320
 #define LCD_H 240
 
-#include <QDebug>
 #include <QString>
 #include <qmath.h>
 
@@ -118,12 +119,12 @@ void LCDWidget::DrawString(QPainter *painter, QString s, int X, int Y, int size,
             x += (FONT_SPACE_SIZE * size);
             continue;
         }
+        else if (c > 32 && c < 127) {
 
+            DrawChar(painter,c,x,y,size,options,color);
 
-
-        DrawChar(painter,c,x,y,size,options,color);
-
-        x += size * char_width(c) + FONT_CHAR_GAP;
+            x += size * char_width(c) + FONT_CHAR_GAP;
+        }
 
     }
 }
@@ -140,7 +141,7 @@ void LCDWidget::DrawChar(QPainter *painter, char c, int X, int Y, int size, unsi
         return;
     }
 
-    unsigned short CHAR_ADDRESS = char_offset(c);
+    unsigned short CHAR_ADDRESS = char_address(c);
     unsigned char CHAR_WIDTH = char_width(c);
 
     unsigned short address = CHAR_ADDRESS;

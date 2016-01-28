@@ -657,7 +657,7 @@ Save clues to file or download to box</string>
          </font>
         </property>
         <property name="text">
-         <string>Display Preview</string>
+         <string>LCD Display Preview</string>
         </property>
        </widget>
       </item>
@@ -1045,6 +1045,12 @@ Save clues to file or download to box</string>
            </item>
            <item>
             <widget class="QComboBox" name="clueType">
+             <property name="minimumSize">
+              <size>
+               <width>125</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="font">
               <font>
                <pointsize>8</pointsize>

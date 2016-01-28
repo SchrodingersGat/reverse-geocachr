@@ -17,6 +17,7 @@ const QString SETTING_CLUE_OPTIONS = "Options";
 const QString SETTING_CLUE_LINE = "Line_";
 
 #include "waypoint.h"
+#include "debug.h"
 
 WaypointList::WaypointList() {
 
@@ -30,6 +31,22 @@ void WaypointList::Reset() {
     Waypoint_Init(&completeMessage);
 
     currentClue = BOX_WELCOME_MSG;
+
+    emit clueUpdated();
+}
+
+bool WaypointList::IsClueSelected() {
+    if (currentClue > 0 && currentClue <= waypoints.count()) return true;
+
+    return false;
+}
+
+uint8_t WaypointList::ClueIndex() {
+    return currentClue;
+}
+
+uint8_t WaypointList::ClueCount() {
+    return waypoints.count();
 }
 
 Waypoint_t* WaypointList::GetCurrentClue() {
@@ -53,9 +70,9 @@ Waypoint_t* WaypointList::GetClueAtIndex(uint8_t index) {
 
 QString WaypointList::CurrentClueTitle() {
     switch (currentClue) {
-    case BOX_COMPLETE_MSG:
-        return "Welcome Message";
     case BOX_WELCOME_MSG:
+        return "Welcome Message";
+    case BOX_COMPLETE_MSG:
         return "Completion Message";
     default:
         return "Clue " + QString::number(currentClue) + " of " + QString::number(waypoints.count());
@@ -104,11 +121,19 @@ QString WaypointList::CurrentClueFooter() {
 }
 
 void WaypointList::SelectFirst() {
-    currentClue = BOX_WELCOME_MSG;
+
+    if (waypoints.count() == 0) currentClue = BOX_WELCOME_MSG;
+    else currentClue = 1;
+
+    emit clueUpdated();
 }
 
 void WaypointList::SelectLast() {
-    currentClue = BOX_COMPLETE_MSG;
+
+    if (waypoints.count() == 0) currentClue = BOX_COMPLETE_MSG;
+    else currentClue = waypoints.count();
+
+    emit clueUpdated();
 }
 
 void WaypointList::SelectPrev() {
@@ -117,6 +142,8 @@ void WaypointList::SelectPrev() {
     } else if (currentClue > BOX_WELCOME_MSG) {
         currentClue--;
     }
+
+    emit clueUpdated();
 }
 
 void WaypointList::SelectClue(uint8_t index) {
@@ -127,6 +154,8 @@ void WaypointList::SelectClue(uint8_t index) {
     } else {
         currentClue = index;
     }
+
+    emit clueUpdated();
 }
 
 void WaypointList::SelectNext() {
@@ -135,6 +164,60 @@ void WaypointList::SelectNext() {
     } else {
         currentClue = BOX_COMPLETE_MSG;
     }
+
+    emit clueUpdated();
+}
+
+//Swap the current clue with the one after it
+void WaypointList::MoveClueDown() {
+
+    if (currentClue == BOX_WELCOME_MSG || currentClue == BOX_COMPLETE_MSG) return;
+    if (waypoints.count() < 2) return; //needs at least two clues
+
+    if (currentClue >= waypoints.count()) return;
+
+    Waypoint_t w = waypoints[currentClue];
+
+    waypoints.removeAt(currentClue);
+    waypoints.insert(currentClue + 1, w);
+
+    currentClue++;
+
+    emit clueUpdated();
+}
+
+//Swap the current clue with the one before it
+void WaypointList::MoveClueUp() {
+    if (currentClue == BOX_WELCOME_MSG || currentClue == BOX_COMPLETE_MSG) return;
+
+    if (waypoints.count() < 2) return;  //Needs at least two clues
+
+    if (currentClue <= 1) return; //There are no clues before this one!
+
+    Waypoint_t w = waypoints[currentClue];
+
+    waypoints.removeAt(currentClue);
+    waypoints.insert(currentClue - 1, w);
+
+    currentClue--;
+
+    emit clueUpdated();
+}
+
+void WaypointList::MoveClueFirst() {
+    if (currentClue == BOX_WELCOME_MSG || currentClue == BOX_COMPLETE_MSG) return;
+
+    if (waypoints.count() < 2) return; //needs at least two clues
+
+    emit clueUpdated();
+}
+
+void WaypointList::MoveClueLast() {
+    if (currentClue == BOX_WELCOME_MSG || currentClue == BOX_COMPLETE_MSG) return;
+
+    if (waypoints.count() < 2) return; //needs at least two clues
+
+    emit clueUpdated();
 }
 
 bool WaypointList::SaveToFile(QString filename) {
@@ -231,9 +314,11 @@ bool WaypointList::LoadFromFile(QString filename) {
 bool WaypointList::ValidWaypoint(double lat, double lng) {
 
     for (int i=0;i<waypoints.count();i++) {
-        //if (Waypoint_Distance(lat,lng,&waypoints[i]) < 250) {
-        //    return false;
-        //}
+
+        qDebug() << i << Waypoint_Distance(lat,lng,&waypoints[i]);
+        if (Waypoint_Distance(lat,lng,&waypoints[i]) < 250) {
+            return false;
+        }
     }
 
     return true;
@@ -251,4 +336,30 @@ bool WaypointList::AddWaypoint(Waypoint_t wp) {
     SelectClue(waypoints.count());
 
     return true;
+}
+
+void Waypoint_SetLineText(Waypoint_t *w, uint8_t line, QString text) {
+    if (w == NULL || line >= NUM_CLUE_LINES) return;
+
+    for (int i=0;i<CLUE_LINE_LEN_MAX;i++) {
+        if (i >= text.count()) w->lines[line][i] = 0;
+        else w->lines[line][i] = (uint8_t) text.at(i).toLatin1();
+    }
+
+    //ensure the last char is zero-terminated
+    w->lines[line][CLUE_LINE_LEN_MAX - 1] = 0;
+}
+
+QString Waypoint_GetLineText(Waypoint_t *w, uint8_t line) {
+    if (w == NULL || line >= NUM_CLUE_LINES) return "";
+
+    QString text = "";
+
+    for (int i=0;i<CLUE_LINE_LEN_MAX;i++) {
+        if (w->lines[line][i] != 0) {
+            text.append(QChar((char) w->lines[line][i]));
+        }
+    }
+
+    return text;
 }
