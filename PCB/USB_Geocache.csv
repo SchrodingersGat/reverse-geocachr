@@ -1,0 +1,31 @@
+Description	Notes	References	Value	Footprint	Manufacturer	Part Number	Vendor	Vendor Code	Quantity
+Unpolarized capacitor		C1	0.1uF	C_1206					1
+Unpolarized capacitor		C7, C8, C9, C10, C16	0.1uF	C_0805_HandSoldering					5
+Unpolarized capacitor		C6, C11	18pF	C_0805_HandSoldering	Kemet	C0805C180J5GACTU.	E14	1609375 	2
+Unpolarized capacitor		C2, C5, C13	10uF	C_0805_HandSoldering					3
+Unpolarized capacitor		C3, C4	4.7uF	C_0805_HandSoldering					2
+Diode		D2, D3	DIODE			()()()			2
+		L1	10uH		TY	LBC3225T100KR	E14	1836609	1
+		P1	Battery						1
+		P2	USB	USB_Mini-B	Molex	67503-1020	E14	1125348 	1
+		P3	SWD						1
+		P4	LCD	Pin_Header_Straight_1x09					1
+		P5	Button						1
+		P6	GPS						1
+		P7	Servo						1
+Resistor		R5, R6, R12, R13	R	R_0805_HandSoldering					4
+Resistor		R2, R3, R8, R16, R17	4K7	R_0805_HandSoldering					5
+Resistor		R4	470	R_0805_HandSoldering					1
+Resistor		R7	2K	R_0805_HandSoldering					1
+Resistor		R9	?	R_0805_HandSoldering					1
+		U1	MCP73831		Microchip	MCP73831	E14	1332158 	1
+EEPROM SPI - 8 Pin		U2	EEPROM_SPI						1
+		U5	LPC11U1x_LQFP48	LQFP-48_7x7mm_Pitch0.5mm	http	//www.nxp.com/documents/data_sheet/LPC11U1x.pdf			1
+		X1	CRYSTAL_SMD						1
+
+
+
+Source:	C:/Users/Oliver/Google Drive/Reverse GeoCache Box/PCB/USB_Geocache.sch
+Date:	02-Jul-15 1:17:19 PM
+Tool:	Eeschema (2015-06-24 BZR 5814, Git a8bffb8)-product
+Component Count:	39
