@@ -635,7 +635,7 @@ void MainWindow::updateClueList()
     {
         ui->latitude->setText(QString::number(w->lat,'f',WAYPOINT_DECIMAL_PRECISION));
         ui->longitude->setText(QString::number(w->lng,'f',WAYPOINT_DECIMAL_PRECISION));
-        ui->threshold->setText(QString::number(w->threshold,'f',1));
+        ui->threshold->setText(QString::number(w->threshold));
         ui->clueType->setCurrentIndex(w->type);
     }
 

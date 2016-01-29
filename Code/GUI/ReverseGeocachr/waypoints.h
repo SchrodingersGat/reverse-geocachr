@@ -61,7 +61,6 @@ private:
 
 signals:
     void clueUpdated();
-
 };
 
 extern WaypointList waypoints;
