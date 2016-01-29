@@ -171,9 +171,7 @@ int main(void)
 
 	Init_LCD();
 
-	Draw_Background();
-	Draw_Top_Bar();
-	Draw_Bottom_Bar();
+	LCD_FillScreen(BLACK);
 
 	//TODO load these values from ext memory
 	boxInfo.currentClue = 1;
@@ -195,9 +193,11 @@ int main(void)
 	Waypoint_SetLine(&waypoints[1],4,"FIF");
 
 	while (1) {
-		PauseMs(500);
-		Draw_Top_Bar();
-		Draw_Clue(&waypoints[boxInfo.currentClue]);
+		PauseMs(50);
+
+		boxInfo.charge = (boxInfo.charge + 1) % 100;
+
+		LCD_Update();
 
 //		__WFI();
 	}

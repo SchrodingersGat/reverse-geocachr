@@ -15,15 +15,16 @@
 
 /* Functions for displaying various parts of the things */
 
-void Draw_Background();
+void LCD_Update();
 
-void Draw_Clue(Waypoint_t *w);
+void Draw_Clue();
 
 void Draw_Top_Bar();
 void Draw_Battery_Indicator(uint8_t percent);
+void Draw_Header_String();
 
 void Draw_Bottom_Bar();
-
-void Draw_Searching_String();
+void Draw_Footer_String();
+void Draw_Progress_Bar(uint16_t color);
 
 #endif /* DISPLAY_H_ */

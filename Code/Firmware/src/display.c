@@ -17,25 +17,39 @@
 
 #include <stdint.h>
 
-uint16_t BG_FILL = WHITE;
-uint16_t BAR_FILL = BLUE;
+#define BAR_COLOR 0x2104 	//35,35,35
+#define BG_COLOR 0xE73C		//230,230,230
 
-const uint16_t barColor = 0x2104; //35,35,35
-const uint16_t bgColor = 0xE73C; //230,230,230
+void LCD_Update() {
 
-void Draw_Background()
-{
-	//Draw the area between the two bars
-	LCD_FillScreen(bgColor);
+	static int8_t prevClue = -1;
+
+	Draw_Top_Bar();
+
+	//Only re-draw a clue if it is different
+	if (prevClue != boxInfo.currentClue) {
+		prevClue = boxInfo.currentClue;
+		Draw_Clue();
+	}
+
+	Draw_Bottom_Bar();
 }
 
-void Draw_Clue(Waypoint_t *w)
+void Draw_Clue()
 {
+	static int8_t prevClue = -1;
+
 	uint8_t i = 0;
 
 	int16_t x = LINE_X_OFFSET;
 
 	uint8_t options = TEXT_DEFAULT;
+
+	Waypoint_t *w = &waypoints[boxInfo.currentClue];
+
+	if (prevClue == boxInfo.currentClue) return;
+
+	prevClue = boxInfo.currentClue;
 
 	if (w->options & CLUE_OPTION_CENTER_TEXT) {
 		options |= ALIGN_CENTRE;
@@ -49,13 +63,13 @@ void Draw_Clue(Waypoint_t *w)
 				 LCD_BAR_HEIGHT,
 				 LCD_WIDTH,
 				 LCD_HEIGHT - (2 * LCD_BAR_HEIGHT),
-				 bgColor);
+				 BG_COLOR);
 
 	for (i=0;i<NUM_CLUE_LINES;i++)
 	{
 		LCD_DrawString(x,
 					   LINE_Y_OFFSET + (LINE_SPACING * i),
-					   (char*) &w->lines[i],
+					   (char*) &(w->lines[i]),
 					   BLACK,
 					   1);
 	}
@@ -63,37 +77,21 @@ void Draw_Clue(Waypoint_t *w)
 
 void Draw_Top_Bar()
 {
-	uint16_t color = LCD_ColorFromRGB(35,35,35);
+	static int8_t prevClue = -1;
 
-	char titleString[32];
+	if (prevClue != boxInfo.currentClue) {
+		prevClue = boxInfo.currentClue;
 
-	switch (boxInfo.currentClue) {
-	case BOX_WELCOME_MSG:
-		sprintf(&titleString, "Reverse Geocache");
-		break;
-	case BOX_COMPLETE_MSG:
-		sprintf(&titleString, "Congratulations!");
-		break;
-	default:
-		sprintf(&titleString, "Clue %u of %u",
-			boxInfo.currentClue,
-			boxInfo.totalClues);
-		break;
+		LCD_FillRect(0,0,LCD_WIDTH, LCD_BAR_HEIGHT, BAR_COLOR);
+		Draw_Header_String();
 	}
 
-	LCD_FillRect(0,0,LCD_WIDTH, LCD_BAR_HEIGHT, color);
-
-	LCD_SetTextOptions(ALIGN_CENTRE);
-
-	LCD_DrawString(LCD_WIDTH/2,
-				   5,
-				   titleString,
-				   YELLOW,
-				   1);
 
 	Draw_Battery_Indicator(boxInfo.charge);
 
 	LCD_DrawBitmap(5,0,BITMAP_USB_WIDTH,BITMAP_USB_HEIGHT,BITMAP_USB_DATA);
+
+
 
 }
 
@@ -140,54 +138,149 @@ void Draw_Battery_Indicator(uint8_t percent)
 				 BATT_Y + 1,
 				 BATT_W - 1 - charged,
 				 BATT_H - 1,
-				 barColor);
+				 BAR_COLOR);
 }
 
+void Draw_Header_String() {
 
-void Draw_Bottom_Bar()
-{
-	uint16_t color = LCD_ColorFromRGB(35,35,35);
-	LCD_SetBackgroundColor(color);
+	char titleString[32];
 
-	LCD_FillRect(0,LCD_HEIGHT - LCD_BAR_HEIGHT, LCD_WIDTH, LCD_BAR_HEIGHT, color);
-
-	Draw_Searching_String();
-}
-
-void Draw_Searching_String()
-{
-	static uint8_t dots = 0;
-	uint8_t i = 0;
-
-	LCD_SetTextOptions(TEXT_DEFAULT);
-
-	LCD_DrawString(50,
-				   LCD_HEIGHT-25,
-				   "Acquiring GPS Signal ",
-				   GREEN,
-				   1);
-
-	for (i=0;i<dots;i++)
-	{
-		LCD_FillRect(248 + i * 5,
-					LCD_HEIGHT-10,
-					3,3,
-					GREEN);
+	switch (boxInfo.currentClue) {
+	case BOX_WELCOME_MSG:
+		sprintf(&titleString, "Reverse Geocache");
+		break;
+	case BOX_COMPLETE_MSG:
+		sprintf(&titleString, "Congratulations!");
+		break;
+	default:
+		sprintf(&titleString, "Clue %u of %u",
+			boxInfo.currentClue,
+			boxInfo.totalClues);
+		break;
 	}
 
-	//Cover up the reset of the dots
-	LCD_FillRect(248 + (i+1) * 5,
-				 LCD_HEIGHT - 10,
-				 (6-i) * 6,
-				 3,
-				 barColor);
-	/*
-	LCD_FillRect(260 + dots * 6,
-				 LCD_HEIGHT - 10,
-				 10 * (5 - dots) + 5,
-				 5,
-				 BLUE);
-				 */
-	dots = (dots + 1) % 5;
+	LCD_SetTextOptions(ALIGN_CENTRE);
 
+	LCD_DrawString(LCD_WIDTH/2,
+				   5,
+				   titleString,
+				   YELLOW,
+				   1);
+}
+
+char* WAITING_FOR_GPS = "Acquiring GPS Signal";
+
+void Draw_Bottom_Bar() {
+
+	static int8_t prevClue = -1;
+
+	if (prevClue != boxInfo.currentClue) {
+		prevClue = boxInfo.currentClue;
+
+		LCD_FillRect(0,LCD_HEIGHT - LCD_BAR_HEIGHT, LCD_WIDTH, LCD_BAR_HEIGHT, BAR_COLOR);
+		Draw_Footer_String();
+	}
+
+	Draw_Progress_Bar(YELLOW);
+
+}
+
+void Draw_Footer_String()
+{
+
+
+	switch (boxInfo.currentClue) {
+	case BOX_WELCOME_MSG:
+	case BOX_COMPLETE_MSG:
+		break;
+
+	default:
+
+		LCD_SetTextOptions(ALIGN_CENTRE);
+
+		LCD_DrawString(LCD_WIDTH/2, LCD_FOOTER_Y, WAITING_FOR_GPS ,YELLOW, 1);
+
+		break;
+	}
+
+}
+
+void Draw_Progress_Bar(uint16_t color) {
+
+	uint16_t colorA;
+	uint16_t colorB;
+
+	int8_t progressBarMax = 0;
+
+	uint8_t w1, w2;
+
+	static int8_t progressBarWidth = 0;
+	static int8_t progressBarDir = 1;
+
+	//Draw a 'progress' bar (if searching for GPS)
+
+	//if (boxInfo.status & SEARCHING_FOR_GPS) {
+	progressBarMax = LCD_WIDTH/2 - line_width(WAITING_FOR_GPS)/2 - 2 * PROGRESS_BAR_SPACING;
+
+	if (progressBarWidth < 0) {
+		w1 = 0;
+		w2 = progressBarMax;
+
+		colorA = color;
+		colorB = BAR_COLOR;
+	} else if (progressBarDir > 0) {
+		w1 = progressBarWidth;
+		w2 = progressBarMax - progressBarWidth;
+
+		colorA = color;
+		colorB = BAR_COLOR;
+	} else {
+		w1 = progressBarMax - progressBarWidth;
+		w2 = progressBarWidth;
+
+		colorA = BAR_COLOR;
+		colorB = color;
+	}
+
+
+	//Left-hand progress bar
+
+	LCD_FillRect(PROGRESS_BAR_SPACING,
+				 PROGRESS_BAR_Y,
+				 w1,
+				 PROGRESS_BAR_HEIGHT,
+				 colorA);
+
+	LCD_FillRect(PROGRESS_BAR_SPACING + w1,
+				 PROGRESS_BAR_Y,
+				 w2,
+				 PROGRESS_BAR_HEIGHT,
+				 colorB);
+
+	//Right-hand progress bar
+	LCD_FillRect(LCD_WIDTH - PROGRESS_BAR_SPACING - w1,
+				 PROGRESS_BAR_Y,
+				 w1,
+				 PROGRESS_BAR_HEIGHT,
+				 colorA);
+
+	LCD_FillRect(LCD_WIDTH - PROGRESS_BAR_SPACING - w1 - w2,
+				 PROGRESS_BAR_Y,
+				 w2,
+				 PROGRESS_BAR_HEIGHT,
+				 colorB);
+
+
+	progressBarWidth += progressBarDir * 2;
+
+	if (progressBarWidth >=  progressBarMax){
+		progressBarDir = -1;
+		progressBarWidth = progressBarMax;
+	}
+
+	//Any time spent below zero acts as a delay
+	if (progressBarWidth <= -progressBarMax/2) {
+		progressBarDir =  1;
+		progressBarWidth = 0;
+	}
 }
