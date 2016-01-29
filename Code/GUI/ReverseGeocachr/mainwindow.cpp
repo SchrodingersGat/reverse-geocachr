@@ -458,20 +458,27 @@ void MainWindow::reloadClueTable()
 
     if (w == NULL) return;
 
+    QTableWidgetItem *item;
+
+    ui->clueTable->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
     for (int i=0;i<NUM_CLUE_LINES;i++)
     {
-        if (ui->clueTable->item(i,0) == NULL)
+        item = ui->clueTable->item(i,0);
+
+        if (item == NULL)
         {
-            ui->clueTable->setItem(i,0,new QTableWidgetItem(""));
+            item = new QTableWidgetItem("");
+            ui->clueTable->setItem(i,0,item);
         }
 
         line = Waypoint_GetLineText(w, i);
-        ui->clueTable->item(i,0)->setText(line);
+        item->setText(line);
 
         if ((w->options & CLUE_OPTION_CENTER_TEXT) > 0) {
-            ui->clueTable->item(i,0)->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+            item->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
         } else {
-            ui->clueTable->item(i,0)->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         }
     }
 
@@ -751,9 +758,8 @@ void MainWindow::getMapCenter()
 //Callback from the map window when a particular clue is moved
 void MainWindow::clueMoved(int clue)
 {
-    /*
-    if (clue >= 0 && clue < box.waypoints.count())
-    {
+    if (clue <= waypoints.ClueCount()) {
+
         //Get the position of the new clue
         QVariant result = jsExecute("getMarkerPosition("+
                                     QString::number(clue)+
@@ -773,13 +779,12 @@ void MainWindow::clueMoved(int clue)
 
             if (latOk && lngOk)
             {
-                box.waypoints[clue].lat = lat;
-                box.waypoints[clue].lng = lng;
+                Waypoint_t *w = waypoints.GetClueAtIndex(clue + 1);
+                w->lat = lat;
+                w->lng = lng;
             }
         }
     }
-
-    */
 
     redrawMap();
     updateClueList();

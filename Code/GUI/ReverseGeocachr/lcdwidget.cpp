@@ -39,7 +39,7 @@ void LCDWidget::DrawTopLine(QPainter *painter)
 
     QString line = waypoints.CurrentClueHeader();
 
-    DrawString(painter,line,LCD_W/2,5,1,1,titleColor);
+    DrawString(painter,line,LCD_W/2,LCD_HEADER_Y,1,1,titleColor);
 
     //Draw the battery indicator
     QPen p(bgColor);
