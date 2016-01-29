@@ -804,14 +804,13 @@ void MainWindow::jsAddMarker(double lat, double lng, double threshold)
     jsExecute(js);
 }
 
-void MainWindow::jsSelectMarker(int selection)
+void MainWindow::jsSelectMarker()
 {
 
-    /*
-    QString js = "selectClue(" + QString::number(selection)+");";
+    QString js = "selectClue(" + QString::number(waypoints.ClueIndex() - 1)+");";
 
     jsExecute(js);
-    */
+
 }
 
 void MainWindow::redrawMap()
@@ -824,7 +823,7 @@ void MainWindow::redrawMap()
     }
 
     //set selected marker
-    jsSelectMarker(box.info.currentClue);
+    jsSelectMarker();
     jsUpdateMap();
 }
 

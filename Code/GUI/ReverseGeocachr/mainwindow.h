@@ -46,7 +46,7 @@ public slots:
     //Signals TO the javascript side
     QVariant jsExecute(QString js);
     void jsAddMarker(double lat, double lng, double threshold);
-    void jsSelectMarker(int selection);
+    void jsSelectMarker();
     void jsClearMap() { jsExecute("deleteMarkers();"); }
     void jsUpdateMap() { jsExecute("redrawClues();"); }
     void jsFitMapToClues();
