@@ -264,9 +264,13 @@ function selectClue(clue)
 {
 	if (clue >= 0 && clue < markers.length)
 	{
-		selectedClue = clue;
 		
-		map.setCenter(markers[i].getPosition());
+        if (clue != selectedClue) {
+            map.setCenter(markers[clue].getPosition());
+        }
+        
+        selectedClue = clue;
+		
 	}
 	else
 	{
