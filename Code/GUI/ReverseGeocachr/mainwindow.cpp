@@ -24,29 +24,7 @@
 Box box;
 WaypointList waypoints;
 
-QString escapeClueString(QString clue)
-{
-    QString s = "";
-    QChar c;
 
-    for (int i=0;i<clue.size();i++)
-    {
-        c = clue.at(i);
-
-        if (c >= ' ' && c < 127)
-        {
-            s += c;
-        }
-    }
-
-    if (s.length() >= CLUE_LINE_LEN_MAX)
-    {
-        s.truncate(CLUE_LINE_LEN_MAX - 1);
-    }
-
-
-    return s;
-}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -416,8 +394,7 @@ void MainWindow::uploadClues()
 
 void MainWindow::jsFitMapToClues()
 {
-    if (box.info.totalClues > 0)
-    {
+    if (waypoints.ClueCount() > 0) {
         jsExecute("reframe();");
     }
 }
@@ -466,13 +443,6 @@ void MainWindow::saveCurrentClue()
         else
         {
             line = ui->clueTable->item(i,0)->text();
-
-            line = escapeClueString(line);
-        }
-
-        while (line_width(line.toLocal8Bit().data()) > 310)
-        {
-            line.chop(1);
         }
 
         Waypoint_SetLineText(w, i, line);

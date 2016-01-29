@@ -11,8 +11,6 @@
 #include <QTableWidgetItem>
 #include <QSettings>
 
-QString escapeClueString(QString clue);
-
 namespace Ui {
 class MainWindow;
 }

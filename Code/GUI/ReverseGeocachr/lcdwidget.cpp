@@ -67,7 +67,7 @@ void LCDWidget::DrawClue(QPainter *painter)
     for (int i=0;i<NUM_CLUE_LINES;i++)
     {
         opt = 0;
-        x = 5;
+        x = LINE_X_OFFSET;
 
         QString line = QString::fromLocal8Bit(waypoint->lines[i]);
 
@@ -79,7 +79,8 @@ void LCDWidget::DrawClue(QPainter *painter)
             x = 160;
         }
 
-        DrawString(painter,line,x,33+FONT_HEIGHT*i,1,opt,barColor);
+        DrawString(painter,line,x,LINE_Y_OFFSET+LINE_SPACING*i,1,opt,barColor);
+//        DrawString(painter,line,x,33+FONT_HEIGHT*i,1,opt,barColor);
     }
 
     DrawString(painter,

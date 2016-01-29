@@ -9,6 +9,8 @@
 
 #include "waypoints.h"
 
+#include "box_defines.h"
+
 #include "types.h"
 
 #include "BITMAP_USB.h"
@@ -17,12 +19,6 @@
 
 uint16_t BG_FILL = WHITE;
 uint16_t BAR_FILL = BLUE;
-
-#define X_LINE_OFFSET 10
-#define Y_LINE_OFFSET 35
-#define LINE_HEIGHT 25
-
-#define BAR_SIZE 28
 
 const uint16_t barColor = 0x2104; //35,35,35
 const uint16_t bgColor = 0xE73C; //230,230,230
@@ -37,25 +33,28 @@ void Draw_Clue(Waypoint_t *w)
 {
 	uint8_t i = 0;
 
+	int16_t x = LINE_X_OFFSET;
+
 	uint8_t options = TEXT_DEFAULT;
 
 	if (w->options & CLUE_OPTION_CENTER_TEXT) {
 		options |= ALIGN_CENTRE;
+		x = LCD_WIDTH / 2;
 	}
 
 	LCD_SetTextOptions(options);
 
 	//Clear the screen
 	LCD_FillRect(0,
-				 BAR_SIZE,
+				 LCD_BAR_HEIGHT,
 				 LCD_WIDTH,
-				 LCD_HEIGHT - (2 * BAR_SIZE),
+				 LCD_HEIGHT - (2 * LCD_BAR_HEIGHT),
 				 bgColor);
 
 	for (i=0;i<NUM_CLUE_LINES;i++)
 	{
-		LCD_DrawString(X_LINE_OFFSET,
-					   Y_LINE_OFFSET + LINE_HEIGHT * i,
+		LCD_DrawString(x,
+					   LINE_Y_OFFSET + (LINE_SPACING * i),
 					   (char*) &w->lines[i],
 					   BLACK,
 					   1);
@@ -82,7 +81,7 @@ void Draw_Top_Bar()
 		break;
 	}
 
-	LCD_FillRect(0,0,LCD_WIDTH, BAR_SIZE, color);
+	LCD_FillRect(0,0,LCD_WIDTH, LCD_BAR_HEIGHT, color);
 
 	LCD_SetTextOptions(ALIGN_CENTRE);
 
@@ -150,7 +149,7 @@ void Draw_Bottom_Bar()
 	uint16_t color = LCD_ColorFromRGB(35,35,35);
 	LCD_SetBackgroundColor(color);
 
-	LCD_FillRect(0,LCD_HEIGHT - BAR_SIZE, LCD_WIDTH, BAR_SIZE, color);
+	LCD_FillRect(0,LCD_HEIGHT - LCD_BAR_HEIGHT, LCD_WIDTH, LCD_BAR_HEIGHT, color);
 
 	Draw_Searching_String();
 }

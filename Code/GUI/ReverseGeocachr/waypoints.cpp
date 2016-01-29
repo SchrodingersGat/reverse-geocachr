@@ -18,6 +18,7 @@ const QString SETTING_CLUE_LINE = "Line_";
 
 #include "waypoint.h"
 #include "debug.h"
+#include "ILI9340_font.h"
 
 WaypointList::WaypointList() {
 
@@ -315,7 +316,6 @@ bool WaypointList::ValidWaypoint(double lat, double lng) {
 
     for (int i=0;i<waypoints.count();i++) {
 
-        qDebug() << i << Waypoint_Distance(lat,lng,&waypoints[i]);
         if (Waypoint_Distance(lat,lng,&waypoints[i]) < 250) {
             return false;
         }
@@ -341,6 +341,8 @@ bool WaypointList::AddWaypoint(Waypoint_t wp) {
 void Waypoint_SetLineText(Waypoint_t *w, uint8_t line, QString text) {
     if (w == NULL || line >= NUM_CLUE_LINES) return;
 
+    text = escapeClueString(text);
+
     for (int i=0;i<CLUE_LINE_LEN_MAX;i++) {
         if (i >= text.count()) w->lines[line][i] = 0;
         else w->lines[line][i] = (uint8_t) text.at(i).toLatin1();
@@ -362,4 +364,29 @@ QString Waypoint_GetLineText(Waypoint_t *w, uint8_t line) {
     }
 
     return text;
+}
+
+QString escapeClueString(QString clue) {
+    QString s = "";
+    QChar c;
+
+    for (int i=0;i<clue.size();i++) {
+        c = clue.at(i);
+
+        if (c >= ' ' && c < 127)
+        {
+            s += c;
+        }
+    }
+
+    if (s.length() >= CLUE_LINE_LEN_MAX)
+    {
+        s.truncate(CLUE_LINE_LEN_MAX - 1);
+    }
+
+    while (line_width(s.toLocal8Bit().data()) > LINE_MAX_WIDTH) {
+        s.chop(1);
+    }
+
+    return s;
 }

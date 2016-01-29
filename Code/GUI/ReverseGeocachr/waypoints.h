@@ -69,5 +69,6 @@ extern WaypointList waypoints;
 //Other waypoint functions
 void Waypoint_SetLineText(Waypoint_t *w, uint8_t line, QString text);
 QString Waypoint_GetLineText(Waypoint_t *w, uint8_t line);
+QString escapeClueString(QString text);
 #endif // CLUE_LIST_H
 

@@ -62,4 +62,9 @@ enum ClueOptions_t {
 #define LCD_BAR_HEIGHT 28
 #define LCD_FOOTER_X 160
 #define LCD_FOOTER_Y 215
+
+#define LINE_SPACING ((240 - (2 * LCD_BAR_HEIGHT) - 10) / NUM_CLUE_LINES)
+#define LINE_Y_OFFSET (LCD_BAR_HEIGHT + 10)
+#define LINE_X_OFFSET 5
+#define LINE_MAX_WIDTH (320 - (2 * LINE_X_OFFSET))
 #endif
