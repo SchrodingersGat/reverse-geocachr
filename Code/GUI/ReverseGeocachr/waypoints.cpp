@@ -324,6 +324,17 @@ bool WaypointList::ValidWaypoint(double lat, double lng) {
     return true;
 }
 
+bool WaypointList::DeleteClue(uint8_t index) {
+    //This one is special in that index is zero offset
+
+    if (index < waypoints.count()) {
+        waypoints.removeAt(index);
+        return true;
+    }
+
+    return false;
+}
+
 bool WaypointList::AddWaypoint(Waypoint_t wp) {
 
     if (waypoints.count() >= BOX_MAX_CLUES) return false;

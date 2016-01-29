@@ -593,10 +593,10 @@ void MainWindow::jsCleared()
 //Redraw all clue info
 void MainWindow::updateClues() {
     updateClueList();
-    redrawMap();
     reloadClueTable();
 
     ui->LCD->repaint();
+    redrawMap();
 }
 
 void MainWindow::clearMap()
@@ -718,22 +718,9 @@ void MainWindow::clueDeleted(int clue)
 
     if (!result) return;
 
-    /*
+    if (waypoints.DeleteClue(clue) == false) return;
 
-    if (clue >= 0 && clue < box.waypoints.count())
-    {
-        box.waypoints.removeAt(clue);
-    }
-
-    if (clue <= selected)
-    {
-        selectPrev();
-    }
-
-    */
-
-    redrawMap();
-    updateClueList();
+    updateClues();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

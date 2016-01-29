@@ -28,8 +28,11 @@ public:
     bool SaveToFile(QString filename);
     bool LoadFromFile(QString filename);
 
+    bool DeleteClue(uint8_t index);
+
     bool AddWaypoint(Waypoint_t wp);
     bool ValidWaypoint(double lat, double lng);
+
 
     bool IsClueSelected();
     uint8_t ClueIndex();
