@@ -43,7 +43,6 @@ bool Handle_Box_Message() {
 		printf("Set clue %u\n", i);
 
 		Decode_Waypoint_Message(rxBuffer, GetWaypoint(i));
-		response = true;
 		break;
 	case BOX_MSG_REQUEST_CLUE_LINE:
 		i = rxBuffer[1]; //!< Which clue to respond with?

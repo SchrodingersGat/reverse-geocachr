@@ -38,10 +38,17 @@ void Box::run()
 
             cursor = (cursor + 1) % NUM_CLUE_LINES;
 
-            Waypoint_SetLineText(&w, cursor, "This is line " + QString::number(cursor));
-            SetClueHint(1, &w, cursor);
+//            Waypoint_SetLineText(&w, cursor, "This is line " + QString::number(cursor));
+//            SetClueHint(1, &w, cursor);
 
-//            RequestClueInfo(cursor, &w);
+            w.lat = 444.444;
+            w.lng = 555.555;
+
+            SetClueInfo(cursor, &w);
+
+            Sleep(10);
+
+            RequestClueInfo(cursor, &w);
 
 
         }
@@ -147,20 +154,17 @@ bool Box::ReadWaypointData(int clueIndex, Waypoint_t *w, int tries) {
 
 bool Box::WriteWaypointData(int clueIndex, Waypoint_t *w, int tries) {
 
-    /*
     //Write the waypoint data
     if (SetClueInfo(clueIndex, w, tries) == false) return false;
 
     for (int i=0;i<NUM_CLUE_LINES;i++) {
         if (SetClueHint(clueIndex, w, i, tries) == false) return false;
     }
-    */
 
     return true;
 }
 
-/*
-bool Box::SetClueInfo(int clueIndex, Waypoint *w, int tries)
+bool Box::SetClueInfo(int clueIndex, Waypoint_t *w, int tries)
 {
     bool result = false;
 
@@ -173,65 +177,44 @@ bool Box::SetClueInfo(int clueIndex, Waypoint *w, int tries)
 
     return result;
 }
-*/
 
-/* Send settings for a particular clue */
-
-/*
-bool Box::SetClueInfo(int clueIndex, Waypoint *w)
+bool Box::SetClueInfo(int clueIndex, Waypoint_t *w)
 {
-    if (w == NULL) return false;
+    Debug("SetClueInfo - "  + QString::number(clueIndex));
+
+    if (w == NULL) {
+        Debug("Waypoint pointer is NULL");
+        return false;
+    }
 
     int res = -1;
     int i = 0;
 
-    if (!HIDConnect()) return false;
-
-    qDebug() << "saving clue" << clueIndex;
-
-    writeBuf[i++] = 0;
-    writeBuf[i++] = BOX_MSG_SET_CLUE_INFO;
-    writeBuf[i++] = clueIndex;
-
-    QString info = "";
-
-    info += QString::number(w->lat,'f',10) + ",";
-    info += QString::number(w->lng,'f',10) + ",";
-    info += QString::number(w->threshold) + ",";
-    info += QString::number(w->type) + ",";
-    info += QString::number(w->options);
-
-    for (int j=0;j<info.count();j++)
-    {
-        writeBuf[i++] = (unsigned char) info.at(j).toLatin1();
+    if (!HIDConnect()) {
+        Debug("HIDConnect failed");
+        return false;
     }
 
     writeBuf[i++] = 0;
+
+    Form_Waypoint_Message((char*) (&writeBuf[1]), clueIndex, w);
 
     res = hid_write(handle, writeBuf, HID_REPORT_SIZE + 1);
 
-    qDebug() << "res:" << res;
-
-    if (res != (HID_REPORT_SIZE + 1))
-    {
+    if (res != (HID_REPORT_SIZE + 1)) {
+        Debug("HIDWrite failed");
         return false;
     }
 
-    //Now read the clue info back out to make sure it's the same
+    Waypoint_t w_tmp;
 
-    Waypoint w_tmp;
-
-    if (!this->RequestClueInfo(clueIndex, &w_tmp))
-    {
-        //Couldn't read data
+    if (!this->RequestClueInfo(clueIndex, &w_tmp)) {
+        Debug("RequestClueInfo failed");
         return false;
     }
 
-    qDebug() << w->lat << w->lng;
-
-    return true;
+    return (w->checksum == w_tmp.checksum);
 }
-*/
 
 bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w, int tries)
 {
@@ -291,14 +274,9 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w)
     else
     {
         if (Decode_Waypoint_Message((char*) readBuf, w)) {
-            qDebug() << "success!";
-
-            qDebug() << w->lat;
-            qDebug() << w->lng;
-
             return true;
         } else {
-            qDebug() << "fail";
+            Debug("Decode_Waypoint_Message failed");
         }
         return false;
     }

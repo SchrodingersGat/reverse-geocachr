@@ -21,7 +21,7 @@ typedef struct {
     uint8_t options; //!< Clue options
     
     clue_line lines[NUM_CLUE_LINES];
-    
+
     uint16_t checksum;
     
 } Waypoint_t;
