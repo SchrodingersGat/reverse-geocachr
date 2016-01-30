@@ -562,17 +562,23 @@ void MainWindow::refreshDisplay()
 
     ui->boxStatus->setText(connectionString);
 
-    //Box clue status
-    if (box.info.totalClues == 0)
-    {
-        ui->boxClueString->setText("No clues programmed");
-    }
-    else
-    {
-        QString clueString = "Clue " + QString::number(box.info.currentClue) + " of " + QString::number(box.info.totalClues);
-        ui->boxClueString->setText(clueString);
+    QString s = "Box not connected";
+
+    if (box.connected) {
+        switch (box.info.currentClue) {
+        case BOX_WELCOME_MSG:
+            s = "Welcome Message";
+            break;
+        case BOX_COMPLETE_MSG:
+            s = "Completion Message";
+            break;
+        default:
+            s = QString::number(box.info.currentClue) + " of " + QString::number(box.info.totalClues);
+            break;
+        }
     }
 
+    ui->boxClueString->setText(s);
 
     //Enable box buttons based on connection status
     ui->boxLock->setEnabled(box.connected);

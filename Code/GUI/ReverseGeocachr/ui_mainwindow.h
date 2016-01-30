@@ -63,13 +63,13 @@ public:
     QSpacerItem *horizontalSpacer_4;
     QLabel *boxClueString;
     QGridLayout *gridLayout_3;
-    QPushButton *boxDownload;
+    QPushButton *boxSkipToPrevClue;
+    QSpacerItem *horizontalSpacer_2;
     QPushButton *boxSkipToNextClue;
+    QPushButton *boxDownload;
+    QPushButton *boxUpload;
     QPushButton *boxUnlock;
     QPushButton *boxLock;
-    QPushButton *boxSkipToPrevClue;
-    QPushButton *boxUpload;
-    QSpacerItem *horizontalSpacer_2;
     QHBoxLayout *horizontalLayout_4;
     QLabel *latString_2;
     QLineEdit *boxCharge;
@@ -277,11 +277,15 @@ public:
         gridLayout_3 = new QGridLayout();
         gridLayout_3->setSpacing(6);
         gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        boxDownload = new QPushButton(groupBox);
-        boxDownload->setObjectName(QStringLiteral("boxDownload"));
-        boxDownload->setFont(font2);
+        boxSkipToPrevClue = new QPushButton(groupBox);
+        boxSkipToPrevClue->setObjectName(QStringLiteral("boxSkipToPrevClue"));
+        boxSkipToPrevClue->setFont(font2);
 
-        gridLayout_3->addWidget(boxDownload, 1, 2, 1, 1);
+        gridLayout_3->addWidget(boxSkipToPrevClue, 0, 0, 1, 1);
+
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_3->addItem(horizontalSpacer_2, 0, 1, 1, 1);
 
         boxSkipToNextClue = new QPushButton(groupBox);
         boxSkipToNextClue->setObjectName(QStringLiteral("boxSkipToNextClue"));
@@ -289,33 +293,29 @@ public:
 
         gridLayout_3->addWidget(boxSkipToNextClue, 0, 2, 1, 1);
 
-        boxUnlock = new QPushButton(groupBox);
-        boxUnlock->setObjectName(QStringLiteral("boxUnlock"));
-        boxUnlock->setFont(font2);
+        boxDownload = new QPushButton(groupBox);
+        boxDownload->setObjectName(QStringLiteral("boxDownload"));
+        boxDownload->setFont(font2);
 
-        gridLayout_3->addWidget(boxUnlock, 2, 2, 1, 1);
-
-        boxLock = new QPushButton(groupBox);
-        boxLock->setObjectName(QStringLiteral("boxLock"));
-        boxLock->setFont(font2);
-
-        gridLayout_3->addWidget(boxLock, 2, 0, 1, 1);
-
-        boxSkipToPrevClue = new QPushButton(groupBox);
-        boxSkipToPrevClue->setObjectName(QStringLiteral("boxSkipToPrevClue"));
-        boxSkipToPrevClue->setFont(font2);
-
-        gridLayout_3->addWidget(boxSkipToPrevClue, 0, 0, 1, 1);
+        gridLayout_3->addWidget(boxDownload, 1, 2, 1, 1);
 
         boxUpload = new QPushButton(groupBox);
         boxUpload->setObjectName(QStringLiteral("boxUpload"));
         boxUpload->setFont(font2);
 
-        gridLayout_3->addWidget(boxUpload, 1, 0, 1, 1);
+        gridLayout_3->addWidget(boxUpload, 2, 2, 1, 1);
 
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        boxUnlock = new QPushButton(groupBox);
+        boxUnlock->setObjectName(QStringLiteral("boxUnlock"));
+        boxUnlock->setFont(font2);
 
-        gridLayout_3->addItem(horizontalSpacer_2, 0, 1, 1, 1);
+        gridLayout_3->addWidget(boxUnlock, 2, 0, 1, 1);
+
+        boxLock = new QPushButton(groupBox);
+        boxLock->setObjectName(QStringLiteral("boxLock"));
+        boxLock->setFont(font2);
+
+        gridLayout_3->addWidget(boxLock, 1, 0, 1, 1);
 
 
         verticalLayout_4->addLayout(gridLayout_3);
@@ -659,13 +659,21 @@ public:
         boxStatus->setText(QApplication::translate("MainWindow", "Connected via USB", 0));
         boxClueString->setText(QApplication::translate("MainWindow", "Clue <x> of <y>", 0));
 #ifndef QT_NO_TOOLTIP
-        boxDownload->setToolTip(QApplication::translate("MainWindow", "Download clues from computer to geocache box", 0));
+        boxSkipToPrevClue->setToolTip(QApplication::translate("MainWindow", "Skip to the previous clue", 0));
 #endif // QT_NO_TOOLTIP
-        boxDownload->setText(QApplication::translate("MainWindow", "Download", 0));
+        boxSkipToPrevClue->setText(QApplication::translate("MainWindow", "< Skip", 0));
 #ifndef QT_NO_TOOLTIP
         boxSkipToNextClue->setToolTip(QApplication::translate("MainWindow", "Skip to the next clue", 0));
 #endif // QT_NO_TOOLTIP
         boxSkipToNextClue->setText(QApplication::translate("MainWindow", "Skip >", 0));
+#ifndef QT_NO_TOOLTIP
+        boxDownload->setToolTip(QApplication::translate("MainWindow", "Download clues from computer to geocache box", 0));
+#endif // QT_NO_TOOLTIP
+        boxDownload->setText(QApplication::translate("MainWindow", "Download", 0));
+#ifndef QT_NO_TOOLTIP
+        boxUpload->setToolTip(QApplication::translate("MainWindow", "Upload clues from geocache box to computer", 0));
+#endif // QT_NO_TOOLTIP
+        boxUpload->setText(QApplication::translate("MainWindow", "Upload", 0));
 #ifndef QT_NO_TOOLTIP
         boxUnlock->setToolTip(QApplication::translate("MainWindow", "Move Clue Down", 0));
 #endif // QT_NO_TOOLTIP
@@ -674,14 +682,6 @@ public:
         boxLock->setToolTip(QApplication::translate("MainWindow", "Move Clue Down", 0));
 #endif // QT_NO_TOOLTIP
         boxLock->setText(QApplication::translate("MainWindow", "Lock", 0));
-#ifndef QT_NO_TOOLTIP
-        boxSkipToPrevClue->setToolTip(QApplication::translate("MainWindow", "Skip to the previous clue", 0));
-#endif // QT_NO_TOOLTIP
-        boxSkipToPrevClue->setText(QApplication::translate("MainWindow", "< Skip", 0));
-#ifndef QT_NO_TOOLTIP
-        boxUpload->setToolTip(QApplication::translate("MainWindow", "Upload clues from geocache box to computer", 0));
-#endif // QT_NO_TOOLTIP
-        boxUpload->setText(QApplication::translate("MainWindow", "Upload", 0));
         latString_2->setText(QApplication::translate("MainWindow", "Battery", 0));
         latString_3->setText(QApplication::translate("MainWindow", "Version", 0));
         boxStatus_3->setText(QApplication::translate("MainWindow", "Reverse Geocache Software ", 0));

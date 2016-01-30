@@ -358,8 +358,8 @@ Save clues to file or download to box</string>
          </item>
          <item>
           <layout class="QGridLayout" name="gridLayout_3">
-           <item row="1" column="2">
-            <widget class="QPushButton" name="boxDownload">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="boxSkipToPrevClue">
              <property name="font">
               <font>
                <pointsize>8</pointsize>
@@ -368,12 +368,25 @@ Save clues to file or download to box</string>
               </font>
              </property>
              <property name="toolTip">
-              <string>Download clues from computer to geocache box</string>
+              <string>Skip to the previous clue</string>
              </property>
              <property name="text">
-              <string>Download</string>
+              <string>&lt; Skip</string>
              </property>
             </widget>
+           </item>
+           <item row="0" column="1">
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
            <item row="0" column="2">
             <widget class="QPushButton" name="boxSkipToNextClue">
@@ -392,58 +405,24 @@ Save clues to file or download to box</string>
              </property>
             </widget>
            </item>
+           <item row="1" column="2">
+            <widget class="QPushButton" name="boxDownload">
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="toolTip">
+              <string>Download clues from computer to geocache box</string>
+             </property>
+             <property name="text">
+              <string>Download</string>
+             </property>
+            </widget>
+           </item>
            <item row="2" column="2">
-            <widget class="QPushButton" name="boxUnlock">
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="toolTip">
-              <string>Move Clue Down</string>
-             </property>
-             <property name="text">
-              <string>Unlock</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QPushButton" name="boxLock">
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="toolTip">
-              <string>Move Clue Down</string>
-             </property>
-             <property name="text">
-              <string>Lock</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QPushButton" name="boxSkipToPrevClue">
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="toolTip">
-              <string>Skip to the previous clue</string>
-             </property>
-             <property name="text">
-              <string>&lt; Skip</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
             <widget class="QPushButton" name="boxUpload">
              <property name="font">
               <font>
@@ -460,18 +439,39 @@ Save clues to file or download to box</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="boxUnlock">
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
+             <property name="toolTip">
+              <string>Move Clue Down</string>
              </property>
-            </spacer>
+             <property name="text">
+              <string>Unlock</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QPushButton" name="boxLock">
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="toolTip">
+              <string>Move Clue Down</string>
+             </property>
+             <property name="text">
+              <string>Lock</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>

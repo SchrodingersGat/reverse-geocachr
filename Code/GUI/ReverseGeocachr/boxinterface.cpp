@@ -1,9 +1,9 @@
-#include <QDebug>
+
 #include <stdio.h>
 #include <QStringList>
 
 #include "boxinterface.h"
-
+#include "debug.h"
 #include "box_messages.h"
 
 #define TIMEOUT 300
@@ -78,34 +78,38 @@ bool Box::RequestBoxInfo()
     int res;
     int i = 0;
 
-    if (HIDConnect() == false) return false; //Connection failure
+    Debug("RequestBoxInfo()");
+
+    if (HIDConnect() == false) {
+        Debug("HIDConnect() failed");
+        return false; //Connection failure
+    }
 
     writeBuf[0] = 0x00;
     writeBuf[1] = BOX_MSG_SYSTEM_INFO;
 
     res = hid_write(handle,writeBuf,HID_REPORT_SIZE+1);
 
-
     //HID write was not successful
-    if (res == -1)
-    {
+    if (res == -1) {
         HIDDisconnect();
-//        qDebug() << "write failed";
+        Debug("HID Write Failed");
         return false;
     }
 
     //Read out the feature report
     res = hid_read_timeout(handle, readBuf, HID_REPORT_SIZE, TIMEOUT);
 
-    if (res != HID_REPORT_SIZE)
-    {
-//        qDebug() << "Read failed" << res;
+    if (res != HID_REPORT_SIZE) {
+        Debug("HID Read Failed");
         return false;
-    }
-    else //read was successful, decode the data
-    {
-        if (readBuf[i++] == BOX_MSG_SYSTEM_INFO)
-        {
+    } else  {//read was successful, decode the data
+        if (readBuf[i++] == BOX_MSG_SYSTEM_INFO) {
+
+            if (Decode_BoxInfo_Message((char*) readBuf, &info) == false) {
+                Debug("BOX_INFO message failed");
+                return false;
+            }
         }
     }
 
