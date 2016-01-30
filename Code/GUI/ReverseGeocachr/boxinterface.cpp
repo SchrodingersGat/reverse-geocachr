@@ -6,6 +6,8 @@
 #include "debug.h"
 #include "box_messages.h"
 
+#include "waypoints.h"
+
 #define TIMEOUT 300
 
 #define MAX_TRIES 5
@@ -21,6 +23,10 @@ Box::Box()
  */
 void Box::run()
 {
+    static uint8_t cursor = 0;
+
+    Waypoint_t w;
+
     running = true;
 
     while (running)
@@ -28,6 +34,15 @@ void Box::run()
         connected = RequestBoxInfo();
 
         Sleep(1000);
+
+        if (connected) {
+
+            if (RequestClueHint(1, &w, cursor)) {
+                Debug(Waypoint_GetLineText(&w,cursor));
+
+                cursor = (cursor + 1) % NUM_CLUE_LINES;
+            }
+        }
     }
 
     HIDDisconnect();
@@ -207,8 +222,10 @@ bool Box::SetClueInfo(int clueIndex, Waypoint *w)
 
     return true;
 }
+*/
 
-bool Box::RequestClueInfo(int clueIndex, Waypoint *w, int tries)
+/*
+bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w, int tries)
 {
     bool result = false;
 
@@ -226,14 +243,22 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint *w, int tries)
 /* Request information on a particular clue */
 
 /*
-bool Box::RequestClueInfo(int clueIndex, Waypoint *w)
+bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w)
 {
     int res = -1;
     int i = 0;
 
-    if (w == NULL) return false;
+    Debug("RequestClueInfo - " + QString::number(clueIndex));
 
-    if (HIDConnect() == false) return false;
+    if (w == NULL) {
+        Debug("Waypoint pointer is NULL");
+        return false;
+    }
+
+    if (HIDConnect() == false) {
+        Debug("HIDConnect failed");
+        return false;
+    }
 
     //Write clue info to the box
     writeBuf[i++] = 0;
@@ -242,8 +267,8 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint *w)
 
     res = hid_write(handle, writeBuf, HID_REPORT_SIZE+1);
 
-    if (res == -1) //write failed
-    {
+    if (res == -1) {//write failed
+        Debug("HIDWrite failed");
         HIDDisconnect();
         return false;
     }
@@ -253,13 +278,15 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint *w)
 
     HIDDisconnect();
 
-    if (res != HID_REPORT_SIZE) //read failed
-    {
+    if (res != HID_REPORT_SIZE) {//read failed
+        Debug("HIDRead failed");
         return false;
     }
 
     else
     {
+        qDebug() << "Here!";
+        return false;
 
         int index = readBuf[1];
         QString data = QString::fromLocal8Bit((const char*) &readBuf[2]);
@@ -311,8 +338,9 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint *w)
 
     return true;
 }
+*/
 
-bool Box::RequestClueHint(int clueIndex, Waypoint *w, int line, int tries)
+bool Box::RequestClueHint(int clueIndex, Waypoint_t *w, int line, int tries)
 {
     bool result = false;
 
@@ -327,81 +355,66 @@ bool Box::RequestClueHint(int clueIndex, Waypoint *w, int line, int tries)
 }
 
 
-bool Box::RequestClueHint(int clueIndex, Waypoint *w, int line)
+bool Box::RequestClueHint(int clueIndex, Waypoint_t *w, int line)
 {
-    if (w == NULL) return false;
-    if (line >= NUM_LINES) return false;
+    Debug("RequestClueHint() - " + QString::number(clueIndex) + " / " + QString::number(line));
+
+    if (w == NULL) {
+        Debug("Waypoint pointer is NULL");
+        return false;
+    }
+
+    if (line >= NUM_CLUE_LINES) {
+        Debug("Line number incorrect");
+        return false;
+    }
 
     int res = -1;
 
     int i = 0;
 
-    if (HIDConnect() == false)
-    {
+    if (HIDConnect() == false) {
+        Debug("HIDConnect failed");
         return false;
     }
 
-//    qDebug() << "Requesting Clue Hint" << clueIndex << line;
-
     //Write clue info to the box
     writeBuf[i++] = 0;
-    writeBuf[i++] = BOX_MSG_GET_CLUE_LINE;
+    writeBuf[i++] = BOX_MSG_REQUEST_CLUE_LINE;
     writeBuf[i++] = clueIndex;
     writeBuf[i++] = line;
 
     res = hid_write(handle, writeBuf, HID_REPORT_SIZE+1);
 
-    if (res != (HID_REPORT_SIZE + 1))
-    {
-//        qDebug() << "write failed" << res;
+    if (res != (HID_REPORT_SIZE + 1)) {
+        Debug("HIDWrite failed");
         return false;
     }
 
     //read the dataz back
     res = hid_read_timeout(handle,readBuf,HID_REPORT_SIZE,TIMEOUT);
 
-    if (res != HID_REPORT_SIZE) //read failed
-    {
-//        qDebug() << "read failed";
+    if (res != HID_REPORT_SIZE) {
+        Debug("HIDRead failed");
         return false;
-    }
+    } else {
 
-    else
-    {
-        int i = 0;
+        if ((readBuf[0] == BOX_MSG_CLUE_LINE) &&
+            (readBuf[1] == clueIndex) &&
+            (readBuf[2] == line)) {
 
-        if (readBuf[i++] == BOX_MSG_GET_CLUE_LINE)
-        {
-            int index = readBuf[i++];
-            int lineNum = readBuf[i++];
+            Decode_WaypointClue_Message((char*) readBuf, line, w);
 
-//            qDebug() << "response:" << index << lineNum;
-
-            if (index == clueIndex && line == lineNum)
-            {
-
-                QString data = QString::fromLocal8Bit((const char*) &readBuf[i]);
-  //              qDebug() << "Clue Line:" << index << line << data;
-
-                w->clue[line] = data;
-
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-//            qDebug() << "wrong msg returned" << "0x" + QString::number(readBuf[0],16);
+            return true;
+        } else {
+            Debug("Response doesn't match");
             return false;
         }
     }
 
     return false;
 }
-
+/*
 bool Box::SetClueHint(int clueIndex, Waypoint *w, int line, int tries)
 {
     bool result = false;

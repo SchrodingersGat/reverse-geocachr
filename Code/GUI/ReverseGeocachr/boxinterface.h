@@ -46,6 +46,9 @@ public slots:
     bool SetBoxInfo(int tries);
     bool SetBoxInfo();
 
+    bool RequestClueHint(int clueIndex, Waypoint_t *w, int line, int tries);
+    bool RequestClueHint(int clueIndex, Waypoint_t *w, int line);
+
     /*
     bool RequestClueInfo(int clueIndex, Waypoint *w, int tries);
     bool RequestClueInfo(int clueIndex, Waypoint *w);
@@ -53,8 +56,6 @@ public slots:
     bool SetClueInfo(int clueIndex, Waypoint *w, int tries);
     bool SetClueInfo(int clueIndex, Waypoint *w);
 
-    bool RequestClueHint(int clueIndex, Waypoint *w, int line, int tries);
-    bool RequestClueHint(int clueIndex, Waypoint *w, int line);
 
     bool SetClueHint(int clueIndex, Waypoint *w, int line, int tries);
     bool SetClueHint(int clueIndex, Waypoint *w, int line);
