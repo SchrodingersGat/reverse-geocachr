@@ -79,8 +79,6 @@ bool Box::RequestBoxInfo()
     int res;
     int i = 0;
 
-    Debug("RequestBoxInfo()");
-
     if (HIDConnect() == false) {
         Debug("HIDConnect() failed");
         return false; //Connection failure
@@ -190,7 +188,10 @@ bool Box::SetClueInfo(int clueIndex, Waypoint_t *w)
         return false;
     }
 
-    return (w->checksum == w_tmp.checksum);
+    //for now, assume they are the same
+//    return (w->checksum == w_tmp.checksum);
+
+    return true;
 }
 
 bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w, int tries)
@@ -478,14 +479,21 @@ bool Box::SetNumberOfClues(int nClues, int tries)
 
 bool Box::SetNumberOfClues(int nClues)
 {
-    if (nClues < 0 || nClues > MAX_CLUES) return false;
+    Debug("Setting number of clues - " + QString::number(nClues));
+
+    if (nClues < 0 || nClues > MAX_CLUES) {
+        Debug("Number of clues invalid");
+        return false;
+    }
+
     int res;
 
     int i = 0;
 
-//    qDebug() << "Setting clue count:" << nClues;
-
-    if (HIDConnect() == false) return false;
+    if (HIDConnect() == false) {
+        Debug("HIDConnect failed");
+        return false;
+    }
 
     writeBuf[i++] = 0x00;
     writeBuf[i++] = BOX_MSG_SET_NUMBER_OF_CLUES;
@@ -493,21 +501,18 @@ bool Box::SetNumberOfClues(int nClues)
 
     res = hid_write(handle, writeBuf, HID_REPORT_SIZE + 1);
 
-    if (res != (HID_REPORT_SIZE + 1))
-    {
-//        qDebug() << "Couldn't write nClues";
+    if (res != (HID_REPORT_SIZE + 1)) {
+        Debug("HIDWrite failed");
         return false;
     }
 
-    if (!RequestBoxInfo())
-    {
-//        qDebug() << "Couldn't read box info";
+    if (!RequestBoxInfo()) {
+        Debug("RequestBoxInfo failed");
         return false;
     }
 
-    if (nClues != info.totalClues)
-    {
-//        qDebug() << "Clue count mismatch" << numberOfClues;
+    if (nClues != info.totalClues) {
+        Debug("Clue count mismatch " + QString::number(nClues));
         return false;
     }
 
