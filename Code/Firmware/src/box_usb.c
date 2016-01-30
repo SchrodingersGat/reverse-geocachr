@@ -19,7 +19,6 @@ HIDBuffer txBuffer;
 bool Handle_Box_Message() {
 	bool response = false;
 
-
 	uint8_t i = 0;
 	uint8_t j = 0;
 

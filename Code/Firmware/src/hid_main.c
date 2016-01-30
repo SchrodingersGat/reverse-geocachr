@@ -174,8 +174,8 @@ int main(void)
 	LCD_FillScreen(BLACK);
 
 	//TODO load these values from ext memory
-	boxInfo.currentClue = 1;
-	boxInfo.totalClues = 5;
+	boxInfo.currentClue = 0;
+	boxInfo.totalClues = 2;
 	boxInfo.charge = 24;
 	boxInfo.versionMajor = VERSION_MAJOR;
 	boxInfo.versionMinor = VERSION_MINOR;
@@ -191,6 +191,10 @@ int main(void)
 	Waypoint_SetLine(&waypoints[1],2,"third line is the charm");
 	Waypoint_SetLine(&waypoints[1],3,"fourth lihhhhn");
 	Waypoint_SetLine(&waypoints[1],4,"FIF");
+
+	Waypoint_SetLine(&waypoints[2],0,"CLUE TOO");
+	Waypoint_SetLine(&waypoints[2],2,"BLUE BLUE");
+	Waypoint_SetLine(&waypoints[2],4,"WAAHOOOOO");
 
 	while (1) {
 		PauseMs(50);

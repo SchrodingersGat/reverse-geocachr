@@ -49,9 +49,6 @@ static uint8_t *loopback_report;
 extern const uint8_t HID_ReportDescriptor[];
 extern const uint16_t HID_ReportDescSize;
 
-uint8_t rxBuf[64];
-uint8_t txBuf[64];
-
 /*  HID get report callback function. */
 static ErrorCode_t HID_GetReport(USBD_HANDLE_T hHid, USB_SETUP_PACKET *pSetup, uint8_t * *pBuffer, uint16_t *plength)
 {
@@ -108,15 +105,15 @@ static ErrorCode_t HID_Ep_Hdlr(USBD_HANDLE_T hUsb, void *data, uint32_t event)
 
 	case USB_EVT_OUT:
 		/* Read the new report received. */
-		len = USBD_API->hw->ReadEP(hUsb, pHidCtrl->epout_adr, rxBuf);
+		len = USBD_API->hw->ReadEP(hUsb, pHidCtrl->epout_adr, rxBuffer);
 
 		if (len > 0)
 		{
 			//Do something with the message
-			if (Handle_Box_Message(rxBuf, txBuf) == true)
+			if (Handle_Box_Message(rxBuffer, txBuffer) == true)
 			{
 				//printf("Sending response\n");
-				USBD_API->hw->WriteEP(hUsb, pHidCtrl->epin_adr, txBuf, 64);
+				USBD_API->hw->WriteEP(hUsb, pHidCtrl->epin_adr, txBuffer, 64);
 			}
 		}
 
