@@ -43,16 +43,16 @@ public slots:
     bool RequestBoxInfo(int tries);
     bool RequestBoxInfo();
 
-    bool SetBoxInfo(int tries);
-    bool SetBoxInfo();
+    bool ReadWaypointData(int clueIndex, Waypoint_t *w, int tries);
+    bool WriteWaypointData(int clueIndex, Waypoint_t *w, int tries);
 
     bool RequestClueHint(int clueIndex, Waypoint_t *w, int line, int tries);
     bool RequestClueHint(int clueIndex, Waypoint_t *w, int line);
 
-    /*
-    bool RequestClueInfo(int clueIndex, Waypoint *w, int tries);
-    bool RequestClueInfo(int clueIndex, Waypoint *w);
+    bool RequestClueInfo(int clueIndex, Waypoint_t *w, int tries);
+    bool RequestClueInfo(int clueIndex, Waypoint_t *w);
 
+    /*
     bool SetClueInfo(int clueIndex, Waypoint *w, int tries);
     bool SetClueInfo(int clueIndex, Waypoint *w);
 

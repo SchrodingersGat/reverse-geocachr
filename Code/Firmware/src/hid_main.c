@@ -196,6 +196,9 @@ int main(void)
 	Waypoint_SetLine(&waypoints[2],2,"BLUE BLUE");
 	Waypoint_SetLine(&waypoints[2],4,"WAAHOOOOO");
 
+	waypoints[2].lat = 12.345;
+	waypoints[2].lng = 67.890;
+
 	while (1) {
 		PauseMs(50);
 

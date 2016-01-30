@@ -37,11 +37,9 @@ void Box::run()
 
         if (connected) {
 
-            if (RequestClueHint(1, &w, cursor)) {
-                Debug(Waypoint_GetLineText(&w,cursor));
+            cursor = ((cursor + 1) % info.totalClues) + 1;
 
-                cursor = (cursor + 1) % NUM_CLUE_LINES;
-            }
+            RequestClueInfo(cursor, &w);
         }
     }
 
@@ -131,23 +129,30 @@ bool Box::RequestBoxInfo()
     return true;
 }
 
-bool Box::SetBoxInfo(int tries)
-{
-    bool result = false;
+bool Box::ReadWaypointData(int clueIndex, Waypoint_t *w, int tries) {
 
-    do
-    {
-        result = SetBoxInfo();
-        tries--;
-        Sleep(10);
-    } while (result == false && tries > 0);
+    //Read out the waypoint data
+    if (RequestClueInfo(clueIndex, w, tries) == false) return false;
 
-    return result;
+    for (int i=0;i<NUM_CLUE_LINES;i++) {
+        if (RequestClueHint(clueIndex, w, i, tries) == false) return false;
+    }
+
+    return true;
 }
 
-bool Box::SetBoxInfo()
-{
-    return false;
+bool Box::WriteWaypointData(int clueIndex, Waypoint_t *w, int tries) {
+
+    /*
+    //Write the waypoint data
+    if (SetClueInfo(clueIndex, w, tries) == false) return false;
+
+    for (int i=0;i<NUM_CLUE_LINES;i++) {
+        if (SetClueHint(clueIndex, w, i, tries) == false) return false;
+    }
+    */
+
+    return true;
 }
 
 /*
@@ -224,7 +229,6 @@ bool Box::SetClueInfo(int clueIndex, Waypoint *w)
 }
 */
 
-/*
 bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w, int tries)
 {
     bool result = false;
@@ -238,11 +242,8 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w, int tries)
 
     return result;
 }
-*/
 
 /* Request information on a particular clue */
-
-/*
 bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w)
 {
     int res = -1;
@@ -262,7 +263,7 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w)
 
     //Write clue info to the box
     writeBuf[i++] = 0;
-    writeBuf[i++] = BOX_MSG_GET_CLUE_INFO;
+    writeBuf[i++] = BOX_MSG_REQUEST_CLUE_INFO;
     writeBuf[i++] = clueIndex;
 
     res = hid_write(handle, writeBuf, HID_REPORT_SIZE+1);
@@ -285,60 +286,21 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w)
 
     else
     {
-        qDebug() << "Here!";
+        if (Decode_Waypoint_Message((char*) readBuf, w)) {
+            qDebug() << "success!";
+
+            qDebug() << w->lat;
+            qDebug() << w->lng;
+
+            return true;
+        } else {
+            qDebug() << "fail";
+        }
         return false;
-
-        int index = readBuf[1];
-        QString data = QString::fromLocal8Bit((const char*) &readBuf[2]);
-        qDebug() << "Clue:" << index << data;
-
-        if (readBuf[0] == BOX_MSG_GET_CLUE_INFO)
-        {
-            QStringList split = data.split(",");
-
-            if (split.count() == 5)
-            {
-                bool latOk = false;
-                bool lngOk = false;
-                bool thresholdOk = false;
-                bool typeOk = false;
-                bool optionsOk = false;
-
-                double lat = split.at(0).toDouble(&latOk);
-                double lng = split.at(1).toDouble(&lngOk);
-                int threshold = split.at(2).toInt(&thresholdOk);
-                int type = split.at(3).toInt(&typeOk);
-                int options = split.at(4).toInt(&optionsOk);
-
-                if (latOk && lngOk && thresholdOk && typeOk && optionsOk)
-                {
-                    w->lng = lng;
-                    w->lat = lat;
-                    w->threshold = threshold;
-                    w->type = type;
-                    w->options = options;
-
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
     }
 
     return true;
 }
-*/
 
 bool Box::RequestClueHint(int clueIndex, Waypoint_t *w, int line, int tries)
 {
