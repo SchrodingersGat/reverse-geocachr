@@ -57,10 +57,16 @@ public:
     QPushButton *pushButton;
     QGroupBox *groupBox;
     QVBoxLayout *verticalLayout_4;
-    QHBoxLayout *horizontalLayout_5;
-    QLedIndicator *boxConnectionIndicator;
+    QGridLayout *gridLayout_5;
+    QLineEdit *boxCharge;
+    QLineEdit *boxVersion;
+    QLabel *latString_2;
+    QLabel *latString_3;
+    QLineEdit *nBoxClues;
+    QSpacerItem *horizontalSpacer_5;
+    QLabel *latString_4;
     QLabel *boxStatus;
-    QSpacerItem *horizontalSpacer_4;
+    QLedIndicator *boxConnectionIndicator;
     QLabel *boxClueString;
     QGridLayout *gridLayout_3;
     QPushButton *boxSkipToPrevClue;
@@ -70,12 +76,6 @@ public:
     QPushButton *boxUpload;
     QPushButton *boxUnlock;
     QPushButton *boxLock;
-    QHBoxLayout *horizontalLayout_4;
-    QLabel *latString_2;
-    QLineEdit *boxCharge;
-    QSpacerItem *horizontalSpacer_3;
-    QLabel *latString_3;
-    QLineEdit *boxVersion;
     QSpacerItem *verticalSpacer;
     QLabel *boxStatus_3;
     QLabel *boxStatus_2;
@@ -241,28 +241,80 @@ public:
         verticalLayout_4->setSpacing(6);
         verticalLayout_4->setContentsMargins(11, 11, 11, 11);
         verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
-        horizontalLayout_5 = new QHBoxLayout();
-        horizontalLayout_5->setSpacing(6);
-        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
-        boxConnectionIndicator = new QLedIndicator(groupBox);
-        boxConnectionIndicator->setObjectName(QStringLiteral("boxConnectionIndicator"));
-        boxConnectionIndicator->setMinimumSize(QSize(20, 20));
-        boxConnectionIndicator->setMaximumSize(QSize(25, 25));
+        gridLayout_5 = new QGridLayout();
+        gridLayout_5->setSpacing(6);
+        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
+        boxCharge = new QLineEdit(groupBox);
+        boxCharge->setObjectName(QStringLiteral("boxCharge"));
+        boxCharge->setEnabled(true);
+        boxCharge->setMaximumSize(QSize(60, 16777215));
+        boxCharge->setFont(font2);
+        boxCharge->setAlignment(Qt::AlignCenter);
+        boxCharge->setReadOnly(true);
 
-        horizontalLayout_5->addWidget(boxConnectionIndicator);
+        gridLayout_5->addWidget(boxCharge, 2, 1, 1, 1);
+
+        boxVersion = new QLineEdit(groupBox);
+        boxVersion->setObjectName(QStringLiteral("boxVersion"));
+        boxVersion->setEnabled(true);
+        boxVersion->setMaximumSize(QSize(60, 16777215));
+        boxVersion->setFont(font2);
+        boxVersion->setAlignment(Qt::AlignCenter);
+        boxVersion->setReadOnly(true);
+
+        gridLayout_5->addWidget(boxVersion, 3, 1, 1, 1);
+
+        latString_2 = new QLabel(groupBox);
+        latString_2->setObjectName(QStringLiteral("latString_2"));
+        latString_2->setFont(font1);
+        latString_2->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_5->addWidget(latString_2, 2, 0, 1, 1);
+
+        latString_3 = new QLabel(groupBox);
+        latString_3->setObjectName(QStringLiteral("latString_3"));
+        latString_3->setFont(font1);
+        latString_3->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_5->addWidget(latString_3, 3, 0, 1, 1);
+
+        nBoxClues = new QLineEdit(groupBox);
+        nBoxClues->setObjectName(QStringLiteral("nBoxClues"));
+        nBoxClues->setEnabled(true);
+        nBoxClues->setMaximumSize(QSize(60, 16777215));
+        nBoxClues->setFont(font2);
+        nBoxClues->setAlignment(Qt::AlignCenter);
+        nBoxClues->setReadOnly(true);
+
+        gridLayout_5->addWidget(nBoxClues, 1, 1, 1, 1);
+
+        horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_5->addItem(horizontalSpacer_5, 1, 2, 1, 1);
+
+        latString_4 = new QLabel(groupBox);
+        latString_4->setObjectName(QStringLiteral("latString_4"));
+        latString_4->setMinimumSize(QSize(50, 0));
+        latString_4->setFont(font1);
+        latString_4->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_5->addWidget(latString_4, 1, 0, 1, 1);
 
         boxStatus = new QLabel(groupBox);
         boxStatus->setObjectName(QStringLiteral("boxStatus"));
         boxStatus->setFont(font1);
 
-        horizontalLayout_5->addWidget(boxStatus);
+        gridLayout_5->addWidget(boxStatus, 0, 0, 1, 2);
 
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        boxConnectionIndicator = new QLedIndicator(groupBox);
+        boxConnectionIndicator->setObjectName(QStringLiteral("boxConnectionIndicator"));
+        boxConnectionIndicator->setMinimumSize(QSize(20, 20));
+        boxConnectionIndicator->setMaximumSize(QSize(20, 20));
 
-        horizontalLayout_5->addItem(horizontalSpacer_4);
+        gridLayout_5->addWidget(boxConnectionIndicator, 0, 2, 1, 1);
 
 
-        verticalLayout_4->addLayout(horizontalLayout_5);
+        verticalLayout_4->addLayout(gridLayout_5);
 
         boxClueString = new QLabel(groupBox);
         boxClueString->setObjectName(QStringLiteral("boxClueString"));
@@ -319,48 +371,6 @@ public:
 
 
         verticalLayout_4->addLayout(gridLayout_3);
-
-        horizontalLayout_4 = new QHBoxLayout();
-        horizontalLayout_4->setSpacing(6);
-        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
-        latString_2 = new QLabel(groupBox);
-        latString_2->setObjectName(QStringLiteral("latString_2"));
-        latString_2->setFont(font1);
-        latString_2->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        horizontalLayout_4->addWidget(latString_2);
-
-        boxCharge = new QLineEdit(groupBox);
-        boxCharge->setObjectName(QStringLiteral("boxCharge"));
-        boxCharge->setEnabled(true);
-        boxCharge->setFont(font2);
-        boxCharge->setAlignment(Qt::AlignCenter);
-        boxCharge->setReadOnly(true);
-
-        horizontalLayout_4->addWidget(boxCharge);
-
-        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_4->addItem(horizontalSpacer_3);
-
-        latString_3 = new QLabel(groupBox);
-        latString_3->setObjectName(QStringLiteral("latString_3"));
-        latString_3->setFont(font1);
-        latString_3->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        horizontalLayout_4->addWidget(latString_3);
-
-        boxVersion = new QLineEdit(groupBox);
-        boxVersion->setObjectName(QStringLiteral("boxVersion"));
-        boxVersion->setEnabled(true);
-        boxVersion->setFont(font2);
-        boxVersion->setAlignment(Qt::AlignCenter);
-        boxVersion->setReadOnly(true);
-
-        horizontalLayout_4->addWidget(boxVersion);
-
-
-        verticalLayout_4->addLayout(horizontalLayout_4);
 
 
         verticalLayout_2->addWidget(groupBox);
@@ -656,6 +666,9 @@ public:
 #endif // QT_NO_TOOLTIP
         pushButton->setText(QApplication::translate("MainWindow", "Clear", 0));
         groupBox->setTitle(QApplication::translate("MainWindow", "Box Options", 0));
+        latString_2->setText(QApplication::translate("MainWindow", "Battery", 0));
+        latString_3->setText(QApplication::translate("MainWindow", "Version", 0));
+        latString_4->setText(QApplication::translate("MainWindow", "Clues", 0));
         boxStatus->setText(QApplication::translate("MainWindow", "Connected via USB", 0));
         boxClueString->setText(QApplication::translate("MainWindow", "Clue <x> of <y>", 0));
 #ifndef QT_NO_TOOLTIP
@@ -682,8 +695,6 @@ public:
         boxLock->setToolTip(QApplication::translate("MainWindow", "Move Clue Down", 0));
 #endif // QT_NO_TOOLTIP
         boxLock->setText(QApplication::translate("MainWindow", "Lock", 0));
-        latString_2->setText(QApplication::translate("MainWindow", "Battery", 0));
-        latString_3->setText(QApplication::translate("MainWindow", "Version", 0));
         boxStatus_3->setText(QApplication::translate("MainWindow", "Reverse Geocache Software ", 0));
         boxStatus_2->setText(QApplication::translate("MainWindow", "Version: 1.0.0", 0));
         label->setText(QApplication::translate("MainWindow", "LCD Display Preview", 0));

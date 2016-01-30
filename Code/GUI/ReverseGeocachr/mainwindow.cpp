@@ -507,6 +507,7 @@ void MainWindow::refreshDisplay()
 
         ui->boxCharge->setText("---");
         ui->boxVersion->setText("---");
+        ui->nBoxClues->setText("---");
     }
     else
     {
@@ -520,6 +521,8 @@ void MainWindow::refreshDisplay()
         ui->boxVersion->setText(
                     QString::number(box.info.versionMajor) + "." +
                     QString::number(box.info.versionMinor));
+
+        ui->nBoxClues->setText(QString::number(box.info.totalClues));
     }
 
     ui->boxStatus->setText(connectionString);
@@ -535,7 +538,7 @@ void MainWindow::refreshDisplay()
             s = "Completion Message";
             break;
         default:
-            s = QString::number(box.info.currentClue) + " of " + QString::number(box.info.totalClues);
+            s = "Clue " + QString::number(box.info.currentClue) + " of " + QString::number(box.info.totalClues);
             break;
         }
     }
