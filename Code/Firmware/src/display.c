@@ -43,8 +43,6 @@ void Draw_Clue()
 
 	int16_t x = LINE_X_OFFSET;
 
-	uint8_t options = TEXT_DEFAULT;
-
 	Waypoint_t *w = &waypoints[boxInfo.currentClue];
 
 	if (prevClue == boxInfo.currentClue) return;
@@ -52,11 +50,12 @@ void Draw_Clue()
 	prevClue = boxInfo.currentClue;
 
 	if (w->options & CLUE_OPTION_CENTER_TEXT) {
-		options |= ALIGN_CENTRE;
+		LCD_SetTextOptions(ALIGN_CENTRE);
 		x = LCD_WIDTH / 2;
+	} else {
+		LCD_SetTextOptions(TEXT_DEFAULT);
+		x = LINE_X_OFFSET;
 	}
-
-	LCD_SetTextOptions(options);
 
 	//Clear the screen
 	LCD_FillRect(0,

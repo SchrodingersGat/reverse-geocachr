@@ -217,11 +217,7 @@ bool MainWindow::downloadAllClues() {
 
     //Go through all the waypoints
 
-    qDebug() << "there";
-
     for (int i=0;i<waypoints.ClueCount();i++) {
-
-        qDebug() << "download clue" << i;
         if (!downloading) {
             cancelUploadDownload();
             return false;
@@ -236,8 +232,6 @@ bool MainWindow::downloadAllClues() {
 
         incrementProgress();
     }
-
-    qDebug() << "Here";
 
     //Write the number of clues
     result = box.SetNumberOfClues(waypoints.ClueCount(), TRIES);
