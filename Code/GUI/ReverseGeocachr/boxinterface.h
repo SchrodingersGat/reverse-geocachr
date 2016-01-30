@@ -55,12 +55,10 @@ public slots:
     /*
     bool SetClueInfo(int clueIndex, Waypoint *w, int tries);
     bool SetClueInfo(int clueIndex, Waypoint *w);
-
-
-    bool SetClueHint(int clueIndex, Waypoint *w, int line, int tries);
-    bool SetClueHint(int clueIndex, Waypoint *w, int line);
-
     */
+
+    bool SetClueHint(int clueIndex, Waypoint_t *w, int line, int tries);
+    bool SetClueHint(int clueIndex, Waypoint_t *w, int line);
 
     bool Unlock();
     bool Lock();

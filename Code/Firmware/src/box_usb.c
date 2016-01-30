@@ -43,7 +43,6 @@ bool Handle_Box_Message() {
 		printf("Set clue %u\n", i);
 
 		Decode_Waypoint_Message(rxBuffer, GetWaypoint(i));
-		Form_Waypoint_Message(txBuffer, i, GetWaypoint(i));
 		response = true;
 		break;
 	case BOX_MSG_REQUEST_CLUE_LINE:
@@ -63,9 +62,6 @@ bool Handle_Box_Message() {
 		{
 			//Extract clue information
 			Decode_WaypointClue_Message(rxBuffer, j, GetWaypoint(i));
-			//Send it back again
-			//Form_WaypointClue_Message(txBuffer, i, j, &waypoints[i]);
-			//response = true;
 		}
 		break;
 

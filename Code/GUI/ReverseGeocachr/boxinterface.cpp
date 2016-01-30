@@ -29,23 +29,27 @@ void Box::run()
 
     running = true;
 
-    while (running)
-    {
+    while (running) {
         connected = RequestBoxInfo();
 
         Sleep(1000);
 
         if (connected) {
 
-            cursor = ((cursor + 1) % info.totalClues) + 1;
+            cursor = (cursor + 1) % NUM_CLUE_LINES;
 
-            RequestClueInfo(cursor, &w);
+            Waypoint_SetLineText(&w, cursor, "This is line " + QString::number(cursor));
+            SetClueHint(1, &w, cursor);
+
+//            RequestClueInfo(cursor, &w);
+
+
         }
     }
 
     HIDDisconnect();
 
-//    qDebug() << "Thread complete";
+    Debug("Thread complete");
 }
 
 //Attempt a connection to the box
@@ -376,8 +380,8 @@ bool Box::RequestClueHint(int clueIndex, Waypoint_t *w, int line)
 
     return false;
 }
-/*
-bool Box::SetClueHint(int clueIndex, Waypoint *w, int line, int tries)
+
+bool Box::SetClueHint(int clueIndex, Waypoint_t *w, int line, int tries)
 {
     bool result = false;
 
@@ -391,28 +395,39 @@ bool Box::SetClueHint(int clueIndex, Waypoint *w, int line, int tries)
     return result;
 }
 
-bool Box::SetClueHint(int clueIndex, Waypoint *w, int line)
+bool Box::SetClueHint(int clueIndex, Waypoint_t *w, int line)
 {
-    if (w == NULL) return false;
-    if (line > NUM_LINES) return false;
+    Debug("SetClueHint - " + QString::number(clueIndex) + " / " + QString::number(line));
+
+    if (w == NULL) {
+        Debug("Waypoint pointer is NULL");
+        return false;
+    }
+
+    if (line > NUM_CLUE_LINES) {
+        Debug("Line number (" + QString::number(line) + ") invalid");
+        return false;
+    }
 
     int res = -1;
 
     int i = 0;
 
-    if (HIDConnect() == false) return false;
-
-//    qDebug() << "saving clue line" << clueIndex << line << w->clue[line];
+    if (HIDConnect() == false) {
+        Debug("HIDConnect failed");
+        return false;
+    }
 
     writeBuf[i++] = 0;
-    writeBuf[i++] = BOX_MSG_SET_CLUE_LINE;
+    writeBuf[i++] = BOX_MSG_CLUE_LINE;
     writeBuf[i++] = clueIndex;
     writeBuf[i++] = line;
 
     //Append the clue line
-    for (int j=0;j<w->clue[line].size();j++)
-    {
-        writeBuf[i++] = (unsigned char) w->clue[line].at(j).toLatin1();
+    QString clueText = Waypoint_GetLineText(w, line);
+
+    for (int j=0;j<clueText.size();j++) {
+        writeBuf[i++] = (unsigned char) clueText.at(j).toLatin1();
     }
 
     //Append a zero
@@ -421,32 +436,31 @@ bool Box::SetClueHint(int clueIndex, Waypoint *w, int line)
     res = hid_write(handle, writeBuf, HID_REPORT_SIZE + 1);
 
     //Couldn't transmit the data
-    if (res == -1) return false;
-
-    //Make a temp waypoint and read it back
-    Waypoint wtemp;
-
-    if (RequestClueHint(clueIndex, &wtemp, line, MAX_TRIES) == false)
-    {
-//        qDebug() << "Couldn't RequestClueHint";
+    if (res == -1) {
+        Debug("HIDWrite failed");
         return false;
     }
 
-    if (w->clue[line] == wtemp.clue[line])
-    {
-//        qDebug() << "Match!";
-        return true;
-    }
-    else
-    {
-//        qDebug() << "No match";
-//        qDebug() << w->clue[line] << "->" << wtemp.clue[line];
-//        qDebug() << w->clue[line].length() << wtemp.clue[line].length();
+    //Make a temp waypoint and read it back
+    Waypoint_t wtemp;
+
+    if (RequestClueHint(clueIndex, &wtemp, line, MAX_TRIES) == false) {
+        Debug("RequestClueHint failed!");
+        return false;
     }
 
-    return false;
+    QString clue2 = Waypoint_GetLineText(&wtemp, line);
+
+    if (clueText != clue2) {
+        Debug("Line mismatch!");
+        Debug("> " + clueText);
+        Debug("> " + clue2);
+
+        return false;
+    }
+
+    return true;
 }
-*/
 
 /* Send commands to the box */
 bool Box::Unlock()
