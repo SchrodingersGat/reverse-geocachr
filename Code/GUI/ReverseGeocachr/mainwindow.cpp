@@ -104,10 +104,31 @@ MainWindow::MainWindow(QWidget *parent) :
     updateClues();
 }
 
+void MainWindow::incrementProgress() {
+    if (downloadProgress != NULL && downloadProgress->isVisible()) {
+
+        if (downloadProgress->value() < downloadProgress->maximum()) {
+            downloadProgress->setValue(downloadProgress->value() + 1);
+        }
+
+        QApplication::processEvents();
+    }
+}
+
 void MainWindow::cancelUploadDownload()
 {
     downloading = false;
     uploading = false;
+
+    if (downloadProgress != NULL && downloadProgress->isVisible()) {
+        downloadProgress->cancel();
+        downloadProgress->close();
+    }
+}
+
+bool MainWindow::downloadAllClues() {
+
+    return true;
 }
 
 void MainWindow::downloadClues()
@@ -264,9 +285,6 @@ void MainWindow::downloadClues()
 
 void MainWindow::uploadClues()
 {
-
-    int MAX_TRIES = 5;
-
     if (downloading || uploading) return;
 
     if (!box.connected) return;
@@ -280,116 +298,95 @@ void MainWindow::uploadClues()
 
     if (res != QMessageBox::Ok) return;
 
-    /*
+    res = uploadAllClues();
+
+    QMessageBox mb;
+    mb.setStandardButtons(QMessageBox::Ok);
+
+    if (!res) {
+        mb.setWindowTitle("Upload Failed");
+        mb.setText("Error uploading clues from box");
+
+        waypoints.Reset();
+    } else {
+        mb.setWindowTitle("Upload Success");
+        mb.setText("Clues were succcessfully uploaded from box");
+
+        waypoints.SelectClue(BOX_WELCOME_MSG);
+    }
+
+    mb.exec();
+}
+
+bool MainWindow::uploadAllClues() {
+
     uploading = true;
 
-    QProgressDialog dialog("Uploading...","Cancel", 0, ((box.info.totalClues + 2) * NUM_CLUE_LINES), this);
-    dialog.setWindowModality(Qt::WindowModal);
+    downloadProgress = new QProgressDialog("Uploading Clues ...","Cancel",0,box.info.totalClues+2,this);
 
-    connect(&dialog,SIGNAL(canceled()),this,SLOT(cancelUploadDownload()));
-    connect(&dialog,SIGNAL(rejected()),this,SLOT(cancelUploadDownload()));
-    connect(&dialog,SIGNAL(accepted()),this,SLOT(cancelUploadDownload()));
+    downloadProgress->setWindowModality(Qt::WindowModal);
 
-    dialog.show();
+    connect(downloadProgress,SIGNAL(canceled()),this,SLOT(cancelUploadDownload()));
+    connect(downloadProgress,SIGNAL(rejected()),this,SLOT(cancelUploadDownload()));
+    connect(downloadProgress,SIGNAL(accepted()),this,SLOT(cancelUploadDownload()));
+
+    downloadProgress->show();
 
     //Clear the local waypoints...
-
-    box.waypoints.clear();
+    waypoints.Reset();
 
     bool result = true;
 
-    */
+    int TRIES = 5;
 
-    /*
-    for (int i=0;i<box.numberOfClues;i++)
-    {
-        Waypoint w;
+    //Read out the 'welcome' message
 
-        if (!uploading) break;
+    result = box.ReadWaypointData(BOX_WELCOME_MSG,&waypoints.welcomeMessage,TRIES);
 
-        result = box.RequestClueInfo(i, &w, MAX_TRIES);
+    if (!result) {
+        cancelUploadDownload();
+        return false;
+    }
 
-        if (!result) break;
+    incrementProgress();
 
-        for (int j=0;j<NUM_LINES;j++)
-        {
-            result = box.RequestClueHint(i, &w, j, MAX_TRIES);
-            if (!result) break;
+    //Read out the completion message
+    result = box.ReadWaypointData(BOX_COMPLETE_MSG,&waypoints.completeMessage,TRIES);
 
-            dialog.setValue(dialog.value() + 1);
-            QApplication::processEvents();
+    if (!result) {
+        cancelUploadDownload();
+        return false;
+    }
 
-            Sleep(20);
+    incrementProgress();
 
+    Waypoint_t w;
+
+
+    for (int i=0;i<box.info.totalClues;i++) {
+
+        if (!uploading) {
+            cancelUploadDownload();
+            return false;
         }
 
-        if (!result) break;
+        Waypoint_Init(&w);
 
-        box.waypoints.append(w);
+        result = box.ReadWaypointData(i+1, &w, TRIES);
 
-        Sleep(20);
-    }
-
-    */
-
-    /*
-    //All clues have been uploaded
-    //Now get the welcome message
-    if (result)
-    {
-        for (int i=0;i<NUM_LINES;i++)
-        {
-            result = box.RequestClueHint(START_MESSAGE, &box.welcomeMessage, i, MAX_TRIES);
-
-            if (!result) break;
-
-            dialog.setValue(dialog.value() + 1);
-            QApplication::processEvents();
-            Sleep(20);
+        if (!result) {
+            cancelUploadDownload();
+            return false;
         }
+
+        waypoints.AddWaypoint(w);
+
+        incrementProgress();
     }
 
-    if (result)
-    {
-        for (int i=0;i<NUM_LINES;i++)
-        {
-            result = box.RequestClueHint(END_MESSAGE, &box.completeMessage, i, MAX_TRIES);
+    cancelUploadDownload();
 
-            if (!result) break;
-
-            dialog.setValue(dialog.value() + 1);
-            QApplication::processEvents();
-            Sleep(20);
-        }
-    }
-
-    dialog.cancel();
-    dialog.close();
-
-    uploading = false;
-
-    QMessageBox b;
-
-    b.setStandardButtons(QMessageBox::Ok);
-
-    if (result)
-    {
-        b.setWindowTitle("Success!");
-        b.setText("Uploaded waypoints from box");
-    }
-    else
-    {
-        b.setWindowTitle("Upload Failed");
-        b.setText("Error uploading clues");
-    }
-
-    b.exec();
-
-    this->refreshDisplay();
-    this->updateClueList();
-    this->redrawMap();
-
-    */
+    return true;
 }
 
 void MainWindow::jsFitMapToClues()

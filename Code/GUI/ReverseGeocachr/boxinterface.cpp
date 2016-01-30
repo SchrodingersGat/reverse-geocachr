@@ -23,35 +23,12 @@ Box::Box()
  */
 void Box::run()
 {
-    static uint8_t cursor = 0;
-
-    Waypoint_t w;
-
     running = true;
 
     while (running) {
         connected = RequestBoxInfo();
 
         Sleep(1000);
-
-        if (connected) {
-
-            cursor = (cursor + 1) % NUM_CLUE_LINES;
-
-//            Waypoint_SetLineText(&w, cursor, "This is line " + QString::number(cursor));
-//            SetClueHint(1, &w, cursor);
-
-            w.lat = 444.444;
-            w.lng = 555.555;
-
-            SetClueInfo(cursor, &w);
-
-            Sleep(10);
-
-            RequestClueInfo(cursor, &w);
-
-
-        }
     }
 
     HIDDisconnect();

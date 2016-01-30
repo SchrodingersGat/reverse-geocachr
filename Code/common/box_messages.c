@@ -111,8 +111,6 @@ void Form_WaypointClue_Message(HIDBuffer buf, uint8_t id, uint8_t line, Waypoint
 
     buf[i++] = BOX_MSG_CLUE_LINE;
 
-    //Ensure that it's not wrong
-    if (id >= MAX_CLUES) id = 0;
     if (line >= NUM_CLUE_LINES) line = 0;
 
     buf[i++] = id;

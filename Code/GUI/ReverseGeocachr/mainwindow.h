@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QTableWidgetItem>
 #include <QSettings>
+#include <QProgressDialog>
 
 namespace Ui {
 class MainWindow;
@@ -33,6 +34,8 @@ private:
 
     bool downloading;
     bool uploading;
+
+    QProgressDialog *downloadProgress;
 
 public slots:
     //Signals coming FROM the javascript side
@@ -80,9 +83,14 @@ public slots:
     void getMapCenter();
 
     void downloadClues();
+    bool downloadAllClues();
+
     void uploadClues();
+    bool uploadAllClues();
 
     void cancelUploadDownload();
+
+    void incrementProgress();
 
 protected:
     void closeEvent(QCloseEvent *event);
