@@ -3,6 +3,18 @@
 
 #include <stdint.h>
 
+enum BoxStatusBits {
+
+    BOX_STAT_GPS_CONNECTED  = 0x01, //!< GPS module is connected (receiving UART data)
+    BOX_STAT_GPS_LOCKED     = 0x02, //!< GPS has valid lock
+    BOX_STAT_CLUE_SOLVED    = 0x04, //!< Clue has been solved (proceed to next clue)
+    
+    
+    BOX_STAT_CHARGING       = 0x20, //!< Box is charging via USB
+    
+    BOX_STAT_DEBUG_MODE     = 0x80  //!< Box is in DEBUG mode
+};
+
 typedef struct {
 
 	uint16_t serialNumber;

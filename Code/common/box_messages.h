@@ -26,6 +26,10 @@ typedef char HIDBuffer[HID_REPORT_SIZE];
 #define END_MESSAGE   200
 
 enum BoxReportTypes {
+    
+    BOX_MSG_RESET_INTO_BOOTLOADER = 0x0A,
+    BOX_MSG_ENABLE_DEBUG_MODE,
+    
 	BOX_MSG_SYSTEM_INFO = 0xA0,
 
 	BOX_MSG_CLUE_INFO = 0xB0,
