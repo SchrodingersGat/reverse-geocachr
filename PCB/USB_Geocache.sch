@@ -43,8 +43,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "USB Reverse Geocache"
-Date "2016-02-09"
-Rev "Rev A"
+Date "2016-02-11"
+Rev "Rev B"
 Comp "Oliver Walters"
 Comment1 ""
 Comment2 ""
@@ -676,7 +676,7 @@ F 3 "" H 3825 3700 60  0000 C CNN
 $EndComp
 Text Label 5375 1250 0    60   ~ 0
 EN
-Text Label 6900 4600 0    60   ~ 0
+Text Label 6800 3900 0    60   ~ 0
 SERVO_EN
 $Comp
 L LM3670MF-RESCUE-USB_Geocache U4
@@ -1437,4 +1437,8 @@ Wire Wire Line
 	2800 3900 2800 3750
 Wire Wire Line
 	6950 4800 6650 4800
+Text Label 6900 4600 0    60   ~ 0
+GPS_TX
+Wire Wire Line
+	6800 3900 6650 3900
 $EndSCHEMATC
