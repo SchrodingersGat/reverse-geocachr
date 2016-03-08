@@ -11,3 +11,6 @@ Old/
 scripts/
 Datasheets/
 PCB/gerber/
+**.tmp
+*.tmp
+*.pro.user.*
