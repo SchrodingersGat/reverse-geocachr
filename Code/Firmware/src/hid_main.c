@@ -31,6 +31,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "hid_main.h"
 #include "types.h"
@@ -197,6 +198,43 @@ int main(void) {
 	waypoints[2].lat = 12.345;
 	waypoints[2].lng = 67.890;
 
+	LCD_DrawString(5,5,"going into bootloader",RED,1);
+
+	PauseMs(500);
+
+	/*
+	// make sure USB clock is turned on before calling ISP
+	Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_USB);
+	// make sure GPIO clocks are turned on before calling ISP
+	Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_GPIO0);
+	Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_GPIO1);
+	Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_GPIO2);
+	// make sure IO configuration clock is turned on before calling ISP
+	Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_IOCON);
+
+		// make sure AHB clock divider is 1:1
+	Chip_Clock_SetSysClockDiv(1);
+
+*/
+	LCD_SetBackgroundColor(BLACK);
+
+
+
+	uint32_t cmd[5];
+	uint32_t result[4];
+
+	cmd[0] = IAP_READ_UID_CMD;
+
+	iap_entry(cmd,result);
+
+	LCD_FillScreen(BLUE);
+
+//	__disable_irq();
+
+//	Chip_IAP_ReinvokeISP();
+
+
+
 	while (1) {
 		PauseMs(50);
 
@@ -315,4 +353,59 @@ void Init_UART() {
 	Chip_UART_IntEnable(LPC_USART0, UART_INTEN_RXRDY);
 
 	NVIC_EnableIRQ(UART0_IRQn);
+}
+
+/* This data must be global so it is not read from the stack */
+typedef void (*IAP)(uint32_t [], uint32_t []);
+
+//#define IAP_ENTRY 0x1fff1ff1
+//IAP iap_entry;
+uint32_t command[5], result[4];
+#define init_msdstate() *((uint32_t *)(0x10000054)) = 0x0
+
+void Reinvoke_Bootloader() {
+
+
+	//vPortEnterCritical();
+	//WDTInit();
+
+  /* make sure USB clock is turned on before calling ISP */
+	Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_USB);
+  /* make sure 32-bit Timer 1 is turned on before calling ISP */
+	//Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_CT32B1);
+  /* make sure GPIO clock is turned on before calling ISP */
+	Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_GPIO0);
+//	Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_GPIO);
+  /* make sure IO configuration clock is turned on before calling ISP */
+	Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_IOCON);
+
+  /* make sure AHB clock divider is 1:1 */
+	Chip_Clock_SetSysClockDiv(1);
+
+	/* make sure USB clock is turned on before calling ISP */
+//	LPC_SYSCON->SYSAHBCLKCTRL |= 0x04000;
+	/* make sure 32-bit Timer 1 is turned on before calling ISP */
+//	LPC_SYSCON->SYSAHBCLKCTRL |= 0x00400;
+	/* make sure GPIO clock is turned on before calling ISP */
+//	LPC_SYSCON->SYSAHBCLKCTRL |= 0x00040;
+	/* make sure IO configuration clock is turned on before calling ISP */
+//	LPC_SYSCON->SYSAHBCLKCTRL |= 0x10000;
+
+	/* make sure AHB clock divider is 1:1 */
+	LPC_SYSCON->SYSAHBCLKDIV = 1;
+
+	/* Send Reinvoke ISP command to ISP entry point*/
+	command[0] = 57;
+
+	//init_msdstate();					 /* Initialize Storage state machine */
+	/* Set stack pointer to ROM value (reset default) This must be the last
+	  piece of code executed before calling ISP, because most C expressions
+	  and function returns will fail after the stack pointer is changed. */
+	//__set_MSP(*((uint32_t *)0x00000000));
+
+	/* Enter ISP. We call "iap_entry" to enter ISP because the ISP entry is done
+	  through the same command interface as IAP. */
+	iap_entry(command, result);
+	// Not supposed to come back!
+
 }

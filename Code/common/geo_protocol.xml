@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+
+<Protocol name="ReverseGeocache" prefix="" api="1" version="1.0.0.a" endian="big" supportInt64="false"supprtLongBitfield="false" supportSpecialFloat="false" comment=
+"">
+
+    <Include name="string.h" comment="C string manipulation function header" global="true"/>
+    <Include name="indices.h" comment="indices.h is included to for array length enumerations"/>
+    
+    <Enum name="Packet" comment="USB Packet types">
+        <Value name="RESET_INTO_BOOTLOADER" value="0x0A"/>
+        <Value name="ENABLE_DEBUG_MODE"/>
+        
+        <Value name="SYSTEM_INFO" value="0xA0"/>
+        
+        <Value name="CLUE_INFO" value="0xB0"/>
+        
+        <Value name="CLUE_LINE" value="0xC0"/>
+        
+        <Value name="UNLOCK" value="0xD0"/>
+        <Value name="LOCK"/>
+        
+        <Value name="NEXT_CLUE" value="0xE0"/>
+        <Value name="PREV_CLUE"/>
+        <Value name="FIRST_CLUE"/>
+        <Value name="LAST_CLUE"/>
+        
+        <Value name="SET_CLUE_COUNT" value="0xF0"/>
+        <Value name="INVALIDATE_CLUES"/>
+        <Value name="VALIDATE_CLUES"/>
+    </Enum>
+    
+    <Enum name="ClueTypes">
+        <Value name="CLUE_NO_HINT" value="0x00"/>
+        <Value name="CLUE_SHOW_DISTANCE"/>
+        <Value name="CLUE_SHOW_LOCATION"/>
+        <Value name="CLUE_WARMER_COOLER"/>
+        <Value name="CLUE_SHOW_HEADING"/>
+        <Value name="CLUE_SHOW_CARDINAL"/>
+        
+        <Value name="NUM_CLUE_TYPES"/>
+    </Enum>
+    
+    <Structure name="BoxStatus"  file="boxdefines">
+        <Data name="locked" inMemoryType="bitfield1"/>
+    </Structure>
+    
+    <Structure name="ClueOptions" file="boxdefines">
+        <Data name="centerText" inMemoryType="bitfield1"/>
+    </Structure>
+
+    
+    <Structure name="BoxInfo" file="boxdefines">
+        <Data name="serialNumber" inMemoryType="unsigned16"/>
+        <Data name="versionMajor" inMemoryType="unsigned8"/>
+        <Data name="versionMinor" inMemoryType="unsigned8"/>
+        <Data name="pcbRevision" inMemoryType="unsigned8"/>
+        <Data name="status" struct="BoxStatus"/>
+        <Data name="charge" inMemoryType="unsigned8"/>
+        <Data name="currentClue" inMemoryType="unsigned8"/>
+        <Data name="totalClues" inMemoryType="unsigned8"/>
+    </Structure>
+    
+    <Structure name="ClueInfo" file="boxdefines">
+        <Data name="lat" inMemoryType="double"/>
+        <Data name="lng" inMemoryType="double"/>
+        <Data name="threshold" inMemoryType="unsigned16"/>
+        <Data name="type" enum="ClueTypes"/>
+        <Data name="options" struct="ClueOptions"/>
+    </Structure>
+    
+    <!-- Commands -->
+    <Packet name="Unlock" ID="UNLOCK" file="boxpackets" parameterInterface="true">
+    </Packet>
+    
+    <Packet name="Lock" ID="LOCK" file="boxpackets" parameterInterface="true">
+    </Packet>
+    
+    <Packet name="NextClue" ID="NEXT_CLUE" file="boxpackets" parameterInterface="true">
+    </Packet>
+    
+    <Packet name="PrevClue" ID="PREV_CLUE" file="boxpackets" parameterInterface="true">
+    </Packet>
+    
+    <Packet name="FirstClue" ID="FIRST_CLUE" file="boxpackets" parameterInterface="true">
+    </Packet>
+    
+    <Packet name="LAST_CLUE" ID="LAST_CLUE" file="boxpackets" parameterInterface="true">
+    </Packet>
+    
+    <Packet name="Bootload" ID="RESET_INTO_BOOTLOADER" file="boxpackets" parameterInterface="true">
+    </Packet>
+    
+    <Packet name="EnableDebug" ID="ENABLE_DEBUG_MODE" file="boxpackets" parameterInterface="true">
+    </Packet>
+    
+    <Packet name="SetClueCount" ID="SET_CLUE_COUNT" file="boxpackets" parameterInterface="true">
+        <Data name="clueCount" inMemoryType="unsigned8"/>
+    </Packet>
+    
+    <Packet name="ValidateClues" ID="VALIDATE_CLUES" file="boxpackets" parameterInterface="true">
+    </Packet>
+    
+    <Packet name="InvalidateClues" ID="VALIDATE_CLUES" file="boxpackets" parameterInterface="true">
+    </Packet>
+    
+    <Packet name="BoxInfo" ID="SYSTEM_INFO" file="boxpackets" parameterInterface="true">
+        <Data name="info" struct="BoxInfo"/>
+    </Packet>
+    
+    <Packet name="RequestBoxInfo" ID="SYSTEM_INFO" file="boxpackets" parameterInterface="true">
+    </Packet>
+    
+    <Packet name="ClueInfo" ID="CLUE_INFO" file="boxpackets" parameterInterface="true">
+        <Data name="clueNumber" inMemoryType="unsigned8"/>
+        <Data name="clueInfo" struct="ClueInfo"/>
+    </Packet>
+    
+    <Packet name="RequestClueInfo" ID="CLUE_INFO" file="boxpackets" parameterInterface="true">
+        <Data name="clueNumber" inMemoryType="unsigned8"/>
+    </Packet>
+    
+    <Packet name="ClueLine" ID="CLUE_LINE" file="boxpackets" parameterInterface="true">
+        <Data name="clueNumber" inMemoryType="unsigned8"/>
+        <Data name="lineNumber" inMemoryType="unsigned8"/>
+        <Data name="lineText" inMemoryType="signed8" array="40" encodedType="string"/>
+    </Packet>
+    
+    <Packet name="RequestClueLine" ID="CLUE_LINE" file="boxpackets" parameterInterface="true">
+        <Data name="clueNumber" inMemoryType="unsigned8"/>
+        <Data name="lineNumber" inMemoryType="unsigned8"/>
+    </Packet>
+</Protocol>

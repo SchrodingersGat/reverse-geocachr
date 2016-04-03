@@ -23,5 +23,7 @@ void Init_LCD();
 
 void Init_UART();
 
+void Reinvoke_Bootloader();
+
 
 #endif /* INC_HID_MAIN_H_ */
