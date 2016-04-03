@@ -24,8 +24,15 @@ SOURCES += main.cpp\
     qledindicator/qledindicator.cpp \
     ../../common/waypoint.c \
     ../../common/ILI9340_font.c \
-    ../../common/box_messages.c \
-    debug.cpp
+    debug.cpp \
+    ../../common/bitfieldspecial.c \
+    ../../common/boxdefines.c \
+    ../../common/boxpackets.c \
+    ../../common/fielddecode.c \
+    ../../common/fieldencode.c \
+    ../../common/protogenglue.c \
+    ../../common/scaleddecode.c \
+    ../../common/scaledencode.c
 
 HEADERS  += mainwindow.h \
     ui_mainwindow.h \
@@ -36,9 +43,16 @@ HEADERS  += mainwindow.h \
     qledindicator/qledindicator.h \
     ../../common/waypoint.h \
     ../../common/ILI9340_font.h \
-    ../../common/box_messages.h \
     ../../common/box_defines.h \
-    debug.h
+    debug.h \
+    ../../common/bitfieldspecial.h \
+    ../../common/boxdefines.h \
+    ../../common/boxpackets.h \
+    ../../common/fielddecode.h \
+    ../../common/fieldencode.h \
+    ../../common/ReverseGeocacheProtocol.h \
+    ../../common/scaleddecode.h \
+    ../../common/scaledencode.h
 
 
 win32:

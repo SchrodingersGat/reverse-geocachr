@@ -22,9 +22,7 @@
 
 //Global var
 Box box;
-WaypointList waypoints;
-
-
+ClueList clues;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -46,17 +44,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(clearMap()));
     connect(ui->fitMap,SIGNAL(clicked()),this,SLOT(jsFitMapToClues()));
 
-    connect(ui->selectFirst,SIGNAL(released()),&waypoints,SLOT(SelectFirst()));
-    connect(ui->selectLast,SIGNAL(released()),&waypoints,SLOT(SelectLast()));
-    connect(ui->selectNext,SIGNAL(released()),&waypoints,SLOT(SelectNext()));
-    connect(ui->selectPrev,SIGNAL(released()),&waypoints,SLOT(SelectPrev()));
+    connect(ui->selectFirst,SIGNAL(released()),&clues,SLOT(SelectFirst()));
+    connect(ui->selectLast,SIGNAL(released()),&clues,SLOT(SelectLast()));
+    connect(ui->selectNext,SIGNAL(released()),&clues,SLOT(SelectNext()));
+    connect(ui->selectPrev,SIGNAL(released()),&clues,SLOT(SelectPrev()));
 
     connect(ui->setThreshold,SIGNAL(clicked()),this,SLOT(setThreshold()));
 
-    connect(ui->moveDown,SIGNAL(clicked()),&waypoints,SLOT(MoveClueDown()));
-    connect(ui->moveUp,SIGNAL(clicked()),&waypoints,SLOT(MoveClueUp()));
-    connect(ui->makeFirst,SIGNAL(clicked()),&waypoints,SLOT(MoveClueFirst()));
-    connect(ui->makeLast,SIGNAL(clicked()),&waypoints,SLOT(MoveClueLast()));
+    connect(ui->moveDown,SIGNAL(clicked()),&clues,SLOT(MoveClueDown()));
+    connect(ui->moveUp,SIGNAL(clicked()),&clues,SLOT(MoveClueUp()));
+    connect(ui->makeFirst,SIGNAL(clicked()),&clues,SLOT(MoveClueFirst()));
+    connect(ui->makeLast,SIGNAL(clicked()),&clues,SLOT(MoveClueLast()));
 
     //Box commands
     connect(ui->boxUnlock,SIGNAL(clicked()),&box,SLOT(Unlock()));
@@ -66,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->boxUpload,SIGNAL(clicked()),this,SLOT(uploadClues()));
     connect(ui->boxDownload,SIGNAL(clicked()),this,SLOT(downloadClues()));
 
-    connect(&waypoints,SIGNAL(clueUpdated()),this,SLOT(updateClues()));
+    connect(&clues,SIGNAL(clueUpdated()),this,SLOT(updateClues()));
 
     setupClueTable();
 
@@ -92,6 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Add options to clue type box
     ui->clueType->addItem("No extra hint");
     ui->clueType->addItem("Show distance");
+    ui->clueType->addItem("Show location");
     ui->clueType->addItem("Warmer / Coolor");
     ui->clueType->addItem("Show heading (deg)");
     ui->clueType->addItem("Cardinal directions");
@@ -133,7 +132,7 @@ void MainWindow::downloadClues() {
 
     QMessageBox confirm;
 
-    if (waypoints.ClueCount() == 0){
+    if (clues.ClueCount() == 0){
         confirm.setWindowTitle("No Clues!");
         confirm.setText("Make some clues before downloading");
         confirm.setStandardButtons(QMessageBox::Ok);
@@ -196,7 +195,7 @@ bool MainWindow::downloadAllClues() {
     */
 
     //Write the WELCOME message
-    result = box.WriteWaypointData(BOX_WELCOME_MSG, &waypoints.welcomeMessage, TRIES);
+    result = box.WriteClueData(BOX_WELCOME_MSG, &clues.welcomeMessage, TRIES);
 
     if (!result) {
         cancelUploadDownload();
@@ -206,7 +205,7 @@ bool MainWindow::downloadAllClues() {
     incrementProgress();
 
     //Write the COMPLETE message
-    result = box.WriteWaypointData(BOX_COMPLETE_MSG, &waypoints.completeMessage, TRIES);
+    result = box.WriteClueData(BOX_COMPLETE_MSG, &clues.completeMessage, TRIES);
 
     if (!result) {
         cancelUploadDownload();
@@ -217,13 +216,13 @@ bool MainWindow::downloadAllClues() {
 
     //Go through all the waypoints
 
-    for (int i=0;i<waypoints.ClueCount();i++) {
+    for (int i=0;i<clues.ClueCount();i++) {
         if (!downloading) {
             cancelUploadDownload();
             return false;
         }
 
-        result = box.WriteWaypointData(i+1, waypoints.GetClueAtIndex(i+1),TRIES);
+        result = box.WriteClueData(i+1, clues.GetClueAtIndex(i+1),TRIES);
 
         if (!result) {
             cancelUploadDownload();
@@ -234,7 +233,7 @@ bool MainWindow::downloadAllClues() {
     }
 
     //Write the number of clues
-    result = box.SetNumberOfClues(waypoints.ClueCount(), TRIES);
+    result = box.SetNumberOfClues(clues.ClueCount(), TRIES);
 
     if (!result) {
         cancelUploadDownload();
@@ -272,12 +271,12 @@ void MainWindow::uploadClues()
         mb.setWindowTitle("Upload Failed");
         mb.setText("Error uploading clues from box");
 
-        waypoints.Reset();
+        clues.Reset();
     } else {
         mb.setWindowTitle("Upload Success");
         mb.setText("Clues were successfully uploaded from box");
 
-        waypoints.SelectClue(BOX_WELCOME_MSG);
+        clues.SelectClue(BOX_WELCOME_MSG);
     }
 
     mb.exec();
@@ -298,7 +297,7 @@ bool MainWindow::uploadAllClues() {
     downloadProgress->show();
 
     //Clear the local waypoints...
-    waypoints.Reset();
+    clues.Reset();
 
     bool result = true;
 
@@ -306,7 +305,7 @@ bool MainWindow::uploadAllClues() {
 
     //Read out the 'welcome' message
 
-    result = box.ReadWaypointData(BOX_WELCOME_MSG,&waypoints.welcomeMessage,TRIES);
+    result = box.ReadClueData(BOX_WELCOME_MSG,&clues.welcomeMessage,TRIES);
 
     if (!result) {
         cancelUploadDownload();
@@ -316,7 +315,7 @@ bool MainWindow::uploadAllClues() {
     incrementProgress();
 
     //Read out the completion message
-    result = box.ReadWaypointData(BOX_COMPLETE_MSG,&waypoints.completeMessage,TRIES);
+    result = box.ReadClueData(BOX_COMPLETE_MSG,&clues.completeMessage,TRIES);
 
     if (!result) {
         cancelUploadDownload();
@@ -325,7 +324,7 @@ bool MainWindow::uploadAllClues() {
 
     incrementProgress();
 
-    Waypoint_t w;
+    Clue_t c;
 
 
     for (int i=0;i<box.info.totalClues;i++) {
@@ -335,16 +334,16 @@ bool MainWindow::uploadAllClues() {
             return false;
         }
 
-        Waypoint_Init(&w);
+        Clue_Init(&c);
 
-        result = box.ReadWaypointData(i+1, &w, TRIES);
+        result = box.ReadClueData(i+1, &c, TRIES);
 
         if (!result) {
             cancelUploadDownload();
             return false;
         }
 
-        waypoints.AddWaypoint(w);
+        clues.AddClue(c);
 
         incrementProgress();
     }
@@ -356,7 +355,7 @@ bool MainWindow::uploadAllClues() {
 
 void MainWindow::jsFitMapToClues()
 {
-    if (waypoints.ClueCount() > 0) {
+    if (clues.ClueCount() > 0) {
         jsExecute("reframe();");
     }
 }
@@ -392,9 +391,9 @@ void MainWindow::saveCurrentClue()
 {
     QString line;
 
-    Waypoint_t *w = waypoints.GetCurrentClue();
+    Clue_t *c = clues.GetCurrentClue();
 
-    if (w == NULL) return;
+    if (c == NULL) return;
 
     for (int i=0;i<NUM_CLUE_LINES;i++)
     {
@@ -407,7 +406,7 @@ void MainWindow::saveCurrentClue()
             line = ui->clueTable->item(i,0)->text();
         }
 
-        Waypoint_SetLineText(w, i, line);
+        Clue_SetLineText(c, i, line);
     }
 }
 
@@ -416,9 +415,9 @@ void MainWindow::reloadClueTable()
     clueTableBusy = true;
 
     QString line;
-    Waypoint_t *w = waypoints.GetCurrentClue();
+    Clue_t *c = clues.GetCurrentClue();
 
-    if (w == NULL) return;
+    if (c == NULL) return;
 
     QTableWidgetItem *item;
 
@@ -434,10 +433,10 @@ void MainWindow::reloadClueTable()
             ui->clueTable->setItem(i,0,item);
         }
 
-        line = Waypoint_GetLineText(w, i);
+        line = Clue_GetLineText(c, i);
         item->setText(line);
 
-        if ((w->options & CLUE_OPTION_CENTER_TEXT) > 0) {
+        if (c->waypoint.options.centerText) {
             item->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
         } else {
             item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
@@ -464,9 +463,10 @@ void MainWindow::clueTypeChanged(int newType)
 {
     if (newType < NUM_CLUE_TYPES)
     {
-        Waypoint_t *w = waypoints.GetCurrentClue();
+        Clue_t *c = clues.GetCurrentClue();
 
-        w->type = newType;
+        if (c != NULL)
+            c->waypoint.type = (ClueTypes) newType;
 
         updateClues();
     }
@@ -475,18 +475,18 @@ void MainWindow::clueTypeChanged(int newType)
 void MainWindow::clueOptionsChanged()
 {
 
-    Waypoint_t *w = waypoints.GetCurrentClue();
+    Clue_t *c = clues.GetCurrentClue();
 
-    if (w == NULL) return;
+    if (c == NULL) return;
 
     //Center text?
     if (ui->centerText->isChecked())
     {
-        w->options |= CLUE_OPTION_CENTER_TEXT;
+        c->waypoint.options.centerText = 1;
     }
     else
     {
-        w->options &= ~CLUE_OPTION_CENTER_TEXT;
+        c->waypoint.options.centerText = 0;
     }
 
     updateClues();
@@ -576,7 +576,7 @@ void MainWindow::clearMap()
 
     if (!result) return;
 
-    waypoints.Reset();
+    clues.Reset();
 
     redrawMap();
     updateClueList();
@@ -584,7 +584,7 @@ void MainWindow::clearMap()
 
 void MainWindow::updateClueList()
 {
-    bool clueAvailable = waypoints.IsClueSelected();
+    bool clueAvailable = clues.IsClueSelected();
 
     ui->latitude->setEnabled(clueAvailable);
     ui->longitude->setEnabled(clueAvailable);
@@ -592,9 +592,15 @@ void MainWindow::updateClueList()
     ui->threshold->setEnabled(clueAvailable);
     ui->clueType->setEnabled(clueAvailable);
 
-    Waypoint_t *w = waypoints.GetCurrentClue();
+    Clue_t *c = clues.GetCurrentClue();
 
-    ui->centerText->setChecked((w->options & CLUE_OPTION_CENTER_TEXT) > 0);
+    if (c == NULL)
+        return;
+
+    Waypoint_t *w = &c->waypoint;
+
+    //Clue options
+    ui->centerText->setChecked(w->options.centerText > 0);
 
     if (!clueAvailable)
     {
@@ -610,10 +616,10 @@ void MainWindow::updateClueList()
         ui->clueType->setCurrentIndex(w->type);
     }
 
-    ui->editClues->setTitle("Edit Clues (" + QString::number(waypoints.ClueCount()) + " clues)");
-    ui->selection->setText("Edit " + waypoints.CurrentClueTitle());
+    ui->editClues->setTitle("Edit Clues (" + QString::number(clues.ClueCount()) + " clues)");
+    ui->selection->setText("Edit " + clues.CurrentClueTitle());
 
-    switch (waypoints.ClueIndex()) {
+    switch (clues.ClueIndex()) {
     case BOX_WELCOME_MSG:
         ui->clueIndexDescriptor->setText("This message is displayed before any clues");
         break;
@@ -621,7 +627,7 @@ void MainWindow::updateClueList()
         ui->clueIndexDescriptor->setText("This is displayed when the puzzle is solved");
         break;
     default:
-        ui->clueIndexDescriptor->setText("This is " + waypoints.CurrentClueTitle());
+        ui->clueIndexDescriptor->setText("This is " + clues.CurrentClueTitle());
         break;
     }
 }
@@ -657,7 +663,7 @@ void MainWindow::newMarkerRequested(double lat, double lng) {
         return;
     }
 
-    if (waypoints.ValidWaypoint(lat,lng) == false) {
+    if (clues.ValidWaypoint(lat,lng) == false) {
 
         mb.setWindowTitle("Too Close");
         mb.setText("Too close to an existing clue (250m)");
@@ -666,21 +672,20 @@ void MainWindow::newMarkerRequested(double lat, double lng) {
         return;
     }
 
-    Waypoint_t W;
+    Clue_t c;
+    Clue_Init(&c);
 
-    Waypoint_Init(&W);
+    c.waypoint.lat = lat;
+    c.waypoint.lng = lng;
 
-    W.lat = lat;
-    W.lng = lng;
-
-    waypoints.AddWaypoint(W);
+    clues.AddClue(c);
 }
 
 void MainWindow::clueSelectionChanged(int clue)
 {
     saveCurrentClue();
 
-    waypoints.SelectClue(clue + 1); //first clue starts at 1
+    clues.SelectClue(clue + 1); //first clue starts at 1
 }
 
 void MainWindow::clueDeleted(int clue)
@@ -689,7 +694,7 @@ void MainWindow::clueDeleted(int clue)
 
     if (!result) return;
 
-    if (waypoints.DeleteClue(clue) == false) return;
+    if (clues.DeleteClue(clue) == false) return;
 
     updateClues();
 }
@@ -701,7 +706,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     box.wait();
 
     //Save clue list to temp file
-    waypoints.SaveToFile("autosave.clue");
+    clues.SaveToFile("autosave.clue");
 
 //    qDebug() << "thread finished";
 }
@@ -716,7 +721,7 @@ void MainWindow::getMapCenter()
 //Callback from the map window when a particular clue is moved
 void MainWindow::clueMoved(int clue)
 {
-    if (clue <= waypoints.ClueCount()) {
+    if (clue <= clues.ClueCount()) {
 
         //Get the position of the new clue
         QVariant result = jsExecute("getMarkerPosition("+
@@ -737,9 +742,13 @@ void MainWindow::clueMoved(int clue)
 
             if (latOk && lngOk)
             {
-                Waypoint_t *w = waypoints.GetClueAtIndex(clue + 1);
-                w->lat = lat;
-                w->lng = lng;
+                Clue_t *c = clues.GetClueAtIndex(clue + 1);
+
+                if (c != NULL)
+                {
+                    c->waypoint.lat = lat;
+                    c->waypoint.lng = lng;
+                }
             }
         }
     }
@@ -765,7 +774,7 @@ void MainWindow::jsAddMarker(double lat, double lng, double threshold)
 void MainWindow::jsSelectMarker()
 {
 
-    QString js = "selectClue(" + QString::number(waypoints.ClueIndex() - 1)+");";
+    QString js = "selectClue(" + QString::number(clues.ClueIndex() - 1)+");";
 
     jsExecute(js);
 
@@ -775,9 +784,9 @@ void MainWindow::redrawMap()
 {
     jsClearMap();
 
-    foreach (Waypoint_t w, waypoints.waypoints)
+    foreach (Clue_t c, clues.clues)
     {
-        jsAddMarker(w.lat,w.lng,w.threshold);
+        jsAddMarker(c.waypoint.lat,c.waypoint.lng,c.waypoint.threshold);
     }
 
     //set selected marker
@@ -790,9 +799,11 @@ void MainWindow::setThreshold()
 {
     bool ok;
 
-    Waypoint_t *wp = waypoints.GetCurrentClue();
+    Clue_t *c = clues.GetCurrentClue();
 
-    if (wp == NULL) return;
+    if (c == NULL) return;
+
+    Waypoint_t *wp = &c->waypoint;
 
     uint16_t threshold = QInputDialog::getInt(0,
                                                "Clue Threshold",
@@ -820,8 +831,9 @@ void MainWindow::loadClues()
                                                     QDir::currentPath(),
                                                     "Clue files (*.clue)");
 
-    if (filename.endsWith(".clue")){
-        waypoints.LoadFromFile(filename);
+    if (filename.endsWith(".clue"))
+    {
+        clues.LoadFromFile(filename);
     }
 
     updateClueList();
@@ -834,7 +846,7 @@ void MainWindow::loadClues()
  */
 void MainWindow::saveClues()
 {
-    if (waypoints.waypoints.count() == 0) {
+    if (clues.clues.count() == 0) {
 
         QMessageBox mb;
 
@@ -851,6 +863,7 @@ void MainWindow::saveClues()
                                                     "Clue files (*.clue)");
 
     if (filename.endsWith(".clue")) {
-        waypoints.SaveToFile(filename);
+        clues.SaveToFile(filename);
+        Debug("Saving clues to " + filename);
     }
 }

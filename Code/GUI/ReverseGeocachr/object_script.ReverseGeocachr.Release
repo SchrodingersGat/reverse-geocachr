@@ -7,8 +7,15 @@ INPUT(
 ./release\qledindicator.o
 ./release\waypoint.o
 ./release\ILI9340_font.o
-./release\box_messages.o
 ./release\debug.o
+./release\bitfieldspecial.o
+./release\boxdefines.o
+./release\boxpackets.o
+./release\fielddecode.o
+./release\fieldencode.o
+./release\protogenglue.o
+./release\scaleddecode.o
+./release\scaledencode.o
 ./release\hid.o
 ./release\qrc_resources.o
 ./release\moc_mainwindow.o

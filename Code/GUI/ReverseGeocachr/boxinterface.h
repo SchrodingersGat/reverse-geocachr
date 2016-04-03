@@ -10,7 +10,10 @@
 #include "hidapi/hidapi/hidapi.h"
 
 #include "waypoint.h"
-#include "box_messages.h"
+#include "ReverseGeocacheProtocol.h"
+#include "boxpackets.h"
+
+#include "box_defines.h"
 
 class Box : public QThread
 {
@@ -31,8 +34,8 @@ private:
 
     hid_device *handle;
 
-    uint8_t readBuf[HID_REPORT_SIZE+1];
-    uint8_t writeBuf[HID_REPORT_SIZE+1];
+    HIDBuffer rxBuf;    //Buffer for reading USB messages
+    HIDBuffer txBuf;    //Buffer for writing USB messages
 
 public slots:
     void run();
@@ -43,20 +46,20 @@ public slots:
     bool RequestBoxInfo(int tries);
     bool RequestBoxInfo();
 
-    bool ReadWaypointData(int clueIndex, Waypoint_t *w, int tries);
-    bool WriteWaypointData(int clueIndex, Waypoint_t *w, int tries);
+    bool ReadClueData(int clueIndex, Clue_t *c, int tries);
+    bool WriteClueData(int clueIndex, Clue_t *c, int tries);
 
-    bool RequestClueHint(int clueIndex, Waypoint_t *w, int line, int tries);
-    bool RequestClueHint(int clueIndex, Waypoint_t *w, int line);
+    bool RequestClueHint(int clueIndex, Clue_t *c, int line, int tries);
+    bool RequestClueHint(int clueIndex, Clue_t *c, int line);
 
-    bool RequestClueInfo(int clueIndex, Waypoint_t *w, int tries);
-    bool RequestClueInfo(int clueIndex, Waypoint_t *w);
+    bool RequestClueInfo(int clueIndex, Clue_t *c, int tries);
+    bool RequestClueInfo(int clueIndex, Clue_t *c);
 
-    bool SetClueInfo(int clueIndex, Waypoint_t *w, int tries);
-    bool SetClueInfo(int clueIndex, Waypoint_t *w);
+    bool SetClueInfo(int clueIndex, Clue_t *c, int tries);
+    bool SetClueInfo(int clueIndex, Clue_t *c);
 
-    bool SetClueHint(int clueIndex, Waypoint_t *w, int line, int tries);
-    bool SetClueHint(int clueIndex, Waypoint_t *w, int line);
+    bool SetClueHint(int clueIndex, Clue_t *c, int line, int tries);
+    bool SetClueHint(int clueIndex, Clue_t *c, int line);
 
     bool Unlock();
     bool Lock();

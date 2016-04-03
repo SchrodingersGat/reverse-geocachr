@@ -7,8 +7,15 @@ INPUT(
 ./debug\qledindicator.o
 ./debug\waypoint.o
 ./debug\ILI9340_font.o
-./debug\box_messages.o
 ./debug\debug.o
+./debug\bitfieldspecial.o
+./debug\boxdefines.o
+./debug\boxpackets.o
+./debug\fielddecode.o
+./debug\fieldencode.o
+./debug\protogenglue.o
+./debug\scaleddecode.o
+./debug\scaledencode.o
 ./debug\hid.o
 ./debug\qrc_resources.o
 ./debug\moc_mainwindow.o

@@ -37,7 +37,7 @@ void LCDWidget::DrawTopLine(QPainter *painter)
 {
     painter->fillRect(0,0,LCD_W,LCD_BAR_HEIGHT, barColor);
 
-    QString line = waypoints.CurrentClueHeader();
+    QString line = clues.CurrentClueHeader();
 
     DrawString(painter,line,LCD_W/2,LCD_HEADER_Y,1,1,titleColor);
 
@@ -60,20 +60,20 @@ void LCDWidget::DrawClue(QPainter *painter)
     unsigned char x = 0;
     unsigned char opt = 0;
 
-    Waypoint_t *waypoint = waypoints.GetCurrentClue();
+    Clue_t *clue = clues.GetCurrentClue();
 
-    if (waypoint == NULL) return;
+    if (clue == NULL) return;
 
     for (int i=0;i<NUM_CLUE_LINES;i++)
     {
         opt = 0;
         x = LINE_X_OFFSET;
 
-        QString line = QString::fromLocal8Bit(waypoint->lines[i]);
+        QString line = QString::fromLocal8Bit(clue->lines[i]);
 
         if (i >= 7) break;
 
-        if ((waypoint->options & CLUE_OPTION_CENTER_TEXT) > 0)
+        if (clue->waypoint.options.centerText > 0)
         {
             opt = 1;
             x = 160;
@@ -84,7 +84,7 @@ void LCDWidget::DrawClue(QPainter *painter)
     }
 
     DrawString(painter,
-               waypoints.CurrentClueFooter(),
+               clues.CurrentClueFooter(),
                LCD_FOOTER_X,
                LCD_FOOTER_Y,
                1,

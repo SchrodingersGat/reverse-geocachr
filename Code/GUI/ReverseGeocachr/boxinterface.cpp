@@ -4,7 +4,9 @@
 
 #include "boxinterface.h"
 #include "debug.h"
-#include "box_messages.h"
+#include "boxpackets.h"
+#include "box_defines.h"
+#include "ReverseGeocacheProtocol.h"
 
 #include "waypoints.h"
 
@@ -80,14 +82,15 @@ bool Box::RequestBoxInfo()
     int i = 0;
 
     if (HIDConnect() == false) {
-        Debug("HIDConnect() failed");
+        //Debug("HIDConnect() failed");
         return false; //Connection failure
     }
 
-    writeBuf[0] = 0x00;
-    writeBuf[1] = BOX_MSG_SYSTEM_INFO;
+    txBuf[0] = 0x00;
 
-    res = hid_write(handle,writeBuf,HID_REPORT_SIZE+1);
+    encodeRequestBoxInfoPacket(&txBuf[1]);
+
+    res = hid_write(handle,txBuf,HID_REPORT_SIZE+1);
 
     //HID write was not successful
     if (res == -1) {
@@ -97,55 +100,56 @@ bool Box::RequestBoxInfo()
     }
 
     //Read out the feature report
-    res = hid_read_timeout(handle, readBuf, HID_REPORT_SIZE, TIMEOUT);
+    res = hid_read_timeout(handle, rxBuf, HID_REPORT_SIZE, TIMEOUT);
 
     if (res != HID_REPORT_SIZE) {
         Debug("HID Read Failed");
         return false;
     } else  {//read was successful, decode the data
-        if (readBuf[i++] == BOX_MSG_SYSTEM_INFO) {
-
-            if (Decode_BoxInfo_Message((char*) readBuf, &info) == false) {
-                Debug("BOX_INFO message failed");
-                return false;
-            }
+        if (decodeBoxInfoPacket(rxBuf, &info))
+        {
+        }
+        else
+        {
+            Debug("BOX_INFO message failed");
+            return false;
         }
     }
 
     return true;
 }
 
-bool Box::ReadWaypointData(int clueIndex, Waypoint_t *w, int tries) {
+bool Box::ReadClueData(int clueIndex, Clue_t *c, int tries) {
 
-    //Read out the waypoint data
-    if (RequestClueInfo(clueIndex, w, tries) == false) return false;
+    //Read out the clue data
+    if (RequestClueInfo(clueIndex, c, tries) == false) return false;
 
     for (int i=0;i<NUM_CLUE_LINES;i++) {
-        if (RequestClueHint(clueIndex, w, i, tries) == false) return false;
+        if (RequestClueHint(clueIndex, c, i, tries) == false) return false;
     }
 
     return true;
 }
 
-bool Box::WriteWaypointData(int clueIndex, Waypoint_t *w, int tries) {
+bool Box::WriteClueData(int clueIndex, Clue_t *c, int tries) {
 
-    //Write the waypoint data
-    if (SetClueInfo(clueIndex, w, tries) == false) return false;
+    //Write the clue data
+    if (SetClueInfo(clueIndex, c, tries) == false) return false;
 
     for (int i=0;i<NUM_CLUE_LINES;i++) {
-        if (SetClueHint(clueIndex, w, i, tries) == false) return false;
+        if (SetClueHint(clueIndex, c, i, tries) == false) return false;
     }
 
     return true;
 }
 
-bool Box::SetClueInfo(int clueIndex, Waypoint_t *w, int tries)
+bool Box::SetClueInfo(int clueIndex, Clue_t *c, int tries)
 {
     bool result = false;
 
     do
     {
-        result = SetClueInfo(clueIndex, w);
+        result = SetClueInfo(clueIndex, c);
         tries--;
         Sleep(10);
     } while (result == false && tries > 0);
@@ -153,12 +157,12 @@ bool Box::SetClueInfo(int clueIndex, Waypoint_t *w, int tries)
     return result;
 }
 
-bool Box::SetClueInfo(int clueIndex, Waypoint_t *w)
+bool Box::SetClueInfo(int clueIndex, Clue_t *c)
 {
     Debug("SetClueInfo - "  + QString::number(clueIndex));
 
-    if (w == NULL) {
-        Debug("Waypoint pointer is NULL");
+    if (c == NULL) {
+        Debug("Clue pointer is NULL");
         return false;
     }
 
@@ -170,20 +174,20 @@ bool Box::SetClueInfo(int clueIndex, Waypoint_t *w)
         return false;
     }
 
-    writeBuf[i++] = 0;
+    txBuf[i++] = 0;
 
-    Form_Waypoint_Message((char*) (&writeBuf[1]), clueIndex, w);
+    encodeClueInfoPacket(&txBuf[1],clueIndex,&c->waypoint);
 
-    res = hid_write(handle, writeBuf, HID_REPORT_SIZE + 1);
+    res = hid_write(handle, rxBuf, HID_REPORT_SIZE + 1);
 
     if (res != (HID_REPORT_SIZE + 1)) {
         Debug("HIDWrite failed");
         return false;
     }
 
-    Waypoint_t w_tmp;
+    Clue_t c_tmp;
 
-    if (!this->RequestClueInfo(clueIndex, &w_tmp)) {
+    if (!this->RequestClueInfo(clueIndex, &c_tmp)) {
         Debug("RequestClueInfo failed");
         return false;
     }
@@ -194,13 +198,13 @@ bool Box::SetClueInfo(int clueIndex, Waypoint_t *w)
     return true;
 }
 
-bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w, int tries)
+bool Box::RequestClueInfo(int clueIndex, Clue_t *c, int tries)
 {
     bool result = false;
 
     do
     {
-        result = RequestClueInfo(clueIndex, w);
+        result = RequestClueInfo(clueIndex, c);
         tries--;
         Sleep(10);
     } while (result == false && tries > 0);
@@ -209,14 +213,14 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w, int tries)
 }
 
 /* Request information on a particular clue */
-bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w)
+bool Box::RequestClueInfo(int clueIndex, Clue_t *c)
 {
     int res = -1;
     int i = 0;
 
     Debug("RequestClueInfo - " + QString::number(clueIndex));
 
-    if (w == NULL) {
+    if (c == NULL) {
         Debug("Waypoint pointer is NULL");
         return false;
     }
@@ -227,11 +231,11 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w)
     }
 
     //Write clue info to the box
-    writeBuf[i++] = 0;
-    writeBuf[i++] = BOX_MSG_REQUEST_CLUE_INFO;
-    writeBuf[i++] = clueIndex;
+    txBuf[i++] = 0;
 
-    res = hid_write(handle, writeBuf, HID_REPORT_SIZE+1);
+    encodeRequestClueInfoPacket(&txBuf[1],clueIndex);
+
+    res = hid_write(handle, txBuf, HID_REPORT_SIZE+1);
 
     if (res == -1) {//write failed
         Debug("HIDWrite failed");
@@ -240,7 +244,7 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w)
     }
 
     //read the dataz back
-    res = hid_read_timeout(handle,readBuf,HID_REPORT_SIZE,TIMEOUT);
+    res = hid_read_timeout(handle,rxBuf,HID_REPORT_SIZE,TIMEOUT);
 
     HIDDisconnect();
 
@@ -251,7 +255,10 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w)
 
     else
     {
-        if (Decode_Waypoint_Message((char*) readBuf, w)) {
+        uint8_t index;
+        Waypoint_t wp_tmp;
+        if (decodeClueInfoPacket(rxBuf,&index,&wp_tmp))
+        {
             return true;
         } else {
             Debug("Decode_Waypoint_Message failed");
@@ -262,13 +269,13 @@ bool Box::RequestClueInfo(int clueIndex, Waypoint_t *w)
     return true;
 }
 
-bool Box::RequestClueHint(int clueIndex, Waypoint_t *w, int line, int tries)
+bool Box::RequestClueHint(int clueIndex, Clue_t *c, int line, int tries)
 {
     bool result = false;
 
     do
     {
-        result = RequestClueHint(clueIndex, w, line);
+        result = RequestClueHint(clueIndex, c, line);
         tries--;
         Sleep(10);
     } while (result == false && tries > 0);
@@ -277,11 +284,11 @@ bool Box::RequestClueHint(int clueIndex, Waypoint_t *w, int line, int tries)
 }
 
 
-bool Box::RequestClueHint(int clueIndex, Waypoint_t *w, int line)
+bool Box::RequestClueHint(int clueIndex, Clue_t *c, int line)
 {
     Debug("RequestClueHint() - " + QString::number(clueIndex) + " / " + QString::number(line));
 
-    if (w == NULL) {
+    if (c == NULL) {
         Debug("Waypoint pointer is NULL");
         return false;
     }
@@ -301,12 +308,11 @@ bool Box::RequestClueHint(int clueIndex, Waypoint_t *w, int line)
     }
 
     //Write clue info to the box
-    writeBuf[i++] = 0;
-    writeBuf[i++] = BOX_MSG_REQUEST_CLUE_LINE;
-    writeBuf[i++] = clueIndex;
-    writeBuf[i++] = line;
+    txBuf[i++] = 0;
 
-    res = hid_write(handle, writeBuf, HID_REPORT_SIZE+1);
+    encodeRequestClueLinePacket(&txBuf[1],clueIndex,line);
+
+    res = hid_write(handle, txBuf, HID_REPORT_SIZE+1);
 
     if (res != (HID_REPORT_SIZE + 1)) {
         Debug("HIDWrite failed");
@@ -314,18 +320,25 @@ bool Box::RequestClueHint(int clueIndex, Waypoint_t *w, int line)
     }
 
     //read the dataz back
-    res = hid_read_timeout(handle,readBuf,HID_REPORT_SIZE,TIMEOUT);
+    res = hid_read_timeout(handle,rxBuf,HID_REPORT_SIZE,TIMEOUT);
 
     if (res != HID_REPORT_SIZE) {
         Debug("HIDRead failed");
         return false;
     } else {
 
-        if ((readBuf[0] == BOX_MSG_CLUE_LINE) &&
-            (readBuf[1] == clueIndex) &&
-            (readBuf[2] == line)) {
-
-            Decode_WaypointClue_Message((char*) readBuf, line, w);
+        uint8_t index_tmp;
+        uint8_t line_tmp;
+        clue_line text_tmp;
+        if (decodeClueLinePacket(rxBuf,&index_tmp,&line_tmp,text_tmp))
+        {
+            //Extract clue line text
+            if ((index_tmp == clueIndex) &&
+                (line_tmp == line))
+            {
+                //Copy the text data acrosss
+                memcpy(c->lines[line],text_tmp,sizeof(clue_line));
+            }
 
             return true;
         } else {
@@ -337,13 +350,13 @@ bool Box::RequestClueHint(int clueIndex, Waypoint_t *w, int line)
     return false;
 }
 
-bool Box::SetClueHint(int clueIndex, Waypoint_t *w, int line, int tries)
+bool Box::SetClueHint(int clueIndex, Clue_t *c, int line, int tries)
 {
     bool result = false;
 
     do
     {
-        result = SetClueHint(clueIndex, w, line);
+        result = SetClueHint(clueIndex, c, line);
         tries--;
         Sleep(10); //give up control for a bit
     } while (result == false && tries > 0);
@@ -351,11 +364,11 @@ bool Box::SetClueHint(int clueIndex, Waypoint_t *w, int line, int tries)
     return result;
 }
 
-bool Box::SetClueHint(int clueIndex, Waypoint_t *w, int line)
+bool Box::SetClueHint(int clueIndex, Clue_t *c, int line)
 {
     Debug("SetClueHint - " + QString::number(clueIndex) + " / " + QString::number(line));
 
-    if (w == NULL) {
+    if (c == NULL) {
         Debug("Waypoint pointer is NULL");
         return false;
     }
@@ -374,22 +387,13 @@ bool Box::SetClueHint(int clueIndex, Waypoint_t *w, int line)
         return false;
     }
 
-    writeBuf[i++] = 0;
-    writeBuf[i++] = BOX_MSG_CLUE_LINE;
-    writeBuf[i++] = clueIndex;
-    writeBuf[i++] = line;
+    QString clueText = Clue_GetLineText(c,line);
 
-    //Append the clue line
-    QString clueText = Waypoint_GetLineText(w, line);
+    txBuf[i++] = 0;
 
-    for (int j=0;j<clueText.size();j++) {
-        writeBuf[i++] = (unsigned char) clueText.at(j).toLatin1();
-    }
+    encodeClueLinePacket(&txBuf[1],clueIndex,line,c->lines[line]);
 
-    //Append a zero
-    writeBuf[i++] = 0;
-
-    res = hid_write(handle, writeBuf, HID_REPORT_SIZE + 1);
+    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
 
     //Couldn't transmit the data
     if (res == -1) {
@@ -398,14 +402,14 @@ bool Box::SetClueHint(int clueIndex, Waypoint_t *w, int line)
     }
 
     //Make a temp waypoint and read it back
-    Waypoint_t wtemp;
+    Clue_t c_tmp;
 
-    if (RequestClueHint(clueIndex, &wtemp, line, MAX_TRIES) == false) {
+    if (RequestClueHint(clueIndex, &c_tmp, line, MAX_TRIES) == false) {
         Debug("RequestClueHint failed!");
         return false;
     }
 
-    QString clue2 = Waypoint_GetLineText(&wtemp, line);
+    QString clue2 = Clue_GetLineText(&c_tmp, line);
 
     if (clueText != clue2) {
         Debug("Line mismatch!");
@@ -435,10 +439,11 @@ bool Box::SkipToNext()
     int i = 0;
     if (HIDConnect() == false) return false;
 
-    writeBuf[i++] = 0x00;
-    writeBuf[i++] = BOX_MSG_NEXT_CLUE;
+    txBuf[i++] = 0x00;
 
-    res = hid_write(handle, writeBuf, HID_REPORT_SIZE + 1);
+    encodeNextCluePacket(&txBuf[1]);
+
+    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
 
     if (res == -1) return false;
 
@@ -453,10 +458,10 @@ bool Box::SkipToPrevious()
 
     if (HIDConnect() == false) return false;
 
-    writeBuf[i++] = 0x00;
-    writeBuf[i++] = BOX_MSG_PREV_CLUE;
+    txBuf[i++] = 0x00;
+    encodeNextCluePacket(&txBuf[1]);
 
-    res = hid_write(handle, writeBuf, HID_REPORT_SIZE + 1);
+    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
 
     if (res == -1) return false;
 
@@ -495,11 +500,10 @@ bool Box::SetNumberOfClues(int nClues)
         return false;
     }
 
-    writeBuf[i++] = 0x00;
-    writeBuf[i++] = BOX_MSG_SET_NUMBER_OF_CLUES;
-    writeBuf[i++] = nClues & 0xFF;
+    txBuf[i++] = 0x00;
+    encodeSetClueCountPacket(&txBuf[1],nClues & 0xFF);
 
-    res = hid_write(handle, writeBuf, HID_REPORT_SIZE + 1);
+    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
 
     if (res != (HID_REPORT_SIZE + 1)) {
         Debug("HIDWrite failed");

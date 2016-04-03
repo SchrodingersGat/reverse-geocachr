@@ -10,10 +10,10 @@
 
 #include "waypoint.h"
 
-class WaypointList : public QObject {
+class ClueList : public QObject {
     Q_OBJECT
 public:
-    WaypointList();
+    ClueList();
 
     //Functions
     void Reset();
@@ -22,15 +22,15 @@ public:
     QString CurrentClueHeader();
     QString CurrentClueFooter();
 
-    Waypoint_t* GetCurrentClue();
-    Waypoint_t* GetClueAtIndex(uint8_t index);
+    Clue_t* GetCurrentClue();
+    Clue_t* GetClueAtIndex(uint8_t index);
 
     bool SaveToFile(QString filename);
     bool LoadFromFile(QString filename);
 
     bool DeleteClue(uint8_t index);
 
-    bool AddWaypoint(Waypoint_t wp);
+    bool AddClue(Clue_t c);
     bool ValidWaypoint(double lat, double lng);
 
 
@@ -39,9 +39,9 @@ public:
     uint8_t ClueCount();
 
     //Public Data
-    Waypoint_t welcomeMessage;
-    QList<Waypoint_t> waypoints;
-    Waypoint_t completeMessage;
+    Clue_t welcomeMessage;
+    QList<Clue_t> clues;
+    Clue_t completeMessage;
 
 public slots:
 
@@ -66,11 +66,12 @@ signals:
     void clueUpdated();
 };
 
-extern WaypointList waypoints;
+extern ClueList clues;
 
 //Other waypoint functions
-void Waypoint_SetLineText(Waypoint_t *w, uint8_t line, QString text);
-QString Waypoint_GetLineText(Waypoint_t *w, uint8_t line);
+void Clue_SetLineText(Clue_t *c, uint8_t line, QString text);
+QString Clue_GetLineText(Clue_t *c, uint8_t line);
 QString escapeClueString(QString text);
+
 #endif // CLUE_LIST_H
 
