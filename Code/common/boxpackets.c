@@ -49,7 +49,7 @@ int decodeUnlockPacket(const void* pkt)
  */
 uint32_t getUnlockPacketID(void)
 {
-    return UNLOCK;
+    return MSG_UNLOCK;
 }
 
 /*!
@@ -102,7 +102,7 @@ int decodeLockPacket(const void* pkt)
  */
 uint32_t getLockPacketID(void)
 {
-    return LOCK;
+    return MSG_LOCK;
 }
 
 /*!
@@ -155,7 +155,7 @@ int decodeNextCluePacket(const void* pkt)
  */
 uint32_t getNextCluePacketID(void)
 {
-    return NEXT_CLUE;
+    return MSG_NEXT_CLUE;
 }
 
 /*!
@@ -208,7 +208,7 @@ int decodePrevCluePacket(const void* pkt)
  */
 uint32_t getPrevCluePacketID(void)
 {
-    return PREV_CLUE;
+    return MSG_PREV_CLUE;
 }
 
 /*!
@@ -261,7 +261,7 @@ int decodeFirstCluePacket(const void* pkt)
  */
 uint32_t getFirstCluePacketID(void)
 {
-    return FIRST_CLUE;
+    return MSG_FIRST_CLUE;
 }
 
 /*!
@@ -314,7 +314,7 @@ int decodeLastCluePacket(const void* pkt)
  */
 uint32_t getLastCluePacketID(void)
 {
-    return LAST_CLUE;
+    return MSG_LAST_CLUE;
 }
 
 /*!
@@ -367,7 +367,7 @@ int decodeBootloadPacket(const void* pkt)
  */
 uint32_t getBootloadPacketID(void)
 {
-    return RESET_INTO_BOOTLOADER;
+    return MSG_RESET_INTO_BOOTLOADER;
 }
 
 /*!
@@ -420,7 +420,7 @@ int decodeEnableDebugPacket(const void* pkt)
  */
 uint32_t getEnableDebugPacketID(void)
 {
-    return ENABLE_DEBUG_MODE;
+    return MSG_ENABLE_DEBUG_MODE;
 }
 
 /*!
@@ -479,7 +479,7 @@ int decodeSetClueCountPacket(const void* pkt, uint8_t* clueCount)
  */
 uint32_t getSetClueCountPacketID(void)
 {
-    return SET_CLUE_COUNT;
+    return MSG_SET_CLUE_COUNT;
 }
 
 /*!
@@ -532,7 +532,7 @@ int decodeValidateCluesPacket(const void* pkt)
  */
 uint32_t getValidateCluesPacketID(void)
 {
-    return VALIDATE_CLUES;
+    return MSG_VALIDATE_CLUES;
 }
 
 /*!
@@ -585,7 +585,7 @@ int decodeInvalidateCluesPacket(const void* pkt)
  */
 uint32_t getInvalidateCluesPacketID(void)
 {
-    return VALIDATE_CLUES;
+    return MSG_VALIDATE_CLUES;
 }
 
 /*!
@@ -645,7 +645,7 @@ int decodeBoxInfoPacket(const void* pkt, BoxInfo_t* info)
  */
 uint32_t getBoxInfoPacketID(void)
 {
-    return SYSTEM_INFO;
+    return MSG_SYSTEM_INFO;
 }
 
 /*!
@@ -698,7 +698,7 @@ int decodeRequestBoxInfoPacket(const void* pkt)
  */
 uint32_t getRequestBoxInfoPacketID(void)
 {
-    return SYSTEM_INFO;
+    return MSG_SYSTEM_INFO;
 }
 
 /*!
@@ -764,7 +764,7 @@ int decodeClueInfoPacket(const void* pkt, uint8_t* clueNumber, Waypoint_t* clueI
  */
 uint32_t getClueInfoPacketID(void)
 {
-    return CLUE_INFO;
+    return MSG_CLUE_INFO;
 }
 
 /*!
@@ -823,7 +823,7 @@ int decodeRequestClueInfoPacket(const void* pkt, uint8_t* clueNumber)
  */
 uint32_t getRequestClueInfoPacketID(void)
 {
-    return CLUE_INFO;
+    return MSG_CLUE_INFO;
 }
 
 /*!
@@ -894,7 +894,7 @@ int decodeClueLinePacket(const void* pkt, uint8_t* clueNumber, uint8_t* lineNumb
  */
 uint32_t getClueLinePacketID(void)
 {
-    return CLUE_LINE;
+    return MSG_CLUE_LINE;
 }
 
 /*!
@@ -959,7 +959,7 @@ int decodeRequestClueLinePacket(const void* pkt, uint8_t* clueNumber, uint8_t* l
  */
 uint32_t getRequestClueLinePacketID(void)
 {
-    return CLUE_LINE;
+    return MSG_CLUE_LINE;
 }
 
 /*!

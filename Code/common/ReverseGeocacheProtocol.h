@@ -29,20 +29,20 @@ extern "C" {
  */
 typedef enum
 {
-    RESET_INTO_BOOTLOADER = 0x0A,    
-    ENABLE_DEBUG_MODE,               
-    SYSTEM_INFO = 0xA0,              
-    CLUE_INFO = 0xB0,                
-    CLUE_LINE = 0xC0,                
-    UNLOCK = 0xD0,                   
-    LOCK,                            
-    NEXT_CLUE = 0xE0,                
-    PREV_CLUE,                       
-    FIRST_CLUE,                      
-    LAST_CLUE,                       
-    SET_CLUE_COUNT = 0xF0,           
-    INVALIDATE_CLUES,                
-    VALIDATE_CLUES                   
+    MSG_RESET_INTO_BOOTLOADER = 0x0A,    
+    MSG_ENABLE_DEBUG_MODE,               
+    MSG_SYSTEM_INFO = 0xA0,              
+    MSG_CLUE_INFO = 0xB0,                
+    MSG_CLUE_LINE = 0xC0,                
+    MSG_UNLOCK = 0xD0,                   
+    MSG_LOCK,                            
+    MSG_NEXT_CLUE = 0xE0,                
+    MSG_PREV_CLUE,                       
+    MSG_FIRST_CLUE,                      
+    MSG_LAST_CLUE,                       
+    MSG_SET_CLUE_COUNT = 0xF0,           
+    MSG_INVALIDATE_CLUES,                
+    MSG_VALIDATE_CLUES                   
 }Packet;
 
 typedef enum

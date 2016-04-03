@@ -162,72 +162,72 @@
 
 <tbody>
 <tr>
-	<td><a href="#RESET_INTO_BOOTLOADER"><code>RESET_INTO_BOOTLOADER</code></a></td>
+	<td><a href="#MSG_RESET_INTO_BOOTLOADER"><code>MSG_RESET_INTO_BOOTLOADER</code></a></td>
 	<td style="text-align:center;">10</td>
 	<td></td>
 </tr>
 <tr>
-	<td><a href="#ENABLE_DEBUG_MODE"><code>ENABLE_DEBUG_MODE</code></a></td>
+	<td><a href="#MSG_ENABLE_DEBUG_MODE"><code>MSG_ENABLE_DEBUG_MODE</code></a></td>
 	<td style="text-align:center;">11</td>
 	<td></td>
 </tr>
 <tr>
-	<td><a href="#SYSTEM_INFO"><code>SYSTEM_INFO</code></a></td>
+	<td><a href="#MSG_SYSTEM_INFO"><code>MSG_SYSTEM_INFO</code></a></td>
 	<td style="text-align:center;">160</td>
 	<td></td>
 </tr>
 <tr>
-	<td><a href="#CLUE_INFO"><code>CLUE_INFO</code></a></td>
+	<td><a href="#MSG_CLUE_INFO"><code>MSG_CLUE_INFO</code></a></td>
 	<td style="text-align:center;">176</td>
 	<td></td>
 </tr>
 <tr>
-	<td><a href="#CLUE_LINE"><code>CLUE_LINE</code></a></td>
+	<td><a href="#MSG_CLUE_LINE"><code>MSG_CLUE_LINE</code></a></td>
 	<td style="text-align:center;">192</td>
 	<td></td>
 </tr>
 <tr>
-	<td><a href="#UNLOCK"><code>UNLOCK</code></a></td>
+	<td><a href="#MSG_UNLOCK"><code>MSG_UNLOCK</code></a></td>
 	<td style="text-align:center;">208</td>
 	<td></td>
 </tr>
 <tr>
-	<td><a href="#LOCK"><code>LOCK</code></a></td>
+	<td><a href="#MSG_LOCK"><code>MSG_LOCK</code></a></td>
 	<td style="text-align:center;">209</td>
 	<td></td>
 </tr>
 <tr>
-	<td><a href="#NEXT_CLUE"><code>NEXT_CLUE</code></a></td>
+	<td><a href="#MSG_NEXT_CLUE"><code>MSG_NEXT_CLUE</code></a></td>
 	<td style="text-align:center;">224</td>
 	<td></td>
 </tr>
 <tr>
-	<td><a href="#PREV_CLUE"><code>PREV_CLUE</code></a></td>
+	<td><a href="#MSG_PREV_CLUE"><code>MSG_PREV_CLUE</code></a></td>
 	<td style="text-align:center;">225</td>
 	<td></td>
 </tr>
 <tr>
-	<td><a href="#FIRST_CLUE"><code>FIRST_CLUE</code></a></td>
+	<td><a href="#MSG_FIRST_CLUE"><code>MSG_FIRST_CLUE</code></a></td>
 	<td style="text-align:center;">226</td>
 	<td></td>
 </tr>
 <tr>
-	<td><a href="#LAST_CLUE"><code>LAST_CLUE</code></a></td>
+	<td><a href="#MSG_LAST_CLUE"><code>MSG_LAST_CLUE</code></a></td>
 	<td style="text-align:center;">227</td>
 	<td></td>
 </tr>
 <tr>
-	<td><a href="#SET_CLUE_COUNT"><code>SET_CLUE_COUNT</code></a></td>
+	<td><a href="#MSG_SET_CLUE_COUNT"><code>MSG_SET_CLUE_COUNT</code></a></td>
 	<td style="text-align:center;">240</td>
 	<td></td>
 </tr>
 <tr>
-	<td><code>INVALIDATE_CLUES</code></td>
+	<td><code>MSG_INVALIDATE_CLUES</code></td>
 	<td style="text-align:center;">241</td>
 	<td></td>
 </tr>
 <tr>
-	<td><a href="#VALIDATE_CLUES"><code>VALIDATE_CLUES</code></a></td>
+	<td><a href="#MSG_VALIDATE_CLUES"><code>MSG_VALIDATE_CLUES</code></a></td>
 	<td style="text-align:center;">242</td>
 	<td></td>
 </tr>
@@ -297,66 +297,66 @@
 
 <p>This section describes the data payloads of the packets; and how those data are represented in the bytes of the packets.</p>
 
-<h2 id="anameunlockaunlock"><a name="UNLOCK"></a>Unlock</h2>
+<h2 id="anamemsg_unlockaunlock"><a name="MSG_UNLOCK"></a>Unlock</h2>
 
 <ul>
-<li>packet identifier: <code>UNLOCK</code> : 208</li>
+<li>packet identifier: <code>MSG_UNLOCK</code> : 208</li>
 <li>data length:</li>
 </ul>
 
-<h2 id="anamelockalock"><a name="LOCK"></a>Lock</h2>
+<h2 id="anamemsg_lockalock"><a name="MSG_LOCK"></a>Lock</h2>
 
 <ul>
-<li>packet identifier: <code>LOCK</code> : 209</li>
+<li>packet identifier: <code>MSG_LOCK</code> : 209</li>
 <li>data length:</li>
 </ul>
 
-<h2 id="anamenext_clueanextclue"><a name="NEXT_CLUE"></a>NextClue</h2>
+<h2 id="anamemsg_next_clueanextclue"><a name="MSG_NEXT_CLUE"></a>NextClue</h2>
 
 <ul>
-<li>packet identifier: <code>NEXT_CLUE</code> : 224</li>
+<li>packet identifier: <code>MSG_NEXT_CLUE</code> : 224</li>
 <li>data length:</li>
 </ul>
 
-<h2 id="anameprev_clueaprevclue"><a name="PREV_CLUE"></a>PrevClue</h2>
+<h2 id="anamemsg_prev_clueaprevclue"><a name="MSG_PREV_CLUE"></a>PrevClue</h2>
 
 <ul>
-<li>packet identifier: <code>PREV_CLUE</code> : 225</li>
+<li>packet identifier: <code>MSG_PREV_CLUE</code> : 225</li>
 <li>data length:</li>
 </ul>
 
-<h2 id="anamefirst_clueafirstclue"><a name="FIRST_CLUE"></a>FirstClue</h2>
+<h2 id="anamemsg_first_clueafirstclue"><a name="MSG_FIRST_CLUE"></a>FirstClue</h2>
 
 <ul>
-<li>packet identifier: <code>FIRST_CLUE</code> : 226</li>
+<li>packet identifier: <code>MSG_FIRST_CLUE</code> : 226</li>
 <li>data length:</li>
 </ul>
 
-<h2 id="anamelast_cluealastclue"><a name="LAST_CLUE"></a>LastClue</h2>
+<h2 id="anamemsg_last_cluealastclue"><a name="MSG_LAST_CLUE"></a>LastClue</h2>
 
 <ul>
-<li>packet identifier: <code>LAST_CLUE</code> : 227</li>
+<li>packet identifier: <code>MSG_LAST_CLUE</code> : 227</li>
 <li>data length:</li>
 </ul>
 
-<h2 id="anamereset_into_bootloaderabootload"><a name="RESET_INTO_BOOTLOADER"></a>Bootload</h2>
+<h2 id="anamemsg_reset_into_bootloaderabootload"><a name="MSG_RESET_INTO_BOOTLOADER"></a>Bootload</h2>
 
 <ul>
-<li>packet identifier: <code>RESET_INTO_BOOTLOADER</code> : 10</li>
+<li>packet identifier: <code>MSG_RESET_INTO_BOOTLOADER</code> : 10</li>
 <li>data length:</li>
 </ul>
 
-<h2 id="anameenable_debug_modeaenabledebug"><a name="ENABLE_DEBUG_MODE"></a>EnableDebug</h2>
+<h2 id="anamemsg_enable_debug_modeaenabledebug"><a name="MSG_ENABLE_DEBUG_MODE"></a>EnableDebug</h2>
 
 <ul>
-<li>packet identifier: <code>ENABLE_DEBUG_MODE</code> : 11</li>
+<li>packet identifier: <code>MSG_ENABLE_DEBUG_MODE</code> : 11</li>
 <li>data length:</li>
 </ul>
 
-<h2 id="anameset_clue_countasetcluecount"><a name="SET_CLUE_COUNT"></a>SetClueCount</h2>
+<h2 id="anamemsg_set_clue_countasetcluecount"><a name="MSG_SET_CLUE_COUNT"></a>SetClueCount</h2>
 
 <ul>
-<li>packet identifier: <code>SET_CLUE_COUNT</code> : 240</li>
+<li>packet identifier: <code>MSG_SET_CLUE_COUNT</code> : 240</li>
 <li>data length: 1</li>
 </ul>
 
@@ -393,24 +393,24 @@
 </tbody>
 </table>
 
-<h2 id="anamevalidate_cluesavalidateclues"><a name="VALIDATE_CLUES"></a>ValidateClues</h2>
+<h2 id="anamemsg_validate_cluesavalidateclues"><a name="MSG_VALIDATE_CLUES"></a>ValidateClues</h2>
 
 <ul>
-<li>packet identifier: <code>VALIDATE_CLUES</code> : 242</li>
+<li>packet identifier: <code>MSG_VALIDATE_CLUES</code> : 242</li>
 <li>data length:</li>
 </ul>
 
-<h2 id="anamevalidate_cluesainvalidateclues"><a name="VALIDATE_CLUES"></a>InvalidateClues</h2>
+<h2 id="anamemsg_validate_cluesainvalidateclues"><a name="MSG_VALIDATE_CLUES"></a>InvalidateClues</h2>
 
 <ul>
-<li>packet identifier: <code>VALIDATE_CLUES</code> : 242</li>
+<li>packet identifier: <code>MSG_VALIDATE_CLUES</code> : 242</li>
 <li>data length:</li>
 </ul>
 
-<h2 id="anamesystem_infoaboxinfo"><a name="SYSTEM_INFO"></a>BoxInfo</h2>
+<h2 id="anamemsg_system_infoaboxinfo"><a name="MSG_SYSTEM_INFO"></a>BoxInfo</h2>
 
 <ul>
-<li>packet identifier: <code>SYSTEM_INFO</code> : 160</li>
+<li>packet identifier: <code>MSG_SYSTEM_INFO</code> : 160</li>
 <li>data length: 9</li>
 </ul>
 
@@ -536,17 +536,17 @@
 </tbody>
 </table>
 
-<h2 id="anamesystem_infoarequestboxinfo"><a name="SYSTEM_INFO"></a>RequestBoxInfo</h2>
+<h2 id="anamemsg_system_infoarequestboxinfo"><a name="MSG_SYSTEM_INFO"></a>RequestBoxInfo</h2>
 
 <ul>
-<li>packet identifier: <code>SYSTEM_INFO</code> : 160</li>
+<li>packet identifier: <code>MSG_SYSTEM_INFO</code> : 160</li>
 <li>data length:</li>
 </ul>
 
-<h2 id="anameclue_infoaclueinfo"><a name="CLUE_INFO"></a>ClueInfo</h2>
+<h2 id="anamemsg_clue_infoaclueinfo"><a name="MSG_CLUE_INFO"></a>ClueInfo</h2>
 
 <ul>
-<li>packet identifier: <code>CLUE_INFO</code> : 176</li>
+<li>packet identifier: <code>MSG_CLUE_INFO</code> : 176</li>
 <li>data length: 13</li>
 </ul>
 
@@ -630,10 +630,10 @@
 </tbody>
 </table>
 
-<h2 id="anameclue_infoarequestclueinfo"><a name="CLUE_INFO"></a>RequestClueInfo</h2>
+<h2 id="anamemsg_clue_infoarequestclueinfo"><a name="MSG_CLUE_INFO"></a>RequestClueInfo</h2>
 
 <ul>
-<li>packet identifier: <code>CLUE_INFO</code> : 176</li>
+<li>packet identifier: <code>MSG_CLUE_INFO</code> : 176</li>
 <li>data length: 1</li>
 </ul>
 
@@ -670,10 +670,10 @@
 </tbody>
 </table>
 
-<h2 id="anameclue_lineaclueline"><a name="CLUE_LINE"></a>ClueLine</h2>
+<h2 id="anamemsg_clue_lineaclueline"><a name="MSG_CLUE_LINE"></a>ClueLine</h2>
 
 <ul>
-<li>packet identifier: <code>CLUE_LINE</code> : 192</li>
+<li>packet identifier: <code>MSG_CLUE_LINE</code> : 192</li>
 <li>minimum data length: 3</li>
 <li>maximum data length: 42</li>
 </ul>
@@ -724,10 +724,10 @@
 </tbody>
 </table>
 
-<h2 id="anameclue_linearequestclueline"><a name="CLUE_LINE"></a>RequestClueLine</h2>
+<h2 id="anamemsg_clue_linearequestclueline"><a name="MSG_CLUE_LINE"></a>RequestClueLine</h2>
 
 <ul>
-<li>packet identifier: <code>CLUE_LINE</code> : 192</li>
+<li>packet identifier: <code>MSG_CLUE_LINE</code> : 192</li>
 <li>data length: 2</li>
 </ul>
 

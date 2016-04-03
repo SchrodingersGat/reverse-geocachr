@@ -97,22 +97,22 @@ ReverseGeocache protocol defines these global enumerations.
 ## Packet
 
 [<a name="Packet"></a>Packet: USB Packet types]
-| Name                                              | Value | Description |
-| ------------------------------------------------- | :---: | ----------- |
-| [`RESET_INTO_BOOTLOADER`](#RESET_INTO_BOOTLOADER) | 10    |             |
-| [`ENABLE_DEBUG_MODE`](#ENABLE_DEBUG_MODE)         | 11    |             |
-| [`SYSTEM_INFO`](#SYSTEM_INFO)                     | 160   |             |
-| [`CLUE_INFO`](#CLUE_INFO)                         | 176   |             |
-| [`CLUE_LINE`](#CLUE_LINE)                         | 192   |             |
-| [`UNLOCK`](#UNLOCK)                               | 208   |             |
-| [`LOCK`](#LOCK)                                   | 209   |             |
-| [`NEXT_CLUE`](#NEXT_CLUE)                         | 224   |             |
-| [`PREV_CLUE`](#PREV_CLUE)                         | 225   |             |
-| [`FIRST_CLUE`](#FIRST_CLUE)                       | 226   |             |
-| [`LAST_CLUE`](#LAST_CLUE)                         | 227   |             |
-| [`SET_CLUE_COUNT`](#SET_CLUE_COUNT)               | 240   |             |
-| `INVALIDATE_CLUES`                                | 241   |             |
-| [`VALIDATE_CLUES`](#VALIDATE_CLUES)               | 242   |             |
+| Name                                                      | Value | Description |
+| --------------------------------------------------------- | :---: | ----------- |
+| [`MSG_RESET_INTO_BOOTLOADER`](#MSG_RESET_INTO_BOOTLOADER) | 10    |             |
+| [`MSG_ENABLE_DEBUG_MODE`](#MSG_ENABLE_DEBUG_MODE)         | 11    |             |
+| [`MSG_SYSTEM_INFO`](#MSG_SYSTEM_INFO)                     | 160   |             |
+| [`MSG_CLUE_INFO`](#MSG_CLUE_INFO)                         | 176   |             |
+| [`MSG_CLUE_LINE`](#MSG_CLUE_LINE)                         | 192   |             |
+| [`MSG_UNLOCK`](#MSG_UNLOCK)                               | 208   |             |
+| [`MSG_LOCK`](#MSG_LOCK)                                   | 209   |             |
+| [`MSG_NEXT_CLUE`](#MSG_NEXT_CLUE)                         | 224   |             |
+| [`MSG_PREV_CLUE`](#MSG_PREV_CLUE)                         | 225   |             |
+| [`MSG_FIRST_CLUE`](#MSG_FIRST_CLUE)                       | 226   |             |
+| [`MSG_LAST_CLUE`](#MSG_LAST_CLUE)                         | 227   |             |
+| [`MSG_SET_CLUE_COUNT`](#MSG_SET_CLUE_COUNT)               | 240   |             |
+| `MSG_INVALIDATE_CLUES`                                    | 241   |             |
+| [`MSG_VALIDATE_CLUES`](#MSG_VALIDATE_CLUES)               | 242   |             |
 
 
 ## ClueTypes
@@ -135,49 +135,49 @@ ReverseGeocache protocol defines these global enumerations.
 
 This section describes the data payloads of the packets; and how those data are represented in the bytes of the packets.
 
-## <a name="UNLOCK"></a>Unlock
+## <a name="MSG_UNLOCK"></a>Unlock
 
-- packet identifier: `UNLOCK` : 208
+- packet identifier: `MSG_UNLOCK` : 208
 - data length: 
 
-## <a name="LOCK"></a>Lock
+## <a name="MSG_LOCK"></a>Lock
 
-- packet identifier: `LOCK` : 209
+- packet identifier: `MSG_LOCK` : 209
 - data length: 
 
-## <a name="NEXT_CLUE"></a>NextClue
+## <a name="MSG_NEXT_CLUE"></a>NextClue
 
-- packet identifier: `NEXT_CLUE` : 224
+- packet identifier: `MSG_NEXT_CLUE` : 224
 - data length: 
 
-## <a name="PREV_CLUE"></a>PrevClue
+## <a name="MSG_PREV_CLUE"></a>PrevClue
 
-- packet identifier: `PREV_CLUE` : 225
+- packet identifier: `MSG_PREV_CLUE` : 225
 - data length: 
 
-## <a name="FIRST_CLUE"></a>FirstClue
+## <a name="MSG_FIRST_CLUE"></a>FirstClue
 
-- packet identifier: `FIRST_CLUE` : 226
+- packet identifier: `MSG_FIRST_CLUE` : 226
 - data length: 
 
-## <a name="LAST_CLUE"></a>LastClue
+## <a name="MSG_LAST_CLUE"></a>LastClue
 
-- packet identifier: `LAST_CLUE` : 227
+- packet identifier: `MSG_LAST_CLUE` : 227
 - data length: 
 
-## <a name="RESET_INTO_BOOTLOADER"></a>Bootload
+## <a name="MSG_RESET_INTO_BOOTLOADER"></a>Bootload
 
-- packet identifier: `RESET_INTO_BOOTLOADER` : 10
+- packet identifier: `MSG_RESET_INTO_BOOTLOADER` : 10
 - data length: 
 
-## <a name="ENABLE_DEBUG_MODE"></a>EnableDebug
+## <a name="MSG_ENABLE_DEBUG_MODE"></a>EnableDebug
 
-- packet identifier: `ENABLE_DEBUG_MODE` : 11
+- packet identifier: `MSG_ENABLE_DEBUG_MODE` : 11
 - data length: 
 
-## <a name="SET_CLUE_COUNT"></a>SetClueCount
+## <a name="MSG_SET_CLUE_COUNT"></a>SetClueCount
 
-- packet identifier: `SET_CLUE_COUNT` : 240
+- packet identifier: `MSG_SET_CLUE_COUNT` : 240
 - data length: 1
 
 ### SetClueCount encoding
@@ -189,19 +189,19 @@ This section describes the data payloads of the packets; and how those data are 
 | 0     | 1)clueCount | U8          | 1      |             |
 
 
-## <a name="VALIDATE_CLUES"></a>ValidateClues
+## <a name="MSG_VALIDATE_CLUES"></a>ValidateClues
 
-- packet identifier: `VALIDATE_CLUES` : 242
+- packet identifier: `MSG_VALIDATE_CLUES` : 242
 - data length: 
 
-## <a name="VALIDATE_CLUES"></a>InvalidateClues
+## <a name="MSG_VALIDATE_CLUES"></a>InvalidateClues
 
-- packet identifier: `VALIDATE_CLUES` : 242
+- packet identifier: `MSG_VALIDATE_CLUES` : 242
 - data length: 
 
-## <a name="SYSTEM_INFO"></a>BoxInfo
+## <a name="MSG_SYSTEM_INFO"></a>BoxInfo
 
-- packet identifier: `SYSTEM_INFO` : 160
+- packet identifier: `MSG_SYSTEM_INFO` : 160
 - data length: 9
 
 ### BoxInfo encoding
@@ -226,14 +226,14 @@ This section describes the data payloads of the packets; and how those data are 
 | 8         | 1.8)totalClues      | U8          | 1      |                          |
 
 
-## <a name="SYSTEM_INFO"></a>RequestBoxInfo
+## <a name="MSG_SYSTEM_INFO"></a>RequestBoxInfo
 
-- packet identifier: `SYSTEM_INFO` : 160
+- packet identifier: `MSG_SYSTEM_INFO` : 160
 - data length: 
 
-## <a name="CLUE_INFO"></a>ClueInfo
+## <a name="MSG_CLUE_INFO"></a>ClueInfo
 
-- packet identifier: `CLUE_INFO` : 176
+- packet identifier: `MSG_CLUE_INFO` : 176
 - data length: 13
 
 ### ClueInfo encoding
@@ -252,9 +252,9 @@ This section describes the data payloads of the packets; and how those data are 
 | 12:7   | 2.5.1)centerText       | B1          | 1      |             |
 
 
-## <a name="CLUE_INFO"></a>RequestClueInfo
+## <a name="MSG_CLUE_INFO"></a>RequestClueInfo
 
-- packet identifier: `CLUE_INFO` : 176
+- packet identifier: `MSG_CLUE_INFO` : 176
 - data length: 1
 
 ### RequestClueInfo encoding
@@ -266,9 +266,9 @@ This section describes the data payloads of the packets; and how those data are 
 | 0     | 1)clueNumber | U8          | 1      |             |
 
 
-## <a name="CLUE_LINE"></a>ClueLine
+## <a name="MSG_CLUE_LINE"></a>ClueLine
 
-- packet identifier: `CLUE_LINE` : 192
+- packet identifier: `MSG_CLUE_LINE` : 192
 - minimum data length: 3
 - maximum data length: 42
 
@@ -283,9 +283,9 @@ This section describes the data payloads of the packets; and how those data are 
 | 2...41 | 3)lineText   | Zero-terminated string up to 40 bytes         ||             |
 
 
-## <a name="CLUE_LINE"></a>RequestClueLine
+## <a name="MSG_CLUE_LINE"></a>RequestClueLine
 
-- packet identifier: `CLUE_LINE` : 192
+- packet identifier: `MSG_CLUE_LINE` : 192
 - data length: 2
 
 ### RequestClueLine encoding

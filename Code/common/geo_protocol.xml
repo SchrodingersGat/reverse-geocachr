@@ -9,26 +9,26 @@
     -->
     
     <Enum name="Packet" comment="USB Packet types">
-        <Value name="RESET_INTO_BOOTLOADER" value="0x0A"/>
-        <Value name="ENABLE_DEBUG_MODE"/>
+        <Value name="MSG_RESET_INTO_BOOTLOADER" value="0x0A"/>
+        <Value name="MSG_ENABLE_DEBUG_MODE"/>
         
-        <Value name="SYSTEM_INFO" value="0xA0"/>
+        <Value name="MSG_SYSTEM_INFO" value="0xA0"/>
         
-        <Value name="CLUE_INFO" value="0xB0"/>
+        <Value name="MSG_CLUE_INFO" value="0xB0"/>
         
-        <Value name="CLUE_LINE" value="0xC0"/>
+        <Value name="MSG_CLUE_LINE" value="0xC0"/>
         
-        <Value name="UNLOCK" value="0xD0"/>
-        <Value name="LOCK"/>
+        <Value name="MSG_UNLOCK" value="0xD0"/>
+        <Value name="MSG_LOCK"/>
         
-        <Value name="NEXT_CLUE" value="0xE0"/>
-        <Value name="PREV_CLUE"/>
-        <Value name="FIRST_CLUE"/>
-        <Value name="LAST_CLUE"/>
+        <Value name="MSG_NEXT_CLUE" value="0xE0"/>
+        <Value name="MSG_PREV_CLUE"/>
+        <Value name="MSG_FIRST_CLUE"/>
+        <Value name="MSG_LAST_CLUE"/>
         
-        <Value name="SET_CLUE_COUNT" value="0xF0"/>
-        <Value name="INVALIDATE_CLUES"/>
-        <Value name="VALIDATE_CLUES"/>
+        <Value name="MSG_SET_CLUE_COUNT" value="0xF0"/>
+        <Value name="MSG_INVALIDATE_CLUES"/>
+        <Value name="MSG_VALIDATE_CLUES"/>
     </Enum>
     
     <Enum name="ClueTypes">
@@ -75,63 +75,63 @@
     </Structure>
     
     <!-- Commands -->
-    <Packet name="Unlock" ID="UNLOCK" file="boxpackets" parameterInterface="true">
+    <Packet name="Unlock" ID="MSG_UNLOCK" file="boxpackets" parameterInterface="true">
     </Packet>
     
-    <Packet name="Lock" ID="LOCK" file="boxpackets" parameterInterface="true">
+    <Packet name="Lock" ID="MSG_LOCK" file="boxpackets" parameterInterface="true">
     </Packet>
     
-    <Packet name="NextClue" ID="NEXT_CLUE" file="boxpackets" parameterInterface="true">
+    <Packet name="NextClue" ID="MSG_NEXT_CLUE" file="boxpackets" parameterInterface="true">
     </Packet>
     
-    <Packet name="PrevClue" ID="PREV_CLUE" file="boxpackets" parameterInterface="true">
+    <Packet name="PrevClue" ID="MSG_PREV_CLUE" file="boxpackets" parameterInterface="true">
     </Packet>
     
-    <Packet name="FirstClue" ID="FIRST_CLUE" file="boxpackets" parameterInterface="true">
+    <Packet name="FirstClue" ID="MSG_FIRST_CLUE" file="boxpackets" parameterInterface="true">
     </Packet>
     
-    <Packet name="LastClue" ID="LAST_CLUE" file="boxpackets" parameterInterface="true">
+    <Packet name="LastClue" ID="MSG_LAST_CLUE" file="boxpackets" parameterInterface="true">
     </Packet>
     
-    <Packet name="Bootload" ID="RESET_INTO_BOOTLOADER" file="boxpackets" parameterInterface="true">
+    <Packet name="Bootload" ID="MSG_RESET_INTO_BOOTLOADER" file="boxpackets" parameterInterface="true">
     </Packet>
     
-    <Packet name="EnableDebug" ID="ENABLE_DEBUG_MODE" file="boxpackets" parameterInterface="true">
+    <Packet name="EnableDebug" ID="MSG_ENABLE_DEBUG_MODE" file="boxpackets" parameterInterface="true">
     </Packet>
     
-    <Packet name="SetClueCount" ID="SET_CLUE_COUNT" file="boxpackets" parameterInterface="true">
+    <Packet name="SetClueCount" ID="MSG_SET_CLUE_COUNT" file="boxpackets" parameterInterface="true">
         <Data name="clueCount" inMemoryType="unsigned8"/>
     </Packet>
     
-    <Packet name="ValidateClues" ID="VALIDATE_CLUES" file="boxpackets" parameterInterface="true">
+    <Packet name="ValidateClues" ID="MSG_VALIDATE_CLUES" file="boxpackets" parameterInterface="true">
     </Packet>
     
-    <Packet name="InvalidateClues" ID="VALIDATE_CLUES" file="boxpackets" parameterInterface="true">
+    <Packet name="InvalidateClues" ID="MSG_VALIDATE_CLUES" file="boxpackets" parameterInterface="true">
     </Packet>
     
-    <Packet name="BoxInfo" ID="SYSTEM_INFO" file="boxpackets" parameterInterface="true">
+    <Packet name="BoxInfo" ID="MSG_SYSTEM_INFO" file="boxpackets" parameterInterface="true">
         <Data name="info" struct="BoxInfo"/>
     </Packet>
     
-    <Packet name="RequestBoxInfo" ID="SYSTEM_INFO" file="boxpackets" parameterInterface="true">
+    <Packet name="RequestBoxInfo" ID="MSG_SYSTEM_INFO" file="boxpackets" parameterInterface="true">
     </Packet>
     
-    <Packet name="ClueInfo" ID="CLUE_INFO" file="boxpackets" parameterInterface="true">
+    <Packet name="ClueInfo" ID="MSG_CLUE_INFO" file="boxpackets" parameterInterface="true">
         <Data name="clueNumber" inMemoryType="unsigned8"/>
         <Data name="clueInfo" struct="Waypoint"/>
     </Packet>
     
-    <Packet name="RequestClueInfo" ID="CLUE_INFO" file="boxpackets" parameterInterface="true">
+    <Packet name="RequestClueInfo" ID="MSG_CLUE_INFO" file="boxpackets" parameterInterface="true">
         <Data name="clueNumber" inMemoryType="unsigned8"/>
     </Packet>
     
-    <Packet name="ClueLine" ID="CLUE_LINE" file="boxpackets" parameterInterface="true">
+    <Packet name="ClueLine" ID="MSG_CLUE_LINE" file="boxpackets" parameterInterface="true">
         <Data name="clueNumber" inMemoryType="unsigned8"/>
         <Data name="lineNumber" inMemoryType="unsigned8"/>
         <Data name="lineText" inMemoryType="signed8" array="40" encodedType="string"/>
     </Packet>
     
-    <Packet name="RequestClueLine" ID="CLUE_LINE" file="boxpackets" parameterInterface="true">
+    <Packet name="RequestClueLine" ID="MSG_CLUE_LINE" file="boxpackets" parameterInterface="true">
         <Data name="clueNumber" inMemoryType="unsigned8"/>
         <Data name="lineNumber" inMemoryType="unsigned8"/>
     </Packet>
