@@ -12,9 +12,9 @@
 #include "box_defines.h"
 #include "types.h"
 
-extern Waypoint_t waypoints[BOX_MAX_CLUES + 2];
+extern Clue_t clues[BOX_MAX_CLUES + 2];
 
-Waypoint_t* GetWaypoint(uint8_t index);
+Clue_t* GetClue(uint8_t index);
 
 void NextClue();
 void PrevClue();

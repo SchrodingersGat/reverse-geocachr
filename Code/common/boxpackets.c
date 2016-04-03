@@ -273,54 +273,54 @@ int getFirstClueMinDataLength(void)
 }
 
 /*!
- * \brief Create the LAST_CLUE packet
+ * \brief Create the LastClue packet
  *
 
  * \param pkt points to the packet which will be created by this function
  */
-void encodeLAST_CLUEPacket(void* pkt)
+void encodeLastCluePacket(void* pkt)
 {
     uint8_t* data = getReverseGeocachePacketData(pkt);
     int byteindex = 0;
 
     // complete the process of creating the packet
-    finishReverseGeocachePacket(pkt, byteindex, getLAST_CLUEPacketID());
+    finishReverseGeocachePacket(pkt, byteindex, getLastCluePacketID());
 }
 
 /*!
- * \brief Decode the LAST_CLUE packet
+ * \brief Decode the LastClue packet
  *
 
  * \param pkt points to the packet being decoded by this function
  * \return 0 is returned if the packet ID or size is wrong, else 1
  */
-int decodeLAST_CLUEPacket(const void* pkt)
+int decodeLastCluePacket(const void* pkt)
 {
     int byteindex = 0;
     const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
     int numBytes = getReverseGeocachePacketSize(pkt);
 
-    if(getReverseGeocachePacketID(pkt) != getLAST_CLUEPacketID())
+    if(getReverseGeocachePacketID(pkt) != getLastCluePacketID())
         return 0;
 
-    if(numBytes < getLAST_CLUEMinDataLength())
+    if(numBytes < getLastClueMinDataLength())
         return 0;
 
     return 1;
 }
 
 /*!
- * \return the packet ID for the LAST_CLUE packet
+ * \return the packet ID for the LastClue packet
  */
-uint32_t getLAST_CLUEPacketID(void)
+uint32_t getLastCluePacketID(void)
 {
     return LAST_CLUE;
 }
 
 /*!
- * \return the minimum data length in bytes for the LAST_CLUE packet
+ * \return the minimum data length in bytes for the LastClue packet
  */
-int getLAST_CLUEMinDataLength(void)
+int getLastClueMinDataLength(void)
 {
     return 0;
 }
@@ -717,14 +717,14 @@ int getRequestBoxInfoMinDataLength(void)
  * \param clueNumber is 
  * \param clueInfo is 
  */
-void encodeClueInfoPacket(void* pkt, uint8_t clueNumber, const ClueInfo_t* clueInfo)
+void encodeClueInfoPacket(void* pkt, uint8_t clueNumber, const Waypoint_t* clueInfo)
 {
     uint8_t* data = getReverseGeocachePacketData(pkt);
     int byteindex = 0;
 
     uint8ToBytes((uint8_t)clueNumber, data, &byteindex);
 
-    encodeClueInfo_t(data, &byteindex, clueInfo);
+    encodeWaypoint_t(data, &byteindex, clueInfo);
 
     // complete the process of creating the packet
     finishReverseGeocachePacket(pkt, byteindex, getClueInfoPacketID());
@@ -739,7 +739,7 @@ void encodeClueInfoPacket(void* pkt, uint8_t clueNumber, const ClueInfo_t* clueI
  * \param clueInfo receives 
  * \return 0 is returned if the packet ID or size is wrong, else 1
  */
-int decodeClueInfoPacket(const void* pkt, uint8_t* clueNumber, ClueInfo_t* clueInfo)
+int decodeClueInfoPacket(const void* pkt, uint8_t* clueNumber, Waypoint_t* clueInfo)
 {
     int byteindex = 0;
     const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
@@ -753,7 +753,7 @@ int decodeClueInfoPacket(const void* pkt, uint8_t* clueNumber, ClueInfo_t* clueI
 
     *clueNumber = (uint8_t)uint8FromBytes(data, &byteindex);
 
-    if(decodeClueInfo_t(data, &byteindex, clueInfo) == 0)
+    if(decodeWaypoint_t(data, &byteindex, clueInfo) == 0)
         return 0;
 
     return 1;
@@ -772,7 +772,7 @@ uint32_t getClueInfoPacketID(void)
  */
 int getClueInfoMinDataLength(void)
 {
-    return 21;
+    return 13;
 }
 
 /*!

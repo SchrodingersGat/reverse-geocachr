@@ -160,7 +160,7 @@ This section describes the data payloads of the packets; and how those data are 
 - packet identifier: `FIRST_CLUE` : 226
 - data length: 
 
-## <a name="LAST_CLUE"></a>LAST_CLUE
+## <a name="LAST_CLUE"></a>LastClue
 
 - packet identifier: `LAST_CLUE` : 227
 - data length: 
@@ -208,18 +208,22 @@ This section describes the data payloads of the packets; and how those data are 
 
 
 [Encoding for packet BoxInfo]
-| Bytes | Name             | [Enc](#Enc) | Repeat | Description |
-| ----- | ---------------- | :---------: | :----: | ----------- |
-| 0...8 | 1)info                        || 1      |             |
-| 0...1 | 1.1)serialNumber | U16         | 1      |             |
-| 2     | 1.2)versionMajor | U8          | 1      |             |
-| 3     | 1.3)versionMinor | U8          | 1      |             |
-| 4     | 1.4)pcbRevision  | U8          | 1      |             |
-| 5     | 1.5)status                    || 1      |             |
-| 5:7   | 1.5.1)locked     | B1          | 1      |             |
-| 6     | 1.6)charge       | U8          | 1      |             |
-| 7     | 1.7)currentClue  | U8          | 1      |             |
-| 8     | 1.8)totalClues   | U8          | 1      |             |
+| Bytes     | Name                | [Enc](#Enc) | Repeat | Description              |
+| --------- | ------------------- | :---------: | :----: | ------------------------ |
+| 0...8     | 1)info                           || 1      |                          |
+| 0...1     | 1.1)serialNumber    | U16         | 1      |                          |
+| 2         | 1.2)versionMajor    | U8          | 1      |                          |
+| 3         | 1.3)versionMinor    | U8          | 1      |                          |
+| 4         | 1.4)pcbRevision     | U8          | 1      |                          |
+| 5         | 1.5)status                       || 1      |                          |
+| 5:7       | 1.5.1)locked        | B1          | 1      |                          |
+| 5:6       | 1.5.2)gpsConnection | B1          | 1      | 1 = GPS unit detected.   |
+| 5:5...5:4 | 1.5.3)gpsStatus     | B2          | 1      | GPS Status.              |
+| 5:3       | 1.5.4)charging      | B1          | 1      | Battery charging status. |
+| 5:2       | 1.5.5)debug         | B1          | 1      |                          |
+| 6         | 1.6)charge          | U8          | 1      |                          |
+| 7         | 1.7)currentClue     | U8          | 1      |                          |
+| 8         | 1.8)totalClues      | U8          | 1      |                          |
 
 
 ## <a name="SYSTEM_INFO"></a>RequestBoxInfo
@@ -230,22 +234,22 @@ This section describes the data payloads of the packets; and how those data are 
 ## <a name="CLUE_INFO"></a>ClueInfo
 
 - packet identifier: `CLUE_INFO` : 176
-- data length: 21
+- data length: 13
 
 ### ClueInfo encoding
 
 
 [Encoding for packet ClueInfo]
-| Bytes   | Name                   | [Enc](#Enc) | Repeat | Description |
-| ------- | ---------------------- | :---------: | :----: | ----------- |
-| 0       | 1)clueNumber           | U8          | 1      |             |
-| 1...20  | 2)clueInfo                          || 1      |             |
-| 1...8   | 2.1)lat                | F64         | 1      |             |
-| 9...16  | 2.2)lng                | F64         | 1      |             |
-| 17...18 | 2.3)threshold          | U16         | 1      |             |
-| 19      | 2.4)[type](#ClueTypes) | U8          | 1      |             |
-| 20      | 2.5)options                         || 1      |             |
-| 20:7    | 2.5.1)centerText       | B1          | 1      |             |
+| Bytes  | Name                   | [Enc](#Enc) | Repeat | Description |
+| ------ | ---------------------- | :---------: | :----: | ----------- |
+| 0      | 1)clueNumber           | U8          | 1      |             |
+| 1...12 | 2)clueInfo                          || 1      |             |
+| 1...4  | 2.1)lat                | F32         | 1      |             |
+| 5...8  | 2.2)lng                | F32         | 1      |             |
+| 9...10 | 2.3)threshold          | U16         | 1      |             |
+| 11     | 2.4)[type](#ClueTypes) | U8          | 1      |             |
+| 12     | 2.5)options                         || 1      |             |
+| 12:7   | 2.5.1)centerText       | B1          | 1      |             |
 
 
 ## <a name="CLUE_INFO"></a>RequestClueInfo

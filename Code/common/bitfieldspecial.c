@@ -120,23 +120,6 @@ unsigned int decodeBitfield(const uint8_t* bytes, int* index, int* bitcount, int
 
 
 /*!
- * Scale a float64 to the base integer type used for bitfield
- * \param value is the number to scale.
- * \param min is the minimum value that can be encoded.
- * \param scaler is multiplied by value to create the integer.
- * \return (value-min)*scaler.
- */
-unsigned int float64ScaledToBitfield(double value, double min, double scaler)
-{
-    // scale the number
-    value = (value - min)*scaler;
-
-    // account for fractional truncation
-    return (unsigned int)(value + 0.5);
-}
-
-
-/*!
  * Scale a float32 to the base integer type used for bitfield
  * \param value is the number to scale.
  * \param min is the minimum value that can be encoded.
@@ -150,20 +133,6 @@ unsigned int float32ScaledToBitfield(float value, float min, float scaler)
 
     // account for fractional truncation
     return (unsigned int)(value + 0.5f);
-}
-
-
-/*!
- * Inverse scale the bitfield base integer type to a float64
- * \param value is the integer number to inverse scale
- * \param min is the minimum value that can be represented.
- * \param invscaler is multiplied by the integer to create the return value.
- *        invscaler should be the inverse of the scaler given to the scaling function.
- * \return the correctly scaled decoded value. return = min + value*invscaler.
- */
-double float64ScaledFromBitfield(unsigned int value, double min, double invscaler)
-{
-    return (double)(min + invscaler*value);
 }
 
 

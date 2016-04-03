@@ -23,7 +23,6 @@ extern "C" {
 
 #include <stdint.h>
 #include <string.h>	// C string manipulation function header
-#include "indices.h"	// indices.h is included to for array length enumerations
 
 /*!
  * USB Packet types

@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 
-<Protocol name="ReverseGeocache" prefix="" api="1" version="1.0.0.a" endian="big" supportInt64="false"supprtLongBitfield="false" supportSpecialFloat="false" comment=
+<Protocol name="ReverseGeocache" prefix="" api="1" version="1.0.0.a" endian="big" supportInt64="false" supprtLongBitfield="false" supportFloat64="false" supportSpecialFloat="false" comment=
 "">
 
     <Include name="string.h" comment="C string manipulation function header" global="true"/>
+    <!--
     <Include name="indices.h" comment="indices.h is included to for array length enumerations"/>
+    -->
     
     <Enum name="Packet" comment="USB Packet types">
         <Value name="RESET_INTO_BOOTLOADER" value="0x0A"/>
@@ -42,6 +44,10 @@
     
     <Structure name="BoxStatus"  file="boxdefines">
         <Data name="locked" inMemoryType="bitfield1"/>
+        <Data name="gpsConnection" inMemoryType="bitfield1" comment="1 = GPS unit detected"/>
+        <Data name="gpsStatus" inMemoryType="bitfield2" comment="GPS Status"/>
+        <Data name="charging" inMemoryType="bitfield1" comment="Battery charging status"/>
+        <Data name="debug" inMemoryType="bitfield1"/>
     </Structure>
     
     <Structure name="ClueOptions" file="boxdefines">
@@ -60,9 +66,9 @@
         <Data name="totalClues" inMemoryType="unsigned8"/>
     </Structure>
     
-    <Structure name="ClueInfo" file="boxdefines">
-        <Data name="lat" inMemoryType="double"/>
-        <Data name="lng" inMemoryType="double"/>
+    <Structure name="Waypoint" file="boxdefines">
+        <Data name="lat" inMemoryType="float"/>
+        <Data name="lng" inMemoryType="float"/>
         <Data name="threshold" inMemoryType="unsigned16"/>
         <Data name="type" enum="ClueTypes"/>
         <Data name="options" struct="ClueOptions"/>
@@ -84,7 +90,7 @@
     <Packet name="FirstClue" ID="FIRST_CLUE" file="boxpackets" parameterInterface="true">
     </Packet>
     
-    <Packet name="LAST_CLUE" ID="LAST_CLUE" file="boxpackets" parameterInterface="true">
+    <Packet name="LastClue" ID="LAST_CLUE" file="boxpackets" parameterInterface="true">
     </Packet>
     
     <Packet name="Bootload" ID="RESET_INTO_BOOTLOADER" file="boxpackets" parameterInterface="true">
@@ -112,7 +118,7 @@
     
     <Packet name="ClueInfo" ID="CLUE_INFO" file="boxpackets" parameterInterface="true">
         <Data name="clueNumber" inMemoryType="unsigned8"/>
-        <Data name="clueInfo" struct="ClueInfo"/>
+        <Data name="clueInfo" struct="Waypoint"/>
     </Packet>
     
     <Packet name="RequestClueInfo" ID="CLUE_INFO" file="boxpackets" parameterInterface="true">

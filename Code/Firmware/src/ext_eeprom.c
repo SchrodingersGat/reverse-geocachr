@@ -71,10 +71,12 @@ bool EEPROM_ReadWaypoint(uint16_t address, Waypoint_t *waypoint)
 		EEPROM_ReadBytes(address, (uint8_t*) waypoint, sizeof(waypoint));
 
 		//If the checksums match, we've read correctly
+		/*
 		if (Waypoint_EncodeChecksum(waypoint) == waypoint->checksum)
 		{
 			break;
 		}
+		*/
 
 		tries--;
 	} while (tries > 0);

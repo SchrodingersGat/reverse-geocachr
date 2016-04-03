@@ -110,7 +110,7 @@ static ErrorCode_t HID_Ep_Hdlr(USBD_HANDLE_T hUsb, void *data, uint32_t event)
 		if (len > 0)
 		{
 			//Do something with the message
-			if (Handle_Box_Message(rxBuffer, txBuffer) == true)
+			if (Handle_Box_Message() == true)
 			{
 				//printf("Sending response\n");
 				USBD_API->hw->WriteEP(hUsb, pHidCtrl->epin_adr, txBuffer, 64);

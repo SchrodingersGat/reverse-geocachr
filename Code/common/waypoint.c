@@ -4,24 +4,30 @@
 
 #define PI 3.14159265359
 
-void Waypoint_Init(Waypoint_t *waypoint) {
-    
+void Clue_Init(Clue_t *clue)
+{
     uint8_t i = 0;
     uint8_t j = 0;
+    
+    Waypoint_init(clue->waypoint);
+    
+    for (i=0;i<NUM_CLUE_LINES;i++) {
+        for (j=0;j<CLUE_LINE_LEN_MAX;j++) {
+            clue->lines[i][j] = 0; //zero-out the text
+        }
+    }
+}
+
+void Waypoint_Init(Waypoint_t *waypoint) {
     
     waypoint->lat = 0;
     waypoint->lng = 0;
     waypoint->threshold = WAYPOINT_THRESHOLD_DEFAULT;
     waypoint->type = CLUE_SHOW_DISTANCE;
-    waypoint->options = 0x00;
     
-    for (i=0;i<NUM_CLUE_LINES;i++) {
-        for (j=0;j<CLUE_LINE_LEN_MAX;j++) {
-            waypoint->lines[i][j] = 0; //zero-out the text
-        }
-    }
-    
-    waypoint->checksum = 0x00; //Invalid checksum to start
+    //Clue options
+    waypoint->options.centerText = 0;
+
 }
 
 uint8_t Waypoint_Validate(Waypoint_t *waypoint) {
@@ -91,7 +97,7 @@ double Waypoint_Heading(double lat, double lng, Waypoint_t *w) {
     return 0;
 }
 
-void Waypoint_SetLine(Waypoint_t *w, uint8_t line, char *text) {
+void Clue_SetLine(Clue_t *c, uint8_t line, char *text) {
 
 	uint8_t i = 0;
 
@@ -106,12 +112,12 @@ void Waypoint_SetLine(Waypoint_t *w, uint8_t line, char *text) {
 		}
 
 		if (endFound == 1) {
-			w->lines[line][i] = 0;
+			c->lines[line][i] = 0;
 		} else {
-			w->lines[line][i] = text[i];
+			c->lines[line][i] = text[i];
 		}
 	}
 
 	//Always zero-terminate!
-	w->lines[line][CLUE_LINE_LEN_MAX-1] = 0;
+	c->lines[line][CLUE_LINE_LEN_MAX-1] = 0;
 }

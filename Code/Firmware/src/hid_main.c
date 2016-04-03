@@ -54,6 +54,9 @@ volatile static uint16_t pauseTimer = 0;
 #include "waypoint.h"
 #include "gps.h"
 
+#include "boxdefines.h"
+#include "ReverseGeocacheProtocol.h"
+
 GPSData_t gps;
 
 BoxInfo_t boxInfo;
@@ -178,25 +181,25 @@ int main(void) {
 	boxInfo.charge = 24;
 	boxInfo.versionMajor = VERSION_MAJOR;
 	boxInfo.versionMinor = VERSION_MINOR;
-	boxInfo.boardRevision = 'A';
+	boxInfo.pcbRevision = 'A';
 	boxInfo.serialNumber = 0x01;
 
-	Waypoint_SetLine(&waypoints[0], 0, "Welcome message");
-	Waypoint_SetLine(&waypoints[0], 1, "Welcome message - 2 line");
-	Waypoint_SetLine(&waypoints[0], 2, "Welcome message - 3 LINE");
+	Clue_SetLine(&clues[0], 0, "Welcome message");
+	Clue_SetLine(&clues[0], 1, "Welcome message - 2 line");
+	Clue_SetLine(&clues[0], 2, "Welcome message - 3 LINE");
 
-	Waypoint_SetLine(&waypoints[1], 0, "this is the first line");
-	Waypoint_SetLine(&waypoints[1], 1, "and a second line!");
-	Waypoint_SetLine(&waypoints[1], 2, "third line is the charm");
-	Waypoint_SetLine(&waypoints[1], 3, "fourth lihhhhn");
-	Waypoint_SetLine(&waypoints[1], 4, "FIF");
+	Clue_SetLine(&clues[1], 0, "this is the first line");
+	Clue_SetLine(&clues[1], 1, "and a second line!");
+	Clue_SetLine(&clues[1], 2, "third line is the charm");
+	Clue_SetLine(&clues[1], 3, "fourth lihhhhn");
+	Clue_SetLine(&clues[1], 4, "FIF");
 
-	Waypoint_SetLine(&waypoints[2], 0, "CLUE TOO");
-	Waypoint_SetLine(&waypoints[2], 2, "BLUE BLUE");
-	Waypoint_SetLine(&waypoints[2], 4, "WAAHOOOOO");
+	Clue_SetLine(&clues[2], 0, "CLUE TOO");
+	Clue_SetLine(&clues[2], 2, "BLUE BLUE");
+	Clue_SetLine(&clues[2], 4, "WAAHOOOOO");
 
-	waypoints[2].lat = 12.345;
-	waypoints[2].lng = 67.890;
+	clues[2].waypoint.lat = 12.345;
+	clues[2].waypoint.lng = 67.890;
 
 	LCD_DrawString(5,5,"going into bootloader",RED,1);
 

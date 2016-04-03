@@ -50,48 +50,6 @@ extern "C" {
 
 #include <stdint.h>
 
-//! Encode a double on a byte stream by scaling to fit in 1 unsigned byte.
-void float64ScaledTo1UnsignedBytes(double value, uint8_t* bytes, int* index, double min, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 1 signed byte.
-void float64ScaledTo1SignedBytes(double value, uint8_t* bytes, int* index, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 2 unsigned bytes in big endian order.
-void float64ScaledTo2UnsignedBeBytes(double value, uint8_t* bytes, int* index, double min, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 2 unsigned bytes in little endian order.
-void float64ScaledTo2UnsignedLeBytes(double value, uint8_t* bytes, int* index, double min, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 2 signed bytes in big endian order.
-void float64ScaledTo2SignedBeBytes(double value, uint8_t* bytes, int* index, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 2 signed bytes in little endian order.
-void float64ScaledTo2SignedLeBytes(double value, uint8_t* bytes, int* index, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 3 unsigned bytes in big endian order.
-void float64ScaledTo3UnsignedBeBytes(double value, uint8_t* bytes, int* index, double min, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 3 unsigned bytes in little endian order.
-void float64ScaledTo3UnsignedLeBytes(double value, uint8_t* bytes, int* index, double min, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 3 signed bytes in big endian order.
-void float64ScaledTo3SignedBeBytes(double value, uint8_t* bytes, int* index, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 3 signed bytes in little endian order.
-void float64ScaledTo3SignedLeBytes(double value, uint8_t* bytes, int* index, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 4 unsigned bytes in big endian order.
-void float64ScaledTo4UnsignedBeBytes(double value, uint8_t* bytes, int* index, double min, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 4 unsigned bytes in little endian order.
-void float64ScaledTo4UnsignedLeBytes(double value, uint8_t* bytes, int* index, double min, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 4 signed bytes in big endian order.
-void float64ScaledTo4SignedBeBytes(double value, uint8_t* bytes, int* index, double scaler);
-
-//! Encode a double on a byte stream by scaling to fit in 4 signed bytes in little endian order.
-void float64ScaledTo4SignedLeBytes(double value, uint8_t* bytes, int* index, double scaler);
-
 //! Encode a float on a byte stream by scaling to fit in 1 unsigned byte.
 void float32ScaledTo1UnsignedBytes(float value, uint8_t* bytes, int* index, float min, float scaler);
 

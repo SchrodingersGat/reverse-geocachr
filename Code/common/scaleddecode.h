@@ -17,48 +17,6 @@ extern "C" {
  */
 #include <stdint.h>
 
-//! Compute a double scaled from 1 unsigned byte.
-double float64ScaledFrom1UnsignedBytes(const uint8_t* bytes, int* index, double min, double invscaler);
-
-//! Compute a double scaled from 1 signed byte.
-double float64ScaledFrom1SignedBytes(const uint8_t* bytes, int* index, double invscaler);
-
-//! Compute a double scaled from 2 unsigned bytes in big endian order.
-double float64ScaledFrom2UnsignedBeBytes(const uint8_t* bytes, int* index, double min, double invscaler);
-
-//! Compute a double scaled from 2 unsigned bytes in little endian order.
-double float64ScaledFrom2UnsignedLeBytes(const uint8_t* bytes, int* index, double min, double invscaler);
-
-//! Compute a double scaled from 2 signed bytes in big endian order.
-double float64ScaledFrom2SignedBeBytes(const uint8_t* bytes, int* index, double invscaler);
-
-//! Compute a double scaled from 2 signed bytes in little endian order.
-double float64ScaledFrom2SignedLeBytes(const uint8_t* bytes, int* index, double invscaler);
-
-//! Compute a double scaled from 3 unsigned bytes in big endian order.
-double float64ScaledFrom3UnsignedBeBytes(const uint8_t* bytes, int* index, double min, double invscaler);
-
-//! Compute a double scaled from 3 unsigned bytes in little endian order.
-double float64ScaledFrom3UnsignedLeBytes(const uint8_t* bytes, int* index, double min, double invscaler);
-
-//! Compute a double scaled from 3 signed bytes in big endian order.
-double float64ScaledFrom3SignedBeBytes(const uint8_t* bytes, int* index, double invscaler);
-
-//! Compute a double scaled from 3 signed bytes in little endian order.
-double float64ScaledFrom3SignedLeBytes(const uint8_t* bytes, int* index, double invscaler);
-
-//! Compute a double scaled from 4 unsigned bytes in big endian order.
-double float64ScaledFrom4UnsignedBeBytes(const uint8_t* bytes, int* index, double min, double invscaler);
-
-//! Compute a double scaled from 4 unsigned bytes in little endian order.
-double float64ScaledFrom4UnsignedLeBytes(const uint8_t* bytes, int* index, double min, double invscaler);
-
-//! Compute a double scaled from 4 signed bytes in big endian order.
-double float64ScaledFrom4SignedBeBytes(const uint8_t* bytes, int* index, double invscaler);
-
-//! Compute a double scaled from 4 signed bytes in little endian order.
-double float64ScaledFrom4SignedLeBytes(const uint8_t* bytes, int* index, double invscaler);
-
 //! Compute a float scaled from 1 unsigned byte.
 float float32ScaledFrom1UnsignedBytes(const uint8_t* bytes, int* index, float min, float invscaler);
 

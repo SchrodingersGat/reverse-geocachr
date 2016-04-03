@@ -43,13 +43,13 @@ void Draw_Clue()
 
 	int16_t x = LINE_X_OFFSET;
 
-	Waypoint_t *w = &waypoints[boxInfo.currentClue];
+	Clue_t *c = &clues[boxInfo.currentClue];
 
 	if (prevClue == boxInfo.currentClue) return;
 
 	prevClue = boxInfo.currentClue;
 
-	if (w->options & CLUE_OPTION_CENTER_TEXT) {
+	if (c->waypoint.options.centerText) {
 		LCD_SetTextOptions(ALIGN_CENTRE);
 		x = LCD_WIDTH / 2;
 	} else {
@@ -68,7 +68,7 @@ void Draw_Clue()
 	{
 		LCD_DrawString(x,
 					   LINE_Y_OFFSET + (LINE_SPACING * i),
-					   (char*) &(w->lines[i]),
+					   (char*) &(c->lines[i]),
 					   BLACK,
 					   1);
 	}

@@ -8,28 +8,14 @@
 
 #include <stdint.h>
 
+#include "boxdefines.h"
 #include "box_defines.h"
-
-typedef struct {
-    
-    double lat; //!< Latitide of target position
-    double lng; //!< Longitude of target position
-    
-    uint16_t threshold;   //!< Threshold distance (in metres)
-    
-    uint8_t type;  //!< Clue type
-    uint8_t options; //!< Clue options
-    
-    clue_line lines[NUM_CLUE_LINES];
-
-    uint16_t checksum;
-    
-} Waypoint_t;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+void Clue_Init(Clue_t *clue);
 void Waypoint_Init(Waypoint_t *waypoint);
 
 uint8_t Waypoint_Validate(Waypoint_t *waypoint);
@@ -38,7 +24,7 @@ uint16_t Waypoint_CalculateChecksum(Waypoint_t *waypoint);
 double Waypoint_Distance(double lat, double lng, Waypoint_t *w);
 double Waypoint_Heading(double lat, double lng, Waypoint_t *w);
 
-void Waypoint_SetLine(Waypoint_t *w, uint8_t line, char *text);
+void Clue_SetLine(Clue_t *c, uint8_t line, char *text);
 
 #ifdef __cplusplus
 }

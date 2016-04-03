@@ -8,18 +8,18 @@
 #include "waypoints.h"
 #include "box_defines.h"
 
-Waypoint_t waypoints[BOX_MAX_CLUES + 2];
+Clue_t clues[BOX_MAX_CLUES + 2];
 uint8_t currentWaypoint = 0;
 uint8_t numberOfWaypoints = 3; //default value
 
-Waypoint_t welcomeMessage;
-Waypoint_t completeMessage;
+Clue_t welcomeMessage;
+Clue_t completeMessage;
 
-Waypoint_t* GetWaypoint(uint8_t index) {
+Clue_t* GetClue(uint8_t index) {
 
 	if (index > BOX_COMPLETE_MSG) index = BOX_WELCOME_MSG;
 
-	return (&waypoints[index]);
+	return (&clues[index]);
 }
 
 void NextClue() {
@@ -43,6 +43,7 @@ void PrevClue() {
 void FirstClue() {
 	boxInfo.currentClue = BOX_FIRST_CLUE;
 }
+
 void LastClue() {
 	boxInfo.currentClue = boxInfo.totalClues;
 }

@@ -9,6 +9,7 @@
 #define INC_TYPES_H_
 
 #include "..\..\common\box_defines.h"
+#include "..\..\common\boxdefines.h"
 #include "..\..\common\waypoint.h"
 
 extern BoxInfo_t boxInfo;

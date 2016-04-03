@@ -332,7 +332,7 @@
 <li>data length:</li>
 </ul>
 
-<h2 id="anamelast_cluealast_clue"><a name="LAST_CLUE"></a>LAST_CLUE</h2>
+<h2 id="anamelast_cluealastclue"><a name="LAST_CLUE"></a>LastClue</h2>
 
 <ul>
 <li>packet identifier: <code>LAST_CLUE</code> : 227</li>
@@ -485,6 +485,34 @@
 	<td></td>
 </tr>
 <tr>
+	<td>5:6</td>
+	<td>1.5.2)gpsConnection</td>
+	<td style="text-align:center;">B1</td>
+	<td style="text-align:center;">1</td>
+	<td>1 = GPS unit detected.</td>
+</tr>
+<tr>
+	<td>5:5&#8230;5:4</td>
+	<td>1.5.3)gpsStatus</td>
+	<td style="text-align:center;">B2</td>
+	<td style="text-align:center;">1</td>
+	<td>GPS Status.</td>
+</tr>
+<tr>
+	<td>5:3</td>
+	<td>1.5.4)charging</td>
+	<td style="text-align:center;">B1</td>
+	<td style="text-align:center;">1</td>
+	<td>Battery charging status.</td>
+</tr>
+<tr>
+	<td>5:2</td>
+	<td>1.5.5)debug</td>
+	<td style="text-align:center;">B1</td>
+	<td style="text-align:center;">1</td>
+	<td></td>
+</tr>
+<tr>
 	<td>6</td>
 	<td>1.6)charge</td>
 	<td style="text-align:center;">U8</td>
@@ -519,7 +547,7 @@
 
 <ul>
 <li>packet identifier: <code>CLUE_INFO</code> : 176</li>
-<li>data length: 21</li>
+<li>data length: 13</li>
 </ul>
 
 <h3 id="clueinfoencoding">ClueInfo encoding</h3>
@@ -553,47 +581,47 @@
 	<td></td>
 </tr>
 <tr>
-	<td>1&#8230;20</td>
+	<td>1&#8230;12</td>
 	<td colspan="2">2)clueInfo</td>
 	<td style="text-align:center;">1</td>
 	<td></td>
 </tr>
 <tr>
-	<td>1&#8230;8</td>
+	<td>1&#8230;4</td>
 	<td>2.1)lat</td>
-	<td style="text-align:center;">F64</td>
+	<td style="text-align:center;">F32</td>
 	<td style="text-align:center;">1</td>
 	<td></td>
 </tr>
 <tr>
-	<td>9&#8230;16</td>
+	<td>5&#8230;8</td>
 	<td>2.2)lng</td>
-	<td style="text-align:center;">F64</td>
+	<td style="text-align:center;">F32</td>
 	<td style="text-align:center;">1</td>
 	<td></td>
 </tr>
 <tr>
-	<td>17&#8230;18</td>
+	<td>9&#8230;10</td>
 	<td>2.3)threshold</td>
 	<td style="text-align:center;">U16</td>
 	<td style="text-align:center;">1</td>
 	<td></td>
 </tr>
 <tr>
-	<td>19</td>
+	<td>11</td>
 	<td>2.4)<a href="#ClueTypes">type</a></td>
 	<td style="text-align:center;">U8</td>
 	<td style="text-align:center;">1</td>
 	<td></td>
 </tr>
 <tr>
-	<td>20</td>
+	<td>12</td>
 	<td colspan="2">2.5)options</td>
 	<td style="text-align:center;">1</td>
 	<td></td>
 </tr>
 <tr>
-	<td>20:7</td>
+	<td>12:7</td>
 	<td>2.5.1)centerText</td>
 	<td style="text-align:center;">B1</td>
 	<td style="text-align:center;">1</td>
