@@ -25,6 +25,12 @@
 
 typedef char clue_line[CLUE_LINE_LEN_MAX];
 
+#define HID_VID 0x1FC9
+#define HID_PID 0x81
+#define HID_REPORT_SIZE 64
+
+typedef unsigned char HIDBuffer[HID_REPORT_SIZE];
+
 typedef struct
 {
 	Waypoint_t waypoint;

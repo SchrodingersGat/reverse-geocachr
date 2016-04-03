@@ -7,12 +7,11 @@
 
 #include "ReverseGeocacheProtocol.h"
 #include "..\..\common\boxdefines.h"
+#include "box_defines.h"
 
 #include "types.h"
 
 bool Handle_Box_Message();
-
-typedef char HIDBuffer[64];
 
 extern HIDBuffer txBuffer;
 extern HIDBuffer rxBuffer;

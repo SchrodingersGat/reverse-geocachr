@@ -8,8 +8,8 @@ void Clue_Init(Clue_t *clue)
 {
     uint8_t i = 0;
     uint8_t j = 0;
-    
-    Waypoint_init(clue->waypoint);
+
+    Waypoint_Init(&clue->waypoint);
     
     for (i=0;i<NUM_CLUE_LINES;i++) {
         for (j=0;j<CLUE_LINE_LEN_MAX;j++) {
