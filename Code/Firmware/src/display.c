@@ -16,6 +16,8 @@
 #include "BITMAP_USB.h"
 
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 #define BAR_COLOR 0x2104 	//35,35,35
 #define BG_COLOR 0xE73C		//230,230,230
@@ -146,13 +148,13 @@ void Draw_Header_String() {
 
 	switch (boxInfo.currentClue) {
 	case BOX_WELCOME_MSG:
-		sprintf(&titleString, "Reverse Geocache");
+		sprintf(titleString, "Reverse Geocache");
 		break;
 	case BOX_COMPLETE_MSG:
-		sprintf(&titleString, "Congratulations!");
+		sprintf(titleString, "Congratulations!");
 		break;
 	default:
-		sprintf(&titleString, "Clue %u of %u",
+		sprintf(titleString, "Clue %u of %u",
 			boxInfo.currentClue,
 			boxInfo.totalClues);
 		break;

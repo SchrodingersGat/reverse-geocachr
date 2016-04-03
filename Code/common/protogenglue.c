@@ -21,7 +21,7 @@ const uint8_t* getReverseGeocachePacketDataConst(const void* pkt)
 //! Complete a packet after the data have been encoded
 void finishReverseGeocachePacket(void* pkt, int size, uint32_t packetID)
 {
-    uint8_t *ptr = (uint8_t) pkt;
+    uint8_t *ptr = (uint8_t*) pkt;
     
     //Copy across the size and the ID
     ptr[0] = packetID;
