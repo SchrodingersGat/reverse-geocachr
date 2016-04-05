@@ -20,6 +20,7 @@ void Reset_Low();
 
 void Init_Systick();
 void Init_LCD();
+void Init_EEPROM();
 
 void Init_UART();
 

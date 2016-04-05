@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include "lpc_types.h"
 #include "chip.h"
+#include "spi_15xx.h"
 
 void SPI_Initialize(); //!< Configure SPI
 

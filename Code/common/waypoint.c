@@ -39,13 +39,13 @@ uint8_t Waypoint_Validate(Waypoint_t *waypoint) {
     return 1;
 }
 
-uint16_t Waypoint_CalculateChecksum(Waypoint_t *waypoint) {
+uint16_t Clue_CalculateChecksum(Clue_t *clue) {
     
     uint8_t i = 0;
-    uint8_t *ptr = (uint8_t*) waypoint;
+    uint8_t *ptr = (uint8_t*) clue;
     uint16_t checksum = 0;
     
-    for (i=0;i<sizeof(Waypoint_t);i++) {
+    for (i=0;i<(sizeof(Clue_t)-2);i++) {
         checksum ^= ptr[i];
     }
    

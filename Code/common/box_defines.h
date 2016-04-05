@@ -35,6 +35,8 @@ typedef struct
 {
 	Waypoint_t waypoint;
 	clue_line lines[NUM_CLUE_LINES];
+
+	uint16_t checksum;	//Stored checksum value
 } Clue_t;
 
 //Display options

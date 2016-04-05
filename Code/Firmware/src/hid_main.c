@@ -54,6 +54,8 @@ volatile static uint16_t pauseTimer = 0;
 #include "waypoint.h"
 #include "gps.h"
 
+#include "ext_eeprom.h"
+
 #include "boxdefines.h"
 #include "ReverseGeocacheProtocol.h"
 
@@ -173,6 +175,8 @@ int main(void) {
 
 	Init_LCD();
 
+	Init_EEPROM();
+
 	LCD_FillScreen(BLACK);
 
 	//TODO load these values from ext memory
@@ -247,6 +251,12 @@ int main(void) {
 
 //		__WFI();
 	}
+}
+
+void Init_EEPROM()
+{
+	//Configure the CS pin as an output
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, EE_CS_PORT, EE_CS_PIN);
 }
 
 void Init_LCD() {

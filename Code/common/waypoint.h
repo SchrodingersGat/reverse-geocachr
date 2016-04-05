@@ -16,10 +16,12 @@ extern "C" {
 #endif
 
 void Clue_Init(Clue_t *clue);
+uint16_t Clue_CalculateChecksum(Clue_t *clue);
+
 void Waypoint_Init(Waypoint_t *waypoint);
 
 uint8_t Waypoint_Validate(Waypoint_t *waypoint);
-uint16_t Waypoint_CalculateChecksum(Waypoint_t *waypoint);
+
 
 double Waypoint_Distance(double lat, double lng, Waypoint_t *w);
 double Waypoint_Heading(double lat, double lng, Waypoint_t *w);
