@@ -10,10 +10,22 @@ extern "C" {
 
 /*!
  * \file
- * \brief boxpackets.h defines the interface for the Unlock packet of the ReverseGeocache protocol stack
+ * \brief boxpackets.h defines the interface for the Reset packet of the ReverseGeocache protocol stack
  */
 
 #include "ReverseGeocacheProtocol.h"
+
+//! Create the Reset packet
+void encodeResetPacket(void* pkt);
+
+//! Decode the Reset packet
+int decodeResetPacket(const void* pkt);
+
+//! return the packet ID for the Reset packet
+uint32_t getResetPacketID(void);
+
+//! return the minimum data length for the Reset packet
+int getResetMinDataLength(void);
 
 //! Create the Unlock packet
 void encodeUnlockPacket(void* pkt);

@@ -75,6 +75,9 @@
     </Structure>
     
     <!-- Commands -->
+    <Packet name="Reset" ID="MSG_RESET_INTO_BOOTLOADER" file="boxpackets" parameterInterface="true">
+    </Packet>
+    
     <Packet name="Unlock" ID="MSG_UNLOCK" file="boxpackets" parameterInterface="true">
     </Packet>
     

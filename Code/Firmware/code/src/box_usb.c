@@ -31,8 +31,13 @@ bool Handle_Box_Message() {
 
 	clue_line line;
 
+	//Reset into bootloader
+	if (decodeResetPacket(&rxBuffer))
+	{
+		ReinvokeISP();
+	}
 	//Request box info
-	if (decodeRequestBoxInfoPacket(&rxBuffer))
+	else if (decodeRequestBoxInfoPacket(&rxBuffer))
 	{
 		encodeBoxInfoPacket(&txBuffer, &boxInfo);
 		response = true;
