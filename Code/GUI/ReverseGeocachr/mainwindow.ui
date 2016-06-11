@@ -475,6 +475,23 @@ Save clues to file or download to box</string>
              </property>
             </widget>
            </item>
+           <item row="3" column="2">
+            <widget class="QPushButton" name="bootload">
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="toolTip">
+              <string>Program new firmware</string>
+             </property>
+             <property name="text">
+              <string>Bootload</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>
@@ -915,6 +932,40 @@ Save clues to file or download to box</string>
            <row/>
            <column/>
           </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QPushButton" name="clearText">
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="toolTip">
+              <string>Set the clue distance threshold</string>
+             </property>
+             <property name="text">
+              <string>Clear Text</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
          <item>
           <layout class="QGridLayout" name="gridLayout_2">

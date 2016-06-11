@@ -198,7 +198,7 @@ int main(void)
 	PauseMs(250);
 	BacklightOn();
 	PauseMs(500);
-	ReinvokeISP();
+	//ReinvokeISP();
 
 	while (1)
 	{

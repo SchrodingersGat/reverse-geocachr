@@ -43,6 +43,8 @@ public slots:
     bool HIDConnect();
     void HIDDisconnect();
 
+    bool ResetIntoBootloader();
+
     bool RequestBoxInfo(int tries);
     bool RequestBoxInfo();
 

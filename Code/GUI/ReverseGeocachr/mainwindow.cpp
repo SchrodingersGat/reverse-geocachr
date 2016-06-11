@@ -39,30 +39,33 @@ MainWindow::MainWindow(QWidget *parent) :
             this,
             SLOT(jsCleared()));
 
-    connect(ui->saveButton,SIGNAL(clicked()),this,SLOT(saveClues()));
-    connect(ui->loadButton,SIGNAL(clicked()),this,SLOT(loadClues()));
-    connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(clearMap()));
-    connect(ui->fitMap,SIGNAL(clicked()),this,SLOT(jsFitMapToClues()));
+    connect(ui->saveButton,SIGNAL(released()),this,SLOT(saveClues()));
+    connect(ui->loadButton,SIGNAL(released()),this,SLOT(loadClues()));
+    connect(ui->pushButton,SIGNAL(released()),this,SLOT(clearMap()));
+    connect(ui->fitMap,SIGNAL(released()),this,SLOT(jsFitMapToClues()));
 
     connect(ui->selectFirst,SIGNAL(released()),&clues,SLOT(SelectFirst()));
     connect(ui->selectLast,SIGNAL(released()),&clues,SLOT(SelectLast()));
     connect(ui->selectNext,SIGNAL(released()),&clues,SLOT(SelectNext()));
     connect(ui->selectPrev,SIGNAL(released()),&clues,SLOT(SelectPrev()));
 
-    connect(ui->setThreshold,SIGNAL(clicked()),this,SLOT(setThreshold()));
+    connect(ui->setThreshold,SIGNAL(released()),this,SLOT(setThreshold()));
 
-    connect(ui->moveDown,SIGNAL(clicked()),&clues,SLOT(MoveClueDown()));
-    connect(ui->moveUp,SIGNAL(clicked()),&clues,SLOT(MoveClueUp()));
-    connect(ui->makeFirst,SIGNAL(clicked()),&clues,SLOT(MoveClueFirst()));
-    connect(ui->makeLast,SIGNAL(clicked()),&clues,SLOT(MoveClueLast()));
+    connect(ui->moveDown,SIGNAL(released()),&clues,SLOT(MoveClueDown()));
+    connect(ui->moveUp,SIGNAL(released()),&clues,SLOT(MoveClueUp()));
+    connect(ui->makeFirst,SIGNAL(released()),&clues,SLOT(MoveClueFirst()));
+    connect(ui->makeLast,SIGNAL(released()),&clues,SLOT(MoveClueLast()));
 
     //Box commands
-    connect(ui->boxUnlock,SIGNAL(clicked()),&box,SLOT(Unlock()));
-    connect(ui->boxLock,SIGNAL(clicked()),&box,SLOT(Lock()));
-    connect(ui->boxSkipToNextClue,SIGNAL(clicked()),&box,SLOT(SkipToNext()));
-    connect(ui->boxSkipToPrevClue,SIGNAL(clicked()),&box,SLOT(SkipToPrevious()));
-    connect(ui->boxUpload,SIGNAL(clicked()),this,SLOT(uploadClues()));
-    connect(ui->boxDownload,SIGNAL(clicked()),this,SLOT(downloadClues()));
+    connect(ui->boxUnlock,SIGNAL(released()),&box,SLOT(Unlock()));
+    connect(ui->boxLock,SIGNAL(released()),&box,SLOT(Lock()));
+    connect(ui->boxSkipToNextClue,SIGNAL(released()),&box,SLOT(SkipToNext()));
+    connect(ui->boxSkipToPrevClue,SIGNAL(released()),&box,SLOT(SkipToPrevious()));
+    connect(ui->boxUpload,SIGNAL(released()),this,SLOT(uploadClues()));
+    connect(ui->boxDownload,SIGNAL(released()),this,SLOT(downloadClues()));
+
+    connect(ui->bootload, SIGNAL(released()), this, SLOT(bootload()));
+    connect(ui->clearText, SIGNAL(released()), this, SLOT(clearText()));
 
     connect(&clues,SIGNAL(clueUpdated()),this,SLOT(updateClues()));
 
@@ -96,7 +99,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->clueType->addItem("Cardinal directions");
 
     connect(ui->clueType,SIGNAL(currentIndexChanged(int)),this,SLOT(clueTypeChanged(int)));
-    connect(ui->centerText,SIGNAL(clicked()),this,SLOT(clueOptionsChanged()));
+    connect(ui->centerText,SIGNAL(released()),this,SLOT(clueOptionsChanged()));
 
     ui->clueTable->clear();
 
@@ -164,6 +167,38 @@ void MainWindow::downloadClues() {
     }
 
     mb.exec();
+}
+
+void MainWindow::clearText()
+{
+    QTableWidgetItem *item;
+
+    for (int i=0;i<NUM_CLUE_LINES;i++)
+    {
+        item = ui->clueTable->item(i,0);
+
+        if (item == NULL)
+            continue;
+
+        item->setText("");
+    }
+
+    saveCurrentClue();
+    updateClues();
+}
+
+void MainWindow::bootload()
+{
+    QMessageBox mbox;
+    mbox.setWindowTitle("Bootload?");
+    mbox.setText("Are you sure you want to place the box into bootload mode?");
+    mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    mbox.setButtonText(QMessageBox::Ok, "Bootload");
+
+    if (mbox.exec() == QMessageBox::Ok)
+    {
+        box.ResetIntoBootloader();
+    }
 }
 
 bool MainWindow::downloadAllClues() {

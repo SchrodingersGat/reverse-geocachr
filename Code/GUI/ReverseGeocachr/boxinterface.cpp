@@ -79,7 +79,6 @@ bool Box::RequestBoxInfo(int tries)
 bool Box::RequestBoxInfo()
 {
     int res;
-    int i = 0;
 
     if (HIDConnect() == false)
     {
@@ -115,6 +114,30 @@ bool Box::RequestBoxInfo()
             Debug("BOX_INFO message failed");
             return false;
         }
+    }
+
+    return true;
+}
+
+bool Box::ResetIntoBootloader()
+{
+    int res = -1;
+
+    if (HIDConnect() == false)
+    {
+        Debug("ResetIntoBootloader - HIDConnect() failed");
+        return false;
+    }
+
+    txBuf[0] = 0x00;
+    encodeResetPacket(&txBuf[1]);
+
+    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
+
+    if (res != HID_REPORT_SIZE)
+    {
+        Debug("ResetIntoBootloader - hid_write() failed");
+        return false;
     }
 
     return true;

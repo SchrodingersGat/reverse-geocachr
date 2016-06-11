@@ -61,6 +61,8 @@ public slots:
     void updateClueList();
     void redrawMap();
 
+    void clearText();
+
     void loadClues();
     void saveClues();
 
@@ -91,6 +93,8 @@ public slots:
     void cancelUploadDownload();
 
     void incrementProgress();
+
+    void bootload();
 
 protected:
     void closeEvent(QCloseEvent *event);
