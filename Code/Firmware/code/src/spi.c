@@ -31,7 +31,7 @@ void SPI_Initialize()
 	Chip_SSP_SetMaster(LPC_SSP0, 1);
 
 	//Bit rate
-#define SPI_BAUD_RATE (16 * 1000 * 1000)
+#define SPI_BAUD_RATE (8 * 1000 * 1000)
 	Chip_SSP_SetBitRate(LPC_SSP0, SPI_BAUD_RATE);
 
 	//Turn on SPI

@@ -23,6 +23,9 @@ void PauseMs(uint16_t ms);
 void Reset_High();
 void Reset_Low();
 
+void BacklightOn();
+void BacklightOff();
+
 void Init_Systick();
 void Init_LCD();
 void Init_EEPROM();

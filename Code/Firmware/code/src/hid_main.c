@@ -39,6 +39,8 @@
 #include "spi.h"
 
 #include "hid_main.h"
+#include "ILI9340.h"
+
 volatile static uint16_t pauseTimer = 0;
 
 BoxInfo_t boxInfo;
@@ -130,7 +132,7 @@ int main(void)
 	USB_CORE_DESCS_T desc;
 	ErrorCode_t ret = LPC_OK;
 
-	Board_Init();
+	//Board_Init();
 
 	Chip_GPIO_Init(LPC_GPIO);
 
@@ -172,21 +174,40 @@ int main(void)
 
 	}
 
+	SystemCoreClockUpdate();
+	Init_Systick();
+
+	//Setup params
+	boxInfo.versionMajor = VERSION_MAJOR;
+	boxInfo.versionMinor = VERSION_MINOR;
+	boxInfo.charge = 100;
+
 	//Initialize SPI
 	SPI_Initialize();
 
-	//Init_Systick();
+	//Initialize the LCD
+	BacklightOff();
+	Init_LCD();
 
-	while (1) {
-		__WFI();
+	LCD_FillScreen(BLUE);
+
+
+	while (1)
+	{
+		PauseMs(100);
+		boxInfo.charge = (boxInfo.charge + 1) % 101;
+
+		if (boxInfo.charge > 50)
+			BacklightOn();
+		else
+			BacklightOff();
+
 	}
 }
 
 void Init_Systick()
 {
-	//uint32_t rate = Chip_Clock_GetSysTickClockRate();
-
-	//SysTick_Config(rate / 1000);
+	SysTick_Config(12000000UL / 1000); //1ms intervals
 }
 
 void SysTick_Handler(void)
@@ -200,4 +221,59 @@ void PauseMs(uint16_t ms)
 	pauseTimer = ms;
 
 	while (pauseTimer > 0) {}
+}
+
+void Init_LCD() {
+
+	//1.14 is LCD_CS pin
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 14);
+
+	//0.13 is LCD_DC pin
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 14);
+
+	//1.13 is LCD_RESET pin
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 13);
+
+	//1.31 is LCD_BACKLIGHT
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 31);
+
+	Reset_High();
+
+	PauseMs(10);
+
+	Reset_Low();
+	PauseMs(100);
+	Reset_High();
+
+	PauseMs(50);
+
+	//Reset the LCD
+	PauseMs(10);
+
+	LCD_SetSpi(LPC_SSP0);
+	LCD_Initialize();
+
+	PauseMs(10);
+
+	LCD_Rotate(3);
+}
+
+//RESET pin is 1.13
+void Reset_High()
+{
+	Chip_GPIO_SetPinState(LPC_GPIO, 1, 13, true);
+}
+
+void Reset_Low() {
+	Chip_GPIO_SetPinState(LPC_GPIO, 1, 13, false);
+}
+
+void BacklightOn()
+{
+	Chip_GPIO_SetPinState(LPC_GPIO, 1, 31, false);
+}
+
+void BacklightOff()
+{
+	Chip_GPIO_SetPinState(LPC_GPIO, 1, 31, true);
 }
