@@ -34,7 +34,9 @@
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.77051555" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections" valueType="string"/>
 								<option id="gnu.c.compiler.option.include.paths.1383254323" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/example/inc}&quot;"/>
+									<listOptionValue builtIn="false" value="../../common"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/code/inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/code/common}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lpc_chip_11uxx_lib/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nxp_lpcxpresso_11u14_board_lib/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lpc_chip_11uxx_lib/inc/usbd}&quot;"/>
@@ -81,14 +83,14 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.crt.advproject.config.exe.debug.41685297.example/src/cr_startup_lpc11xx.c" name="cr_startup_lpc11xx.c" rcbsApplicability="disable" resourcePath="example/src/cr_startup_lpc11xx.c" toolsToInvoke="com.crt.advproject.gcc.exe.debug.793159013.1790315156">
+					<fileInfo id="com.crt.advproject.config.exe.debug.41685297.example/src/cr_startup_lpc11xx.c" name="cr_startup_lpc11xx.c" rcbsApplicability="disable" resourcePath="code/src/cr_startup_lpc11xx.c" toolsToInvoke="com.crt.advproject.gcc.exe.debug.793159013.1790315156">
 						<tool id="com.crt.advproject.gcc.exe.debug.793159013.1790315156" name="MCU C Compiler" superClass="com.crt.advproject.gcc.exe.debug.793159013">
 							<option id="com.crt.advproject.gcc.exe.debug.option.optimization.level.1505748002" name="Optimization Level" superClass="com.crt.advproject.gcc.exe.debug.option.optimization.level" value="gnu.c.optimization.level.size" valueType="enumerated"/>
 							<inputType id="com.crt.advproject.compiler.input.1018750910" superClass="com.crt.advproject.compiler.input"/>
 						</tool>
 					</fileInfo>
 					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="example"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="code"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -175,7 +177,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="example"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="code"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
