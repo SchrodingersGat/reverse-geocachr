@@ -81,8 +81,9 @@ bool Box::RequestBoxInfo()
     int res;
     int i = 0;
 
-    if (HIDConnect() == false) {
-        //Debug("HIDConnect() failed");
+    if (HIDConnect() == false)
+    {
+        Debug("HIDConnect() failed");
         return false; //Connection failure
     }
 
@@ -95,7 +96,7 @@ bool Box::RequestBoxInfo()
     //HID write was not successful
     if (res == -1) {
         HIDDisconnect();
-        Debug("HID Write Failed");
+        Debug("HID Write Failed (-1)");
         return false;
     }
 
@@ -103,7 +104,7 @@ bool Box::RequestBoxInfo()
     res = hid_read_timeout(handle, rxBuf, HID_REPORT_SIZE, TIMEOUT);
 
     if (res != HID_REPORT_SIZE) {
-        Debug("HID Read Failed");
+        Debug("HID Read Failed (res = " + QString::number(res) + ")");
         return false;
     } else  {//read was successful, decode the data
         if (decodeBoxInfoPacket(rxBuf, &info))

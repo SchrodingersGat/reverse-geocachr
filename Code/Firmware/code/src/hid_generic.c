@@ -120,6 +120,8 @@ static ErrorCode_t HID_Ep_Hdlr(USBD_HANDLE_T hUsb, void *data, uint32_t event)
 				USBD_API->hw->WriteEP(hUsb, pHidCtrl->epin_adr, txBuffer, 64);
 			}
 		}
+
+		break;
 	}
 	return LPC_OK;
 }

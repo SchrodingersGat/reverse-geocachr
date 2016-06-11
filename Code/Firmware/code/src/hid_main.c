@@ -48,6 +48,7 @@ static USBD_HANDLE_T g_hUsb;
 extern const  USBD_HW_API_T hw_api;
 extern const  USBD_CORE_API_T core_api;
 extern const  USBD_HID_API_T hid_api;
+
 /* Since this example only uses HID class link functions for that class only */
 static const  USBD_API_T g_usbApi = {
 	&hw_api,
@@ -129,7 +130,7 @@ int main(void)
 	USB_CORE_DESCS_T desc;
 	ErrorCode_t ret = LPC_OK;
 
-	//Board_Init();
+	Board_Init();
 
 	Chip_GPIO_Init(LPC_GPIO);
 
