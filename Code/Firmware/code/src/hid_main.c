@@ -38,8 +38,10 @@
 #include "hid_generic.h"
 #include "spi.h"
 
+#include "box_usb.h"
 #include "hid_main.h"
 #include "ILI9340.h"
+
 
 volatile static uint16_t pauseTimer = 0;
 
@@ -65,9 +67,11 @@ static const  USBD_API_T g_usbApi = {
 
 const  USBD_API_T *g_pUsbApi = &g_usbApi;
 
-/*****************************************************************************
- * Private functions
- ****************************************************************************/
+//This data must be global so it is not read from the stack
+unsigned int command[5], result[5];
+typedef void (*IAP)(unsigned int [], unsigned int []);
+const IAP IAP_Entry = (IAP)0x1FFF1FF1;
+#define init_msdstate() *((uint32_t *)(0x10000054)) = 0x0
 
 /* Initialize pin and clocks for USB port */
 static void usb_pin_clk_init(void)
@@ -191,6 +195,10 @@ int main(void)
 
 	LCD_FillScreen(BLUE);
 
+	PauseMs(250);
+	BacklightOn();
+	PauseMs(500);
+	ReinvokeISP();
 
 	while (1)
 	{
@@ -276,4 +284,33 @@ void BacklightOn()
 void BacklightOff()
 {
 	Chip_GPIO_SetPinState(LPC_GPIO, 1, 31, true);
+}
+
+void ReinvokeISP(void)
+{
+  /* make sure USB clock is turned on before calling ISP */
+  LPC_SYSCTL->SYSAHBCLKCTRL |= 0x04000;
+  /* make sure 32-bit Timer 1 is turned on before calling ISP */
+  LPC_SYSCTL->SYSAHBCLKCTRL |= 0x00400;
+  /* make sure GPIO clock is turned on before calling ISP */
+  LPC_SYSCTL->SYSAHBCLKCTRL |= 0x00040;
+  /* make sure IO configuration clock is turned on before calling ISP */
+  LPC_SYSCTL->SYSAHBCLKCTRL |= 0x10000;
+
+  /* make sure AHB clock divider is 1:1 */
+  LPC_SYSCTL->SYSAHBCLKDIV = 1;
+
+  /* Send Reinvoke ISP command to ISP entry point*/
+  command[0] = 57;
+
+  init_msdstate();					 /* Initialize Storage state machine */
+  /* Set stack pointer to ROM value (reset default) This must be the last
+     piece of code executed before calling ISP, because most C expressions
+     and function returns will fail after the stack pointer is changed. */
+  __set_MSP(*((uint32_t *)0x00000000));
+
+  /* Enter ISP. We call "iap_entry" to enter ISP because the ISP entry is done
+     through the same command interface as IAP. */
+  iap_entry(command, result);
+  // Not supposed to come back!
 }

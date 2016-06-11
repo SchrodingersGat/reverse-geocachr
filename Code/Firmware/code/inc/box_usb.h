@@ -11,6 +11,7 @@
 
 #include "types.h"
 
+void ReinvokeISP();
 bool Handle_Box_Message();
 
 extern HIDBuffer txBuffer;
