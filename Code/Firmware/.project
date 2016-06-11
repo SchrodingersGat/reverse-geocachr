@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Reverse Geocachr</name>
+	<name>ReverseGeocache</name>
 	<comment></comment>
 	<projects>
-		<project>lpc_chip_15xx</project>
-		<project>lpc_board_nxp_lpcxpresso_1549</project>
+		<project>lpc_chip_11uxx_lib</project>
+		<project>nxp_lpcxpresso_11u14_board_lib</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -25,56 +25,4 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/ILI9340_font.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/ILI9340_font.c</locationURI>
-		</link>
-		<link>
-			<name>src/bitfieldspecial.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/bitfieldspecial.c</locationURI>
-		</link>
-		<link>
-			<name>src/boxdefines.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/boxdefines.c</locationURI>
-		</link>
-		<link>
-			<name>src/boxpackets.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/boxpackets.c</locationURI>
-		</link>
-		<link>
-			<name>src/fielddecode.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/fielddecode.c</locationURI>
-		</link>
-		<link>
-			<name>src/fieldencode.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/fieldencode.c</locationURI>
-		</link>
-		<link>
-			<name>src/protogenglue.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/protogenglue.c</locationURI>
-		</link>
-		<link>
-			<name>src/scaleddecode.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/scaleddecode.c</locationURI>
-		</link>
-		<link>
-			<name>src/scaledencode.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/scaledencode.c</locationURI>
-		</link>
-		<link>
-			<name>src/waypoint.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/waypoint.c</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

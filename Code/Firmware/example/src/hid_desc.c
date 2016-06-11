@@ -41,7 +41,7 @@
 
 #define HID_INPUT_REPORT_BYTES       64				/* size of report in Bytes */
 #define HID_OUTPUT_REPORT_BYTES      64				/* size of report in Bytes */
-#define HID_FEATURE_REPORT_BYTES     64			/* size of report in Bytes */
+#define HID_FEATURE_REPORT_BYTES     1				/* size of report in Bytes */
 
 /**
  * HID Report Descriptor
@@ -105,7 +105,7 @@ ALIGNED(4) uint8_t USB_FsConfigDescriptor[] = {
 	0x01,							/* bConfigurationValue */
 	0x00,							/* iConfiguration */
 	USB_CONFIG_SELF_POWERED,		/* bmAttributes */
-	USB_CONFIG_POWER_MA(500),		/* bMaxPower */
+	USB_CONFIG_POWER_MA(100),		/* bMaxPower */
 
 	/* Interface 0, Alternate Setting 0, HID Class */
 	USB_INTERFACE_DESC_SIZE,		/* bLength */
@@ -131,15 +131,15 @@ ALIGNED(4) uint8_t USB_FsConfigDescriptor[] = {
 	USB_ENDPOINT_DESCRIPTOR_TYPE,	/* bDescriptorType */
 	HID_EP_IN,						/* bEndpointAddress */
 	USB_ENDPOINT_TYPE_INTERRUPT,	/* bmAttributes */
-	WBVAL(64),					/* wMaxPacketSize */
-	0x02, //0x20		/* 16ms */          /* bInterval */
+	WBVAL(0x0004),					/* wMaxPacketSize */
+	0x20,		/* 16ms */          /* bInterval */
 	/* Endpoint, HID Interrupt Out */
 	USB_ENDPOINT_DESC_SIZE,			/* bLength */
 	USB_ENDPOINT_DESCRIPTOR_TYPE,	/* bDescriptorType */
 	HID_EP_OUT,						/* bEndpointAddress */
 	USB_ENDPOINT_TYPE_INTERRUPT,	/* bmAttributes */
-	WBVAL(64),					/* wMaxPacketSize */
-	0x02,							/* bInterval: 16ms */
+	WBVAL(0x0004),					/* wMaxPacketSize */
+	0x20,							/* bInterval: 16ms */
 	/* Terminator */
 	0								/* bLength */
 };
@@ -153,7 +153,7 @@ const uint8_t USB_StringDescriptor[] = {
 	USB_STRING_DESCRIPTOR_TYPE,		/* bDescriptorType */
 	WBVAL(0x0409),					/* wLANGID : US English*/
 	/* Index 0x01: Manufacturer */
-	(16 * 2 + 2),					/* bLength (13 Char + Type + lenght) */
+	(18 * 2 + 2),					/* bLength (13 Char + Type + lenght) */
 	USB_STRING_DESCRIPTOR_TYPE,		/* bDescriptorType */
 	'R', 0,
 	'e', 0,
@@ -171,21 +171,23 @@ const uint8_t USB_StringDescriptor[] = {
 	'c', 0,
 	'h', 0,
 	'e', 0,
+	'r', 0,
+	' ', 0,
 	/* Index 0x02: Product */
 	(12 * 2 + 2),					/* bLength (12 Char + Type + lenght) */
 	USB_STRING_DESCRIPTOR_TYPE,		/* bDescriptorType */
-	'L', 0,
-	'P', 0,
-	'C', 0,
-	'1', 0,
-	'5', 0,
-	'x', 0,
-	'x', 0,
+	'G', 0,
+	'e', 0,
+	'o', 0,
+	'c', 0,
+	'a', 0,
+	'c', 0,
+	'h', 0,
+	'e', 0,
 	' ', 0,
-	'H', 0,
-	'I', 0,
-	'D', 0,
-	' ', 0,
+	'B', 0,
+	'o', 0,
+	'x', 0,
 	/* Index 0x03: Serial Number */
 	(13 * 2 + 2),					/* bLength (13 Char + Type + lenght) */
 	USB_STRING_DESCRIPTOR_TYPE,		/* bDescriptorType */

@@ -1,8 +1,8 @@
 /*
- * @brief Programming API used with HID example
+ * @brief Common SystemInit function for LPC11xx chips
  *
  * @note
- * Copyright(C) NXP Semiconductors, 2013
+ * Copyright(C) NXP Semiconductors, 2012
  * All rights reserved.
  *
  * @par
@@ -29,41 +29,32 @@
  * this code.
  */
 
-#ifndef __HID_GENERIC_H_
-#define __HID_GENERIC_H_
+ #include "board.h"
 
-#include "app_usbd_cfg.h"
-#include "types.h"
+/*****************************************************************************
+ * Private types/enumerations/variables
+ ****************************************************************************/
 
-#ifdef __cplusplus
-extern "C"
+/*****************************************************************************
+ * Public types/enumerations/variables
+ ****************************************************************************/
+
+/*****************************************************************************
+ * Private functions
+ ****************************************************************************/
+
+/*****************************************************************************
+ * Public functions
+ ****************************************************************************/
+
+/* Set up and initialize hardware prior to call to main */
+void SystemInit(void)
 {
+#if defined(NO_BOARD_LIB)
+	/* Chip specific SystemInit */
+	Chip_SystemInit();
+#else
+	/* Board specific SystemInit */
+	Board_SystemInit();
 #endif
-
-/** @ingroup EXAMPLES_USBDROM_15XX_HID_GENERIC
- * @{
- */
-
-/**
- * @brief	Generic HID interface init routine.
- * @param	hUsb		: Handle to USB device stack
- * @param	pIntfDesc	: Pointer to HID interface descriptor
- * @param	mem_base	: Pointer to memory address which can be used by HID driver
- * @param	mem_size	: Size of the memory passed
- * @return	On success returns LPC_OK. Params mem_base and mem_size are updated
- *			to point to new base and available size.
- */
-ErrorCode_t usb_hid_init(USBD_HANDLE_T hUsb,
-						 USB_INTERFACE_DESCRIPTOR *pIntfDesc,
-						 uint32_t *mem_base,
-						 uint32_t *mem_size);
-
-/**
- * @}
- */
-
-#ifdef __cplusplus
 }
-#endif
-
-#endif /* __HID_GENERIC_H_ */

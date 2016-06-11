@@ -1,5 +1,5 @@
 /*
- * @brief Common SystemInit function for LPC15xx chips
+ * @brief Programming API used with HID example
  *
  * @note
  * Copyright(C) NXP Semiconductors, 2013
@@ -29,39 +29,40 @@
  * this code.
  */
 
+#ifndef __HID_GENERIC_H_
+#define __HID_GENERIC_H_
 
-/*****************************************************************************
- * Private types/enumerations/variables
- ****************************************************************************/
+#include "app_usbd_cfg.h"
 
-/*****************************************************************************
- * Public types/enumerations/variables
- ****************************************************************************/
-
-#if defined(NO_BOARD_LIB)
-#include "chip.h"
-const uint32_t OscRateIn = 12000000;
-const uint32_t RTCOscRateIn = 32768;
-#else
-#include "board.h"
-#endif
-
-/*****************************************************************************
- * Private functions
- ****************************************************************************/
-
-/*****************************************************************************
- * Public functions
- ****************************************************************************/
-
-/* Set up and initialize hardware prior to call to main */
-void SystemInit(void)
+#ifdef __cplusplus
+extern "C"
 {
-#if defined(NO_BOARD_LIB)
-	/* Chip specific SystemInit */
-	Chip_SystemInit();
-#else
-	/* Board specific SystemInit */
-	Board_SystemInit();
 #endif
+
+/** @ingroup EXAMPLES_USBDLIB_11XX_HID_GENERIC
+ * @{
+ */
+
+/**
+ * @brief	Generic HID interface init routine.
+ * @param	hUsb		: Handle to USB device stack
+ * @param	pIntfDesc	: Pointer to HID interface descriptor
+ * @param	mem_base	: Pointer to memory address which can be used by HID driver
+ * @param	mem_size	: Size of the memory passed
+ * @return	On success returns LPC_OK. Params mem_base and mem_size are updated
+ *			to point to new base and available size.
+ */
+ErrorCode_t usb_hid_init(USBD_HANDLE_T hUsb,
+						 USB_INTERFACE_DESCRIPTOR *pIntfDesc,
+						 uint32_t *mem_base,
+						 uint32_t *mem_size);
+
+/**
+ * @}
+ */
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* __HID_GENERIC_H_ */
