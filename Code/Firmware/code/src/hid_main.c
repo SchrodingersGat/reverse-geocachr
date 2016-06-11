@@ -39,9 +39,9 @@
 #include "spi.h"
 
 #include "hid_main.h"
-
 volatile static uint16_t pauseTimer = 0;
 
+BoxInfo_t boxInfo;
 
 static USBD_HANDLE_T g_hUsb;
 

@@ -10,12 +10,13 @@
 
 #include "app_usbd_cfg.h"
 #include "hid_generic.h"
-//#include "waypoint.h"
-//#include "display.h"
-//#include "ILI9340.h"
-//#include "gps.h"
+#include "waypoint.h"
+#include "display.h"
+#include "ILI9340.h"
+#include "gps.h"
 #include "spi.h"
-//#include "waypoints.h"
+#include "waypoints.h"
+#include "types.h"
 
 void PauseMs(uint16_t ms);
 

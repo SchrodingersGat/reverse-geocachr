@@ -34,6 +34,8 @@
 #include <string.h>
 #include "usbd_rom_api.h"
 
+#include "box_usb.h"
+
 /*****************************************************************************
  * Private types/enumerations/variables
  ****************************************************************************/
@@ -96,6 +98,8 @@ static ErrorCode_t HID_SetReport(USBD_HANDLE_T hHid, USB_SETUP_PACKET *pSetup, u
 /* HID Interrupt endpoint event handler. */
 static ErrorCode_t HID_Ep_Hdlr(USBD_HANDLE_T hUsb, void *data, uint32_t event)
 {
+	uint16_t len = 0;
+
 	USB_HID_CTRL_T *pHidCtrl = (USB_HID_CTRL_T *) data;
 
 	switch (event) {
@@ -105,10 +109,17 @@ static ErrorCode_t HID_Ep_Hdlr(USBD_HANDLE_T hUsb, void *data, uint32_t event)
 
 	case USB_EVT_OUT:
 		/* Read the new report received. */
-		USBD_API->hw->ReadEP(hUsb, pHidCtrl->epout_adr, loopback_report);
-		/* loopback the report received. */
-		USBD_API->hw->WriteEP(hUsb, pHidCtrl->epin_adr, loopback_report, 1);
-		break;
+		len = USBD_API->hw->ReadEP(hUsb, pHidCtrl->epout_adr, rxBuffer);
+
+		if (len > 0)
+		{
+			//Do something with the message
+			if (Handle_Box_Message() == true)
+			{
+				//printf("Sending response\n");
+				USBD_API->hw->WriteEP(hUsb, pHidCtrl->epin_adr, txBuffer, 64);
+			}
+		}
 	}
 	return LPC_OK;
 }
