@@ -202,13 +202,14 @@ int main(void)
 
 	while (1)
 	{
-		PauseMs(100);
+		PauseMs(500);
 		boxInfo.charge = (boxInfo.charge + 1) % 101;
 
-		if (boxInfo.charge > 50)
-			BacklightOn();
-		else
-			BacklightOff();
+		LCD_FillScreen(GREEN);
+
+		PauseMs(500);
+		LCD_FillScreen(RED);
+
 
 	}
 }
@@ -236,7 +237,7 @@ void Init_LCD() {
 	//1.14 is LCD_CS pin
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 14);
 
-	//0.13 is LCD_DC pin
+	//0.14 is LCD_DC pin
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 14);
 
 	//1.13 is LCD_RESET pin
