@@ -206,9 +206,12 @@ int main(void)
 		boxInfo.charge = (boxInfo.charge + 1) % 101;
 
 		LCD_FillScreen(GREEN);
+		BacklightOff();
 
 		PauseMs(500);
 		LCD_FillScreen(RED);
+
+		BacklightOn();
 
 
 	}

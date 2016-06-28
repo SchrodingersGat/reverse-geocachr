@@ -13,6 +13,7 @@ void SPI_Configure()
 
 void SPI_Initialize()
 {
+	//Default for 8-bit xfer
 	config.bits = SSP_BITS_8;
 	config.clockMode = SSP_CLOCK_MODE0;
 	config.frameFormat = SSP_FRAMEFORMAT_SPI;
