@@ -32,11 +32,29 @@ void SPI_Initialize()
 	Chip_SSP_SetMaster(LPC_SSP0, 1);
 
 	//Bit rate
-#define SPI_BAUD_RATE (16 * 1000 * 1000)
+#define SPI_BAUD_RATE (24 * 1000 * 1000)
 	Chip_SSP_SetBitRate(LPC_SSP0, SPI_BAUD_RATE);
 
 	//Turn on SPI
 	Chip_SSP_Enable(LPC_SSP0);
+}
+
+void SPI_8Bit()
+{
+	if (config.bits != SSP_BITS_8)
+	{
+		config.bits = SSP_BITS_8;
+		SPI_Configure();
+	}
+}
+
+void SPI_16Bit()
+{
+	if (config.bits != SSP_BITS_16)
+	{
+		config.bits = SSP_BITS_16;
+		SPI_Configure();
+	}
 }
 
 //Send and receive 8-bit data (single byte)
@@ -45,11 +63,7 @@ uint8_t SPI_Transfer_8Bit(LPC_SSP_T *spi, uint8_t val)
 	uint8_t tx = val;
 	uint8_t result = 0;
 
-	if (config.bits != SSP_BITS_8)
-	{
-		config.bits = SSP_BITS_8;
-		SPI_Configure();
-	}
+	SPI_8Bit();
 
 	SPI_Transfer_Data(spi, &tx, &result, 1);
 
@@ -60,7 +74,7 @@ void SPI_Transfer_Data(LPC_SSP_T *spi, void *tx, void *rx, uint32_t n)
 {
 	xfer.length = n;
 	xfer.tx_data = tx;
-	xfer.rx_data = rx;
+	xfer.rx_data = 0;	// No RX data
 
 	xfer.tx_cnt = 0;
 	xfer.rx_cnt = 0;
@@ -74,11 +88,7 @@ uint16_t SPI_Transfer_16Bit(LPC_SSP_T *spi, uint16_t val)
 	uint16_t tx = val;
 	uint16_t result = 0;
 
-	if (config.bits != SSP_BITS_16)
-	{
-		config.bits = SSP_BITS_16;
-		SPI_Configure();
-	}
+	SPI_16Bit();
 
 	SPI_Transfer_Data(spi, &tx, &result, 1);
 

@@ -16,6 +16,9 @@ static uint16_t PEN_THICKNESS = 1;
 static uint16_t TEXT_OPTIONS = TEXT_DEFAULT | TEXT_FILL_BACKGROUND;
 static uint16_t BACKGROUND_COLOR = WHITE;
 
+#define COL_BUF_SIZE 512
+static uint16_t color_buffer[COL_BUF_SIZE];
+
 void LCD_SetBackgroundColor(uint16_t bg)
 {
 	BACKGROUND_COLOR = bg;
@@ -379,6 +382,7 @@ void LCD_FillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color
 {
 	if (w == 0 || h == 0) return;
 
+	uint32_t tmp;
 	uint32_t i = 0;
 	uint32_t nPix = (uint32_t) w * (uint32_t) h;
 
@@ -387,10 +391,28 @@ void LCD_FillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color
 	DC_High();
 	CS_Low();
 
-	//Send n-1 pixels ASAP
-	for (i=0;i<nPix;i++)
+	SPI_16Bit();
+
+	while (nPix > 0)
 	{
-		SPI_Transfer_16Bit(spi, color);
+		if (nPix >= COL_BUF_SIZE)
+		{
+			tmp = COL_BUF_SIZE;
+		}
+		else
+		{
+			tmp = nPix;
+		}
+
+		nPix -= tmp;
+
+		for (i=0;i<tmp;i++)
+		{
+			color_buffer[i] = color;
+		}
+
+		// Bulk transfer saves time
+		Chip_SSP_WriteFrames_Blocking(spi, color_buffer, tmp * 2);
 	}
 
 	CS_High();

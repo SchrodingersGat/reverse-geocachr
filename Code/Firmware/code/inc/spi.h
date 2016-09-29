@@ -17,6 +17,9 @@ void SPI_Initialize(); //!< Configure SPI
 
 void SPI_Configure(); //Quickly update SPI config
 
+void SPI_8Bit();
+void SPI_16Bit();
+
 uint8_t SPI_Transfer_8Bit(LPC_SSP_T *spi, uint8_t val);
 uint16_t SPI_Transfer_16Bit(LPC_SSP_T *spi, uint16_t val);
 
