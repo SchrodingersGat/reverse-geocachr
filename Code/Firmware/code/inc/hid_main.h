@@ -20,15 +20,16 @@
 
 void PauseMs(uint16_t ms);
 
-void Reset_High();
-void Reset_Low();
+void Reset_High(void);
+void Reset_Low(void);
 
-void BacklightOn();
-void BacklightOff();
+void BacklightOn(void);
+void BacklightOff(void);
 
-void Init_Systick();
-void Init_LCD();
-void Init_EEPROM();
+void Init_Systick(void);
+void Init_GPIO(void);
+void Init_LCD(void);
+void Init_EEPROM(void);
 
 void Init_UART();
 

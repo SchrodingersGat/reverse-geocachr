@@ -140,28 +140,26 @@ int main(void)
 
 	Chip_GPIO_Init(LPC_GPIO);
 
+	/*
 	usb_pin_clk_init();
 
-	/* initilize call back structures */
+	// initilize call back structures
 	memset((void *) &usb_param, 0, sizeof(USBD_API_INIT_PARAM_T));
 	usb_param.usb_reg_base = LPC_USB0_BASE;
 	usb_param.max_num_ep = 2;
 	usb_param.mem_base = USB_STACK_MEM_BASE;
 	usb_param.mem_size = USB_STACK_MEM_SIZE;
 
-	/* Set the USB descriptors */
+	// Set the USB descriptors
 	desc.device_desc = (uint8_t *) USB_DeviceDescriptor;
 	desc.string_desc = (uint8_t *) USB_StringDescriptor;
 
-	/* Note, to pass USBCV test full-speed only devices should have both
-	 * descriptor arrays point to same location and device_qualifier set
-	 * to 0.
-	 */
+	// Note, to pass USBCV test full-speed only devices should have both descriptor arrays point to same location and device_qualifier set to 0
 	desc.high_speed_desc = USB_FsConfigDescriptor;
 	desc.full_speed_desc = USB_FsConfigDescriptor;
 	desc.device_qualifier = 0;
 
-	/* USB Initialization */
+	// USB Initialization
 	ret = USBD_API->hw->Init(&g_hUsb, &desc, &usb_param);
 	if (ret == LPC_OK) {
 
@@ -169,14 +167,16 @@ int main(void)
 			usb_hid_init(g_hUsb,
 						 (USB_INTERFACE_DESCRIPTOR *) &USB_FsConfigDescriptor[sizeof(USB_CONFIGURATION_DESCRIPTOR)],
 						 &usb_param.mem_base, &usb_param.mem_size);
-		if (ret == LPC_OK) {
-			/*  enable USB interrrupts */
+		if (ret == LPC_OK)
+		{
+			// enable USB interrrupts
 			NVIC_EnableIRQ(USB0_IRQn);
-			/* now connect */
+			// now connect
 			USBD_API->hw->Connect(g_hUsb, 1);
 		}
 
 	}
+	*/
 
 	SystemCoreClockUpdate();
 	Init_Systick();
@@ -185,6 +185,8 @@ int main(void)
 	boxInfo.versionMajor = VERSION_MAJOR;
 	boxInfo.versionMinor = VERSION_MINOR;
 	boxInfo.charge = 100;
+
+	Init_GPIO();
 
 	//Initialize SPI
 	SPI_Initialize();
@@ -202,17 +204,17 @@ int main(void)
 
 	while (1)
 	{
+
 		PauseMs(500);
 		boxInfo.charge = (boxInfo.charge + 1) % 101;
 
 		LCD_FillScreen(GREEN);
-		BacklightOff();
+		//BacklightOff();
 
 		PauseMs(500);
 		LCD_FillScreen(RED);
 
-		BacklightOn();
-
+		//BacklightOn();
 
 	}
 }
@@ -235,8 +237,15 @@ void PauseMs(uint16_t ms)
 	while (pauseTimer > 0) {}
 }
 
-void Init_LCD() {
+void Init_GPIO()
+{
+	// SPI pins
+	// Pins as outputs
+	//Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 29); // CLK pin
+	//Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 9);	// MOSI
+	//Chip_GPIO_SetPinDIRInput(LPC_GPIO, 0, 8);	// MISO
 
+	// LCD related pins
 	//1.14 is LCD_CS pin
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 14);
 
@@ -248,6 +257,10 @@ void Init_LCD() {
 
 	//1.31 is LCD_BACKLIGHT
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 31);
+}
+
+void Init_LCD()
+{
 
 	Reset_High();
 

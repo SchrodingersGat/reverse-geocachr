@@ -32,7 +32,7 @@ void SPI_Initialize()
 	Chip_SSP_SetMaster(LPC_SSP0, 1);
 
 	//Bit rate
-#define SPI_BAUD_RATE (8 * 1000 * 1000)
+#define SPI_BAUD_RATE (16 * 1000 * 1000)
 	Chip_SSP_SetBitRate(LPC_SSP0, SPI_BAUD_RATE);
 
 	//Turn on SPI
@@ -61,6 +61,9 @@ void SPI_Transfer_Data(LPC_SSP_T *spi, void *tx, void *rx, uint32_t n)
 	xfer.length = n;
 	xfer.tx_data = tx;
 	xfer.rx_data = rx;
+
+	xfer.tx_cnt = 0;
+	xfer.rx_cnt = 0;
 
 	Chip_SSP_RWFrames_Blocking(spi, &xfer);
 }
