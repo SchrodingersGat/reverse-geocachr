@@ -4,6 +4,7 @@ Code/GUI/ReverseGeocachr/debug/
 **.clue
 Code/Firmware/Debug/
 Code/Firmware/Release
+Code/Firmware_Old
 **.o
 **.cpp.*
 Tools/
