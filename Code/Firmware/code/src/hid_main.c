@@ -178,6 +178,9 @@ int main(void)
 	}
 	*/
 
+	/* make sure AHB clock divider is 1:1 */
+	LPC_SYSCTL->SYSAHBCLKDIV = 1;
+
 	SystemCoreClockUpdate();
 	Init_Systick();
 
@@ -195,16 +198,20 @@ int main(void)
 	BacklightOff();
 	Init_LCD();
 
-	LCD_FillScreen(BLUE);
+	LCD_FillScreen(WHITE);
 
 	PauseMs(250);
 	BacklightOn();
-	PauseMs(500);
+	//PauseMs(500);
 	//ReinvokeISP();
+
+	LCD_DrawString(10, 50, "Hello World", BLACK, 1);
+
+	LCD_DrawString(10, 100, "ABCDEFGHIJKLMNOP", RED, 1);
 
 	while (1)
 	{
-
+		/*
 		PauseMs(500);
 		boxInfo.charge = (boxInfo.charge + 1) % 101;
 
@@ -215,7 +222,7 @@ int main(void)
 		LCD_FillScreen(RED);
 
 		//BacklightOn();
-
+		*/
 	}
 }
 
@@ -239,17 +246,13 @@ void PauseMs(uint16_t ms)
 
 void Init_GPIO()
 {
-	// SPI pins
-	// Pins as outputs
-	//Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 29); // CLK pin
-	//Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 9);	// MOSI
-	//Chip_GPIO_SetPinDIRInput(LPC_GPIO, 0, 8);	// MISO
-
 	// LCD related pins
 	//1.14 is LCD_CS pin
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 14);
 
 	//0.14 is LCD_DC pin
+	// By default, 0.14 is ~TRST~ JTAG pin. Set to mode 1
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 14, (IOCON_FUNC1 | IOCON_MODE_PULLUP));
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 14);
 
 	//1.13 is LCD_RESET pin
