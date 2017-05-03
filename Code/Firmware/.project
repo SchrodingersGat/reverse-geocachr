@@ -41,7 +41,17 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>Inc/common</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>Src/LCD</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Src/common</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -61,6 +71,56 @@
 			<locationURI>PARENT-1-PROJECT_LOC/ILI9340/ILI9340_font.h</locationURI>
 		</link>
 		<link>
+			<name>Inc/common/ReverseGeocacheProtocol.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/ReverseGeocacheProtocol.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/common/bitfieldspecial.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/bitfieldspecial.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/common/box_defines.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/box_defines.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/common/boxdefines.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/boxdefines.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/common/boxpackets.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/boxpackets.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/common/fielddecode.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/fielddecode.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/common/fieldencode.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/fieldencode.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/common/scaleddecode.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/scaleddecode.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/common/scaledencode.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/scaledencode.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/common/waypoint.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/waypoint.h</locationURI>
+		</link>
+		<link>
 			<name>Src/LCD/ILI9340.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/ILI9340/ILI9340.c</locationURI>
@@ -69,6 +129,51 @@
 			<name>Src/LCD/ILI9340_font.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/ILI9340/ILI9340_font.c</locationURI>
+		</link>
+		<link>
+			<name>Src/common/bitfieldspecial.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/bitfieldspecial.c</locationURI>
+		</link>
+		<link>
+			<name>Src/common/boxdefines.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/boxdefines.c</locationURI>
+		</link>
+		<link>
+			<name>Src/common/boxpackets.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/boxpackets.c</locationURI>
+		</link>
+		<link>
+			<name>Src/common/fielddecode.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/fielddecode.c</locationURI>
+		</link>
+		<link>
+			<name>Src/common/fieldencode.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/fieldencode.c</locationURI>
+		</link>
+		<link>
+			<name>Src/common/protogenglue.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/protogenglue.c</locationURI>
+		</link>
+		<link>
+			<name>Src/common/scaleddecode.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/scaleddecode.c</locationURI>
+		</link>
+		<link>
+			<name>Src/common/scaledencode.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/scaledencode.c</locationURI>
+		</link>
+		<link>
+			<name>Src/common/waypoint.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/waypoint.c</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>

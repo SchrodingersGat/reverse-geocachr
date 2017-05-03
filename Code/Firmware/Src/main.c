@@ -41,7 +41,13 @@
 
 /* USER CODE BEGIN Includes */
 #include "timer.h"
+#include "types.h"
 #include "ILI9340.h"
+
+// Instantiate global variables
+BoxStatus_t boxStatus;
+BoxInfo_t boxInfo;
+
 /* USER CODE END Includes */
 
 uint8_t uartRxByte;
