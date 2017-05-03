@@ -1,42 +1,38 @@
 EESchema Schematic File Version 2
-LIBS:USB_Geocache-rescue
 LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:memory
-LIBS:interface
-LIBS:nxp_armmcu
 LIBS:dc-dc
-LIBS:switches
-LIBS:sensors
-LIBS:display
-LIBS:ftdi
+LIBS:battery_management
+LIBS:conn
+LIBS:device
 LIBS:diode
+LIBS:display
+LIBS:ESD_Protection
+LIBS:interface
+LIBS:memory
+LIBS:Power_Management
+LIBS:references
+LIBS:stm32
+LIBS:switches
 LIBS:74xgxx
 LIBS:74xx
 LIBS:ac-dc
+LIBS:actel
+LIBS:adc-dac
+LIBS:allegro
+LIBS:Altera
 LIBS:analog_devices
+LIBS:analog_switches
 LIBS:atmel
-LIBS:maxim
-LIBS:microchip
-LIBS:microchip_dspic33dsc
-LIBS:microchip_pic18mcu
-LIBS:microchip_pic32mcu
-LIBS:msp430
-LIBS:onsemi
-LIBS:opto
-LIBS:Power_Management
-LIBS:powerint
-LIBS:pspice
-LIBS:references
-LIBS:relays
-LIBS:rfcom
-LIBS:silabs
+LIBS:audio
+LIBS:bbd
+LIBS:bosch
+LIBS:brooktre
+LIBS:cmos_ieee
+LIBS:cmos4000
+LIBS:contrib
+LIBS:cypress
 LIBS:USB_Geocache-cache
-EELAYER 25 0
+EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -123,7 +119,7 @@ F 3 "" H 5075 1325 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L INDUCTOR_SMALL L1
+L INDUCTOR_SMALL-RESCUE-USB_Geocache L1
 U 1 1 546EC764
 P 6575 1050
 F 0 "L1" H 6575 1150 50  0000 C CNN
@@ -299,12 +295,12 @@ $EndComp
 $Comp
 L GND #PWR06
 U 1 1 55923A65
-P 8425 4200
-F 0 "#PWR06" H 8425 3950 50  0001 C CNN
-F 1 "GND" H 8425 4050 50  0000 C CNN
-F 2 "" H 8425 4200 60  0000 C CNN
-F 3 "" H 8425 4200 60  0000 C CNN
-	1    8425 4200
+P 8425 4325
+F 0 "#PWR06" H 8425 4075 50  0001 C CNN
+F 1 "GND" H 8425 4175 50  0000 C CNN
+F 2 "" H 8425 4325 60  0000 C CNN
+F 3 "" H 8425 4325 60  0000 C CNN
+	1    8425 4325
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -574,6 +570,7 @@ F 0 "P1" V 600 2150 50  0000 C CNN
 F 1 "USB_Mini_B" H 850 2250 50  0000 C CNN
 F 2 "Connect:USB_Mini-B" V 850 1950 60  0001 C CNN
 F 3 "" V 850 1950 60  0000 C CNN
+F 4 "dnf" V 900 2050 60  0001 C CNN "Config"
 	1    900  2050
 	0    -1   1    0   
 $EndComp
@@ -596,6 +593,7 @@ F 0 "R1" V 1780 7000 50  0000 C CNN
 F 1 "4K7" V 1700 7000 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 1630 7000 30  0001 C CNN
 F 3 "" H 1700 7000 30  0000 C CNN
+F 4 "1%" V 1700 7000 60  0001 C CNN "Rating"
 	1    1700 7000
 	0    1    1    0   
 $EndComp
@@ -672,6 +670,7 @@ F 0 "U1" H 3625 1425 50  0000 L CNN
 F 1 "MCP73831/OT" H 3625 925 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23-5" H 3625 825 50  0001 L CNN
 F 3 "" H 3675 1125 60  0000 C CNN
+F 4 "17" H 3825 1175 60  0001 C CNN "hello"
 	1    3825 1175
 	1    0    0    -1  
 $EndComp
@@ -784,6 +783,7 @@ F 0 "U3" H 4400 6150 50  0000 C CNN
 F 1 "LPC11U24FBD48" H 4650 3480 50  0000 C CNN
 F 2 "QFP:LQFP-48_7x7mm_Pitch0.5mm" H 6400 3500 50  0001 C CNN
 F 3 "" H 5450 3225 50  0001 C CNN
+F 4 "-all" H 5450 4700 60  0001 C CNN "Config"
 	1    5450 4700
 	1    0    0    -1  
 $EndComp
@@ -872,6 +872,7 @@ F 0 "R10" V 9130 1900 50  0000 C CNN
 F 1 "4K7" V 9050 1900 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 8980 1900 50  0001 C CNN
 F 3 "" H 9050 1900 50  0000 C CNN
+F 4 "20%" V 9050 1900 60  0001 C CNN "Rating"
 	1    9050 1900
 	1    0    0    -1  
 $EndComp
@@ -940,6 +941,7 @@ F 0 "R11" V 9880 1900 50  0000 C CNN
 F 1 "4K7" V 9800 1900 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 9730 1900 50  0001 C CNN
 F 3 "" H 9800 1900 50  0000 C CNN
+F 4 "20%" V 9800 1900 60  0001 C CNN "Rating"
 	1    9800 1900
 	1    0    0    -1  
 $EndComp
@@ -1026,7 +1028,7 @@ L Q_NMOS_GSD Q2
 U 1 1 56FADC79
 P 2100 7300
 F 0 "Q2" H 2400 7350 50  0000 R CNN
-F 1 "DMP3098L" H 2750 7250 50  0000 R CNN
+F 1 "BST82" H 2550 7250 50  0000 R CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23_Handsoldering" H 2300 7400 50  0001 C CNN
 F 3 "" H 2100 7300 50  0000 C CNN
 	1    2100 7300
@@ -1040,6 +1042,7 @@ F 0 "R5" V 1930 7500 50  0000 C CNN
 F 1 "4K7" V 1850 7500 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 1780 7500 50  0001 C CNN
 F 3 "" H 1850 7500 50  0000 C CNN
+F 4 "1%" V 1850 7500 60  0001 C CNN "Rating"
 	1    1850 7500
 	1    0    0    -1  
 $EndComp
@@ -1081,7 +1084,7 @@ L Q_PMOS_GSD Q1
 U 1 1 56FB039A
 P 2025 6725
 F 0 "Q1" H 2325 6775 50  0000 R CNN
-F 1 "SSM3J328R" H 2675 6675 50  0000 R CNN
+F 1 "SI2301BDS-T1-E3" H 2675 6675 50  0000 R CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23_Handsoldering" H 2225 6825 50  0001 C CNN
 F 3 "" H 2025 6725 50  0000 C CNN
 	1    2025 6725
@@ -1092,7 +1095,7 @@ L Q_PMOS_GSD Q3
 U 1 1 56FF5893
 P 2900 3550
 F 0 "Q3" H 2900 3800 50  0000 R CNN
-F 1 "SSM3J328R" H 2900 3725 50  0000 R CNN
+F 1 "SI2301BDS-T1-E3" H 2900 3725 50  0000 R CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23_Handsoldering" H 3100 3650 50  0001 C CNN
 F 3 "" H 2900 3550 50  0000 C CNN
 	1    2900 3550
@@ -1121,7 +1124,8 @@ F 0 "R12" V 3030 6950 50  0000 C CNN
 F 1 "0R1" V 2950 6950 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 2880 6950 50  0001 C CNN
 F 3 "" H 2950 6950 50  0000 C CNN
-F 4 "1% 0.25W" H 3275 6950 50  0000 C CNN "Rating"
+F 4 "WW08PR100FTL" H 2950 6950 60  0001 C CNN "Part Number"
+F 5 "1% 0.25W" H 3275 6950 50  0000 C CNN "Rating"
 	1    2950 6950
 	1    0    0    -1  
 $EndComp
@@ -1218,8 +1222,6 @@ Wire Wire Line
 	2850 6525 3075 6525
 Wire Wire Line
 	7450 1050 7450 1175
-Wire Wire Line
-	8425 4100 8425 4200
 Wire Wire Line
 	7950 4000 8225 4000
 Wire Wire Line
@@ -1576,4 +1578,72 @@ Text Label 3825 4600 0    60   ~ 0
 Vsense
 Wire Wire Line
 	3825 4600 4250 4600
+Wire Wire Line
+	8425 4325 8425 4200
+$Comp
+L MAX5035CUSA U7
+U 1 1 58454E35
+P -400 1550
+F 0 "U7" H -400 2108 50  0000 C CNN
+F 1 "MAX5035CUSA" H -400 2017 50  0000 C CNN
+F 2 "SOIC-8" H -400 1926 50  0000 C CIN
+F 3 "" H -400 1500 50  0000 C CNN
+	1    -400 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L ADP1108-12 U6
+U 1 1 58454ED5
+P -675 2850
+F 0 "U6" H -675 2364 50  0000 C CNN
+F 1 "ADP1108-12" H -675 2273 50  0000 C CNN
+F 2 "" H -625 2500 50  0000 L CNN
+F 3 "" H -475 2850 50  0000 C CNN
+	1    -675 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_01X05 J3
+U 1 1 58C7B967
+P -2050 6550
+F 0 "J3" H -1972 6591 50  0000 L CNN
+F 1 "CONN_01X05" H -1972 6500 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23-5" H 0   0   50  0001 C CNN
+F 3 "" H 0   0   50  0001 C CNN
+	1    -2050 6550
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_01X05 J2
+U 1 1 58C7BA1F
+P -2600 6550
+F 0 "J2" H -2522 6591 50  0000 L CNN
+F 1 "CONN_01X05" H -2522 6500 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23-5" H -550 0   50  0001 C CNN
+F 3 "" H -550 0   50  0001 C CNN
+	1    -2600 6550
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_01X05 J1
+U 1 1 58C7BAA7
+P -3150 6550
+F 0 "J1" H -3072 6591 50  0000 L CNN
+F 1 "CONN_01X05" H -3072 6500 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23-5" H -1100 0   50  0001 C CNN
+F 3 "" H -1100 0   50  0001 C CNN
+	1    -3150 6550
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_01X05 J4
+U 1 1 58C7C6E4
+P -1450 6000
+F 0 "J4" H -1372 6041 50  0000 L CNN
+F 1 "CONN_01X05" H -1372 5950 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23-5_HandSoldering" H 600 -550 50  0001 C CNN
+F 3 "" H 600 -550 50  0001 C CNN
+	1    -1450 6000
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

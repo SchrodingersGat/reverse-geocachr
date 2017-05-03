@@ -1,37 +1,35 @@
-ID,Description,References,Value,Footprint,Rating,Manufacturer,Part Number,Vendor,Vendor Code,Alt. Vendor,Alt. Vendor Code,Quantity,Price,Cost Per Board,Notes,Datasheet,URL
-1,Unpolarized capacitor,C1 C7 C8 C9 C10 C16,0.1uF,C_0805_HandSoldering,,,,,,,,6,,,,,
-2,Unpolarized capacitor,C2 C5 C12 C13,10uF,C_0805_HandSoldering,,,,,,,,4,,,,,
-3,Unpolarized capacitor,C3 C4,4.7uF,C_0805_HandSoldering,,,,,,,,2,,,,,
-4,Unpolarized capacitor,C6 C11,18pF,C_0805_HandSoldering,,,,E14:1609375 ,,,,2,,,,,
-5,Diode,D1 D2 D3,D,SOD-123,,,,,,,,3,,,,,
-6,Jumper normally open,JP1,Jumper_NO_Small,C_0805,,,,,,,,1,,,,,
-7,Inductor,L1,10uH,R_1210_HandSoldering,,,,E14:1836609,,,,1,,,,,
-8,,P1,USB_Mini_B,USB_Mini-B,,,,,,,,1,,,,,
-9,Connector 01x02,P2,Battery,JST_PH_S02B-PH-K-S_02x2.00mm_Angled,,,,,,,,1,,,,,
-10,Connector 01x06,P3,SWD,POGO_Connector,,,,,,,,1,,,,,
-11,Connector 01x04,P4,GPS,JST_PH_S04B-PH-K-S_04x2.00mm_Angled,,,,,,,,1,,,,,
-12,Connector 01x02,P5,Button,Pin_Header_Straight_1x02,,,,,,,,1,,,,,
-13,Connector 01x03,P7,Servo,Pin_Header_Angled_1x03,,,,,,,,1,,,,,
-14,Transistor P-MOSFET (general),Q1 Q3,Q_PMOS_DSG,SOT-23,,,,,,,,2,,,,,
-15,Resistor,R1,R,R_0805_HandSoldering,,,,,,,,1,,,,,
-16,Resistor,R2 R10 R11,10K,R_0805_HandSoldering,,,,,,,,3,,,,,
-17,Resistor,R3,4K7,R_0805_HandSoldering,,,,,,,,1,,,,,
-18,Resistor,R4,470,R_0805_HandSoldering,,,,,,,,1,,,,,
-19,Resistor,R6,2K2,R_0805_HandSoldering,,,,,,,,1,,,,,
-20,Resistor,R7,2K,R_0805_HandSoldering,,,,,,,,1,,,,,
-21,,U1,MCP73831/OT,SOT-23-5,,,,,,,,1,,,,,
-22,"ILI9341 controller, SPI TFT LCD Display, 9-pin breakout PCB, 4-pin SD card interface, 5V/3.3V",U2,ILI9341_LCD_Breakout,Pin_Header_Straight_1x09,,,,,,,,1,,,,,
-23,"LPC11U00 USB series, 50MHz Cortex-M0 MCU, USB, ADC, USART, I2C, SPI, LQFP48 package",U3,LPC11U24FBD48,LQFP-48_7x7mm_Pitch0.5mm,,,,,,,,1,,,,,
-24,,U4,LM3670MF,SOT-23-5,,,,,,,,1,,,,,
-25,External EEPROM with SPI interface in 8-pin package,U5,25LC640A-I/SN,SOIC-8_3.9x4.9mm_Pitch1.27mm,,,,,,,,1,,,,,
-26,Crystal Oscillator,X1,12.000MHz,crystal_SMD_5032,,,,,,,,1,,,,,
+Component,Description,Part,Reference,Value,Footprint,Quantity,Datasheet,Part Lib,Footprint Lib,Vendor,FIT,Part Number,Rating,hello
+1,Unpolarized capacitor,C,C1 C7 C8 C9 C10 C16,0.1uF,C_0805_HandSoldering,6,,device,Capacitors_SMD,,,,,
+2,Unpolarized capacitor,C,C2 C5 C12 C13 C14,10uF,C_0805_HandSoldering,5,,device,Capacitors_SMD,,,,,
+3,Unpolarized capacitor,C,C6 C11,18pF,C_0805_HandSoldering,2,,device,Capacitors_SMD,E14:1609375 ,,,,
+4,Unpolarized capacitor,C,C3 C4,4.7uF,C_0805_HandSoldering,2,,device,Capacitors_SMD,,,,,
+5,Diode,D,D2 D3,D,SOD-123,2,,device,Diodes_SMD,,,,,
+6,Jumper normally open,Jumper_NO_Small,JP1,Jumper_NO_Small,C_0805,1,,device,Capacitors_SMD,,,,,
+7,,INDUCTOR_SMALL-RESCUE-USB_Geocache,L1,10uH,R_1210_HandSoldering,1,,USB_Geocache-rescue,Resistors_SMD,E14:1836609,,,,
+8,"Connector, single row, 01x02",CONN_01X02,P2,Battery,JST_PH_S02B-PH-K-S_02x2.00mm_Angled,1,,conn,Connectors_JST,,,,,
+9,"Connector, single row, 01x02",CONN_01X02,P5,Button,Pin_Header_Straight_1x02,1,,conn,Pin_Headers,,,,,
+10,"Connector, single row, 01x04",CONN_01X04,P4,GPS,JST_PH_S04B-PH-K-S_04x2.00mm_Angled,1,,conn,Connectors_JST,,,,,
+11,"Connector, single row, 01x06",CONN_01X06,P3,SWD,POGO_Connector,1,,conn,Components,,,,,
+12,"Connector, single row, 01x03",CONN_01X03,P7,Servo,Pin_Header_Angled_1x03,1,,conn,Pin_Headers,,,,,
+13,,USB_Mini_B,P1,USB_Mini_B,USB_Mini-B,1,,Currawong,Connect,,yes,,,
+14,Transistor N-MOSFET (general),Q_NMOS_GSD,Q2,BST82,SOT-23_Handsoldering,1,,device,TO_SOT_Packages_SMD,,,,,
+15,Transistor P-MOSFET (general),Q_PMOS_GSD,Q1 Q3,SI2301BDS-T1-E3,SOT-23_Handsoldering,2,,device,TO_SOT_Packages_SMD,,,,,
+16,Resistor,R,R12,0R1,R_0805_HandSoldering,1,,device,Resistors_SMD,,,WW08PR100FTL,1% 0.25W,
+17,Resistor,R,R4,470,R_0805_HandSoldering,1,,device,Resistors_SMD,,,,,
+18,Resistor,R,R1 R2 R3 R5 R6 R7 R8 R9 R10 R11 R13,4K7,R_0805_HandSoldering,11,,device,Resistors_SMD,,,,,
+19,External EEPROM with SPI interface in 8-pin package,25LC_EEPROM,U5,25LC640A-I/SN,SOIC-8_3.9x4.9mm_Pitch1.27mm,1,http://ww1.microchip.com/downloads/en/DeviceDoc/21832H.pdf,memory,SOIC_Packages,,,,,
+20,"ILI9341 controller, SPI TFT LCD Display, 9-pin breakout PCB, 4-pin SD card interface, 5V/3.3V",ILI9341_LCD_Breakout,U2,ILI9341_LCD_Breakout,Pin_Header_Straight_1x09,1,www.newhavendisplay.com/app_notes/ILI9341.pdf,display,Pin_Headers,,,,,
+21,,LM3670MF-RESCUE-USB_Geocache,U4,LM3670MF,SOT-23-5,1,,USB_Geocache-cache,TO_SOT_Packages_SMD,,,,,
+22,"LPC11U00 USB series, 50MHz Cortex-M0 MCU, USB, ADC, USART, I2C, SPI, LQFP48 package",LPC11U24FBD48,U3,LPC11U24FBD48,LQFP-48_7x7mm_Pitch0.5mm,1,http://www.nxp.com/documents/data_sheet/LPC11U1X.pdf,nxp_armmcu,QFP,,,,,
+23,,MCP73831/OT-RESCUE-USB_Geocache,U1,MCP73831/OT,SOT-23-5,1,,USB_Geocache-cache,TO_SOT_Packages_SMD,,,,,17
+24,"SMD crystal, with GND pin",CRYSTAL_SMD,X1,12.000MHz,crystal_SMD_5032,1,,device,Components,,,,,
 
 
 
 
 
-Component Count:,41
-Component Groups:,26
-Source:,C:/Users/Oliver/Google Drive/Reverse GeoCache Box/PCB/USB_Geocache.sch
-Version:,Rev B
-Date:,06-Mar-16 6:07:09 PM
+Component Count:,47
+Component Groups:,24
+Source:,C:/Users/Oliver/Programming/Reverse GeoCache Box/PCB/USB_Geocache.sch
+Version:,Rev C
+Date:,15-May-16 2:54:00 PM
