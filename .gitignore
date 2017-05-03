@@ -5,17 +5,13 @@
 **.clue
 **.o
 **.cpp.*
+**.tmp
+**.pro.*
 
 Code/GUI/ReverseGeocachr/release/
 Code/GUI/ReverseGeocachr/debug/
 
 Code/Firmware/Debug/
 
-Tools/
-Old/
-scripts/
-Datasheets/
 PCB/gerber/
-**.tmp
-*.tmp
-*.pro.user.*
+Datasheets/

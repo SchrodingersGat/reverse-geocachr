@@ -32,6 +32,7 @@
   */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "display.h"
 #include "stm32f3xx_hal.h"
 #include "spi.h"
 #include "tim.h"
@@ -42,9 +43,6 @@
 #include "timer.h"
 #include "ILI9340.h"
 /* USER CODE END Includes */
-
-char rxBuffer[256];
-uint8_t rxCursor = 0;
 
 uint8_t uartRxByte;
 
@@ -90,11 +88,10 @@ int main(void)
   MX_USART1_UART_Init();
 
   /* USER CODE BEGIN 2 */
-  ILI9340_Reset();
+  LCD_Initialize();
 
-  HAL_UART_Receive_IT(&huart1, &uartRxByte, 1);
+  //HAL_UART_Receive_IT(&huart1, &uartRxByte, 1);
 
-  uint16_t rot = 0;
   /* USER CODE END 2 */
 
 
@@ -102,16 +99,13 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  PauseMs(250);
-	  ILI9340_FillScreen(BLACK);
-	  ILI9340_DrawString(10, 50, rxBuffer, WHITE, 1);
+	  /* All events are handled asynchronously.
+	   * All we have to here is update the display
+	   */
 
-	  for( int i=0; i<0xFF; i++ )
-	  {
-		  rxBuffer[i] = 0;
-	  }
+	  LCD_Update();
+	  PauseMs(200);
 
-	  rxCursor = 0;
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -120,11 +114,11 @@ int main(void)
 
 }
 
-HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	uint8_t msg;
 
-	rxBuffer[rxCursor++] = uartRxByte;
+	msg = uartRxByte;
 
 	if (msg == '$')
 	{
