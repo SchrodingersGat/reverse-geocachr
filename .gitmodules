@@ -1,0 +1,3 @@
+[submodule "Code/ILI9340"]
+	path = Code/ILI9340
+	url = https://github.com/SchrodingersGat/ILI9340
