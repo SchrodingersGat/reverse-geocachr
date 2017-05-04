@@ -24,6 +24,8 @@
 #define PROGRESS_BAR_Y 220
 #define PROGRESS_BAR_SPACING 10
 
+Clue_t clue;
+
 /* Default strings */
 const char* WAITING_FOR_GPS = "Searching for GPS";
 
@@ -34,35 +36,71 @@ void LCD_Initialize(void)
 	ILI9340_Rotate(3);
 
 	// TODO - Hold backlight off until LCD ready
+
+	Clue_SetLine(&clue, 0, "Hello there");
+	Clue_SetLine(&clue, 1, "abcdefghijklmnopqrstuvwxyz");
+	Clue_SetLine(&clue, 2, "Wahahaahhahaha");
+	Clue_SetLine(&clue, 3, "1234567890");
+	Clue_SetLine(&clue, 4, "!@#$%^&*()");
+	Clue_SetLine(&clue, 5, "dddd");
+	Clue_SetLine(&clue, 6, "ABCDEFGIJ");
+
+	ILI9340_FillRect(
+				0,
+				LCD_BAR_HEIGHT,
+				LCD_WIDTH,
+				LCD_HEIGHT - ( 2 * LCD_BAR_HEIGHT),
+				BG_COLOR);
 }
 
 void LCD_Update(void)
 {
-	ILI9340_FillRect(
-			0,
-			LCD_BAR_HEIGHT,
-			LCD_WIDTH,
-			LCD_HEIGHT - ( 2 * LCD_BAR_HEIGHT),
-			BG_COLOR);
-
 	Draw_Top_Bar();
 	Draw_Bottom_Bar();
 
-	ILI9340_SetBackgroundColor(BG_COLOR);
-	ILI9340_DrawString(50, 50, "Hello world\n", BLACK, 1);
+	Draw_Clue();
 }
 
 void Draw_Clue(void)
 {
+	static int currentClue = -1;
+
+	if (currentClue == 0)
+		return;
+
+	currentClue = 0;
+
+	ILI9340_SetBackgroundColor(BG_COLOR);
+	ILI9340_SetTextOptions(TEXT_DEFAULT);
+
+	int y;
+
+	for (int i=0; i<NUM_CLUE_LINES; i++)
+	{
+		y = LCD_BAR_HEIGHT + 10 + i * (FONT_HEIGHT + 2);
+
+		ILI9340_FillRect(0, y, LCD_WIDTH, FONT_HEIGHT + 2, BG_COLOR);
+
+		ILI9340_DrawString( 10, LCD_BAR_HEIGHT + 10 + i * (FONT_HEIGHT + 2),
+				            clue.lines[i],
+							BLACK,
+							1 );
+	}
+
 }
 
 void Draw_Top_Bar(void)
 {
-	ILI9340_FillRect(0, 0, LCD_WIDTH, LCD_BAR_HEIGHT, BAR_COLOR);
+	static int state =- 1;
+
+	if (state == -1)
+	{
+		state = 0;
+		ILI9340_FillRect(0, 0, LCD_WIDTH, LCD_BAR_HEIGHT, BAR_COLOR);
+		Draw_Header_String();
+	}
 
 	Draw_Battery_Indicator();
-
-	Draw_Header_String();
 }
 
 void Draw_Battery_Indicator(void)
@@ -148,15 +186,22 @@ void Draw_Header_String(void)
 
 void Draw_Bottom_Bar(void)
 {
-	ILI9340_FillRect(
-			0,
-			LCD_HEIGHT - LCD_BAR_HEIGHT,
-			LCD_WIDTH,
-			LCD_BAR_HEIGHT,
-			BAR_COLOR);
+	static int state = -1;
+
+	if (state == -1)
+	{
+		state = 0;
+		ILI9340_FillRect(
+					0,
+					LCD_HEIGHT - LCD_BAR_HEIGHT,
+					LCD_WIDTH,
+					LCD_BAR_HEIGHT,
+					BAR_COLOR);
+		Draw_Footer_String();
+	}
 
 	Draw_Progress_Bar();
-	Draw_Footer_String();
+
 }
 
 void Draw_Progress_Bar(void)

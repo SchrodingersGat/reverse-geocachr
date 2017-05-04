@@ -110,7 +110,7 @@ int main(void)
 	   */
 
 	  LCD_Update();
-	  PauseMs(200);
+	  PauseMs(20);
 
   /* USER CODE END WHILE */
 
