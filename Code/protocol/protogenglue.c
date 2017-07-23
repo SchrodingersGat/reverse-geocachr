@@ -1,9 +1,11 @@
 #include "ReverseGeocacheProtocol.h"
 
 /* Format of a HIDbuffer data struct 
-0 = Msg Type
-1 = Msg Len
-2 = Msg Data
+
+ 0       Msg Type
+ 1       Msg Len
+ 2...n   Msg Data
+
 */
 
 //! \return the packet data pointer from the packet
