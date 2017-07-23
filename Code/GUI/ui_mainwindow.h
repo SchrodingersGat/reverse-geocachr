@@ -26,6 +26,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -49,26 +50,34 @@ public:
     QGroupBox *groupBox_6;
     QGridLayout *gridLayout_4;
     QPushButton *loadButton;
-    QPushButton *saveButton;
     QPushButton *moveUp;
+    QPushButton *saveButton;
     QPushButton *makeFirst;
+    QPushButton *pushButton;
     QPushButton *moveDown;
     QPushButton *makeLast;
     QPushButton *fitMap;
-    QPushButton *pushButton;
-    QGroupBox *groupBox;
-    QVBoxLayout *verticalLayout_4;
+    QSpacerItem *verticalSpacer_5;
+    QLabel *boxStatus_3;
+    QSpacerItem *verticalSpacer;
+    QLabel *boxStatus_2;
+    QTabWidget *tabWidget;
+    QWidget *tab_5;
+    QGridLayout *gridLayout_8;
     QGridLayout *gridLayout_5;
-    QLineEdit *boxCharge;
     QLineEdit *boxVersion;
     QLabel *latString_2;
-    QLabel *latString_3;
+    QLineEdit *boxCharge;
     QLineEdit *nBoxClues;
     QSpacerItem *horizontalSpacer_5;
-    QLabel *latString_4;
+    QLabel *latString_3;
     QLabel *boxStatus;
-    QLedIndicator *boxConnectionIndicator;
+    QLabel *latString_4;
     QPushButton *bootload;
+    QLedIndicator *boxConnectionIndicator;
+    QWidget *tab_6;
+    QGroupBox *groupBox;
+    QGridLayout *gridLayout_9;
     QLabel *boxClueString;
     QGridLayout *gridLayout_3;
     QPushButton *boxSkipToPrevClue;
@@ -78,9 +87,7 @@ public:
     QPushButton *boxUpload;
     QPushButton *boxUnlock;
     QPushButton *boxLock;
-    QSpacerItem *verticalSpacer;
-    QLabel *boxStatus_3;
-    QLabel *boxStatus_2;
+    QSpacerItem *verticalSpacer_4;
     QWebView *webView;
     QGridLayout *gridLayout_6;
     QLabel *label;
@@ -190,23 +197,29 @@ public:
 
         gridLayout_4->addWidget(loadButton, 0, 0, 1, 1);
 
-        saveButton = new QPushButton(groupBox_6);
-        saveButton->setObjectName(QStringLiteral("saveButton"));
-        saveButton->setFont(font2);
-
-        gridLayout_4->addWidget(saveButton, 0, 1, 1, 1);
-
         moveUp = new QPushButton(groupBox_6);
         moveUp->setObjectName(QStringLiteral("moveUp"));
         moveUp->setFont(font2);
 
         gridLayout_4->addWidget(moveUp, 1, 0, 1, 1);
 
+        saveButton = new QPushButton(groupBox_6);
+        saveButton->setObjectName(QStringLiteral("saveButton"));
+        saveButton->setFont(font2);
+
+        gridLayout_4->addWidget(saveButton, 0, 1, 1, 1);
+
         makeFirst = new QPushButton(groupBox_6);
         makeFirst->setObjectName(QStringLiteral("makeFirst"));
         makeFirst->setFont(font2);
 
         gridLayout_4->addWidget(makeFirst, 1, 1, 1, 1);
+
+        pushButton = new QPushButton(groupBox_6);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+        pushButton->setFont(font2);
+
+        gridLayout_4->addWidget(pushButton, 3, 1, 1, 1);
 
         moveDown = new QPushButton(groupBox_6);
         moveDown->setObjectName(QStringLiteral("moveDown"));
@@ -226,43 +239,42 @@ public:
 
         gridLayout_4->addWidget(fitMap, 3, 0, 1, 1);
 
-        pushButton = new QPushButton(groupBox_6);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setFont(font2);
+        verticalSpacer_5 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        gridLayout_4->addWidget(pushButton, 3, 1, 1, 1);
+        gridLayout_4->addItem(verticalSpacer_5, 4, 1, 1, 1);
 
 
         gridLayout->addWidget(groupBox_6, 1, 0, 1, 1);
 
-        groupBox = new QGroupBox(centralWidget);
-        groupBox->setObjectName(QStringLiteral("groupBox"));
-        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
-        groupBox->setSizePolicy(sizePolicy);
-        groupBox->setMinimumSize(QSize(260, 251));
-        groupBox->setMaximumSize(QSize(260, 16777215));
-        groupBox->setFont(font);
-        verticalLayout_4 = new QVBoxLayout(groupBox);
-        verticalLayout_4->setSpacing(6);
-        verticalLayout_4->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        boxStatus_3 = new QLabel(centralWidget);
+        boxStatus_3->setObjectName(QStringLiteral("boxStatus_3"));
+        boxStatus_3->setFont(font1);
+
+        gridLayout->addWidget(boxStatus_3, 6, 0, 1, 1);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout->addItem(verticalSpacer, 5, 0, 1, 1);
+
+        boxStatus_2 = new QLabel(centralWidget);
+        boxStatus_2->setObjectName(QStringLiteral("boxStatus_2"));
+        boxStatus_2->setFont(font1);
+
+        gridLayout->addWidget(boxStatus_2, 7, 0, 1, 1);
+
+        tabWidget = new QTabWidget(centralWidget);
+        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        tabWidget->setMinimumSize(QSize(0, 150));
+        tab_5 = new QWidget();
+        tab_5->setObjectName(QStringLiteral("tab_5"));
+        gridLayout_8 = new QGridLayout(tab_5);
+        gridLayout_8->setSpacing(6);
+        gridLayout_8->setContentsMargins(11, 11, 11, 11);
+        gridLayout_8->setObjectName(QStringLiteral("gridLayout_8"));
         gridLayout_5 = new QGridLayout();
         gridLayout_5->setSpacing(6);
         gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
-        boxCharge = new QLineEdit(groupBox);
-        boxCharge->setObjectName(QStringLiteral("boxCharge"));
-        boxCharge->setEnabled(true);
-        boxCharge->setMaximumSize(QSize(60, 16777215));
-        boxCharge->setFont(font2);
-        boxCharge->setAlignment(Qt::AlignCenter);
-        boxCharge->setReadOnly(true);
-
-        gridLayout_5->addWidget(boxCharge, 2, 1, 1, 1);
-
-        boxVersion = new QLineEdit(groupBox);
+        boxVersion = new QLineEdit(tab_5);
         boxVersion->setObjectName(QStringLiteral("boxVersion"));
         boxVersion->setEnabled(true);
         boxVersion->setMaximumSize(QSize(60, 16777215));
@@ -272,21 +284,24 @@ public:
 
         gridLayout_5->addWidget(boxVersion, 3, 1, 1, 1);
 
-        latString_2 = new QLabel(groupBox);
+        latString_2 = new QLabel(tab_5);
         latString_2->setObjectName(QStringLiteral("latString_2"));
         latString_2->setFont(font1);
         latString_2->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         gridLayout_5->addWidget(latString_2, 2, 0, 1, 1);
 
-        latString_3 = new QLabel(groupBox);
-        latString_3->setObjectName(QStringLiteral("latString_3"));
-        latString_3->setFont(font1);
-        latString_3->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        boxCharge = new QLineEdit(tab_5);
+        boxCharge->setObjectName(QStringLiteral("boxCharge"));
+        boxCharge->setEnabled(true);
+        boxCharge->setMaximumSize(QSize(60, 16777215));
+        boxCharge->setFont(font2);
+        boxCharge->setAlignment(Qt::AlignCenter);
+        boxCharge->setReadOnly(true);
 
-        gridLayout_5->addWidget(latString_3, 3, 0, 1, 1);
+        gridLayout_5->addWidget(boxCharge, 2, 1, 1, 1);
 
-        nBoxClues = new QLineEdit(groupBox);
+        nBoxClues = new QLineEdit(tab_5);
         nBoxClues->setObjectName(QStringLiteral("nBoxClues"));
         nBoxClues->setEnabled(true);
         nBoxClues->setMaximumSize(QSize(60, 16777215));
@@ -300,7 +315,20 @@ public:
 
         gridLayout_5->addItem(horizontalSpacer_5, 1, 2, 1, 1);
 
-        latString_4 = new QLabel(groupBox);
+        latString_3 = new QLabel(tab_5);
+        latString_3->setObjectName(QStringLiteral("latString_3"));
+        latString_3->setFont(font1);
+        latString_3->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_5->addWidget(latString_3, 3, 0, 1, 1);
+
+        boxStatus = new QLabel(tab_5);
+        boxStatus->setObjectName(QStringLiteral("boxStatus"));
+        boxStatus->setFont(font1);
+
+        gridLayout_5->addWidget(boxStatus, 0, 0, 1, 2);
+
+        latString_4 = new QLabel(tab_5);
         latString_4->setObjectName(QStringLiteral("latString_4"));
         latString_4->setMinimumSize(QSize(50, 0));
         latString_4->setFont(font1);
@@ -308,28 +336,43 @@ public:
 
         gridLayout_5->addWidget(latString_4, 1, 0, 1, 1);
 
-        boxStatus = new QLabel(groupBox);
-        boxStatus->setObjectName(QStringLiteral("boxStatus"));
-        boxStatus->setFont(font1);
+        bootload = new QPushButton(tab_5);
+        bootload->setObjectName(QStringLiteral("bootload"));
+        bootload->setFont(font2);
 
-        gridLayout_5->addWidget(boxStatus, 0, 0, 1, 2);
+        gridLayout_5->addWidget(bootload, 3, 2, 1, 1);
 
-        boxConnectionIndicator = new QLedIndicator(groupBox);
+        boxConnectionIndicator = new QLedIndicator(tab_5);
         boxConnectionIndicator->setObjectName(QStringLiteral("boxConnectionIndicator"));
         boxConnectionIndicator->setMinimumSize(QSize(20, 20));
         boxConnectionIndicator->setMaximumSize(QSize(20, 20));
 
         gridLayout_5->addWidget(boxConnectionIndicator, 0, 2, 1, 1);
 
-        bootload = new QPushButton(groupBox);
-        bootload->setObjectName(QStringLiteral("bootload"));
-        bootload->setFont(font2);
 
-        gridLayout_5->addWidget(bootload, 3, 2, 1, 1);
+        gridLayout_8->addLayout(gridLayout_5, 0, 0, 1, 1);
 
+        tabWidget->addTab(tab_5, QString());
+        tab_6 = new QWidget();
+        tab_6->setObjectName(QStringLiteral("tab_6"));
+        tabWidget->addTab(tab_6, QString());
 
-        verticalLayout_4->addLayout(gridLayout_5);
+        gridLayout->addWidget(tabWidget, 3, 0, 1, 1);
 
+        groupBox = new QGroupBox(centralWidget);
+        groupBox->setObjectName(QStringLiteral("groupBox"));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
+        groupBox->setSizePolicy(sizePolicy);
+        groupBox->setMinimumSize(QSize(260, 251));
+        groupBox->setMaximumSize(QSize(260, 16777215));
+        groupBox->setFont(font);
+        gridLayout_9 = new QGridLayout(groupBox);
+        gridLayout_9->setSpacing(6);
+        gridLayout_9->setContentsMargins(11, 11, 11, 11);
+        gridLayout_9->setObjectName(QStringLiteral("gridLayout_9"));
         boxClueString = new QLabel(groupBox);
         boxClueString->setObjectName(QStringLiteral("boxClueString"));
         QFont font3;
@@ -338,7 +381,7 @@ public:
         font3.setWeight(75);
         boxClueString->setFont(font3);
 
-        verticalLayout_4->addWidget(boxClueString);
+        gridLayout_9->addWidget(boxClueString, 0, 0, 1, 1);
 
         gridLayout_3 = new QGridLayout();
         gridLayout_3->setSpacing(6);
@@ -384,26 +427,14 @@ public:
         gridLayout_3->addWidget(boxLock, 1, 0, 1, 1);
 
 
-        verticalLayout_4->addLayout(gridLayout_3);
+        gridLayout_9->addLayout(gridLayout_3, 1, 0, 1, 1);
+
+        verticalSpacer_4 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout_9->addItem(verticalSpacer_4, 2, 0, 1, 1);
 
 
         gridLayout->addWidget(groupBox, 2, 0, 1, 1);
-
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        gridLayout->addItem(verticalSpacer, 3, 0, 1, 1);
-
-        boxStatus_3 = new QLabel(centralWidget);
-        boxStatus_3->setObjectName(QStringLiteral("boxStatus_3"));
-        boxStatus_3->setFont(font1);
-
-        gridLayout->addWidget(boxStatus_3, 4, 0, 1, 1);
-
-        boxStatus_2 = new QLabel(centralWidget);
-        boxStatus_2->setObjectName(QStringLiteral("boxStatus_2"));
-        boxStatus_2->setFont(font1);
-
-        gridLayout->addWidget(boxStatus_2, 5, 0, 1, 1);
 
 
         horizontalLayout_5->addLayout(gridLayout);
@@ -655,6 +686,9 @@ public:
 
         retranslateUi(MainWindow);
 
+        tabWidget->setCurrentIndex(0);
+
+
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
@@ -672,17 +706,21 @@ public:
 #endif // QT_NO_TOOLTIP
         loadButton->setText(QApplication::translate("MainWindow", "Load", 0));
 #ifndef QT_NO_TOOLTIP
-        saveButton->setToolTip(QApplication::translate("MainWindow", "Save clues to file", 0));
-#endif // QT_NO_TOOLTIP
-        saveButton->setText(QApplication::translate("MainWindow", "Save", 0));
-#ifndef QT_NO_TOOLTIP
         moveUp->setToolTip(QApplication::translate("MainWindow", "Move Clue Up", 0));
 #endif // QT_NO_TOOLTIP
         moveUp->setText(QApplication::translate("MainWindow", "Move Up", 0));
 #ifndef QT_NO_TOOLTIP
+        saveButton->setToolTip(QApplication::translate("MainWindow", "Save clues to file", 0));
+#endif // QT_NO_TOOLTIP
+        saveButton->setText(QApplication::translate("MainWindow", "Save", 0));
+#ifndef QT_NO_TOOLTIP
         makeFirst->setToolTip(QApplication::translate("MainWindow", "Move the selected clue to the first position", 0));
 #endif // QT_NO_TOOLTIP
         makeFirst->setText(QApplication::translate("MainWindow", "Make First", 0));
+#ifndef QT_NO_TOOLTIP
+        pushButton->setToolTip(QApplication::translate("MainWindow", "Remove ALL clues from the map", 0));
+#endif // QT_NO_TOOLTIP
+        pushButton->setText(QApplication::translate("MainWindow", "Clear", 0));
 #ifndef QT_NO_TOOLTIP
         moveDown->setToolTip(QApplication::translate("MainWindow", "Move Clue Down", 0));
 #endif // QT_NO_TOOLTIP
@@ -695,19 +733,19 @@ public:
         fitMap->setToolTip(QApplication::translate("MainWindow", "Zoom to show all clues", 0));
 #endif // QT_NO_TOOLTIP
         fitMap->setText(QApplication::translate("MainWindow", "Fit Map", 0));
-#ifndef QT_NO_TOOLTIP
-        pushButton->setToolTip(QApplication::translate("MainWindow", "Remove ALL clues from the map", 0));
-#endif // QT_NO_TOOLTIP
-        pushButton->setText(QApplication::translate("MainWindow", "Clear", 0));
-        groupBox->setTitle(QApplication::translate("MainWindow", "Box Options", 0));
+        boxStatus_3->setText(QApplication::translate("MainWindow", "Reverse Geocache Software ", 0));
+        boxStatus_2->setText(QApplication::translate("MainWindow", "Version: 1.0.0", 0));
         latString_2->setText(QApplication::translate("MainWindow", "Battery", 0));
         latString_3->setText(QApplication::translate("MainWindow", "Version", 0));
-        latString_4->setText(QApplication::translate("MainWindow", "Clues", 0));
         boxStatus->setText(QApplication::translate("MainWindow", "Connected via USB", 0));
+        latString_4->setText(QApplication::translate("MainWindow", "Clues", 0));
 #ifndef QT_NO_TOOLTIP
         bootload->setToolTip(QApplication::translate("MainWindow", "Program new firmware", 0));
 #endif // QT_NO_TOOLTIP
         bootload->setText(QApplication::translate("MainWindow", "Bootload", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_5), QApplication::translate("MainWindow", "Box Status", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_6), QApplication::translate("MainWindow", "Box Settings", 0));
+        groupBox->setTitle(QApplication::translate("MainWindow", "Box Options", 0));
         boxClueString->setText(QApplication::translate("MainWindow", "Clue <x> of <y>", 0));
 #ifndef QT_NO_TOOLTIP
         boxSkipToPrevClue->setToolTip(QApplication::translate("MainWindow", "Skip to the previous clue", 0));
@@ -733,8 +771,6 @@ public:
         boxLock->setToolTip(QApplication::translate("MainWindow", "Move Clue Down", 0));
 #endif // QT_NO_TOOLTIP
         boxLock->setText(QApplication::translate("MainWindow", "Lock", 0));
-        boxStatus_3->setText(QApplication::translate("MainWindow", "Reverse Geocache Software ", 0));
-        boxStatus_2->setText(QApplication::translate("MainWindow", "Version: 1.0.0", 0));
         label->setText(QApplication::translate("MainWindow", "LCD Display Preview", 0));
 #ifndef QT_NO_TOOLTIP
         LCD->setToolTip(QApplication::translate("MainWindow", "This is what the box display will show", 0));
