@@ -36,7 +36,8 @@ typedef enum
 {
     MSG_RESET_INTO_BOOTLOADER = 0x0A,//!< Enter USB bootloader mode
     MSG_ENABLE_DEBUG_MODE,           //!< Enable extra debugging information
-    MSG_SETINGS = 0x20,              //!< System settings
+    MSG_SETTINGS = 0x20,             //!< System settings
+    MSG_GET_SETTINGS,                //!< Request system settings
     MSG_SYSTEM_INFO = 0xA0,          //!< System information
     MSG_CLUE_INFO = 0xB0,            //!< Clue information
     MSG_GET_CLUE_INFO,               //!< Request clue information

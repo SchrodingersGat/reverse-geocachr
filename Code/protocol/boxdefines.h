@@ -85,6 +85,35 @@ void encodeWaypoint_t(uint8_t* data, int* bytecount, const Waypoint_t* user);
 //! Decode a Waypoint_t structure from a byte array
 int decodeWaypoint_t(const uint8_t* data, int* bytecount, Waypoint_t* user);
 
+typedef struct
+{
+    uint16_t pwmLocked;   //!< PWM value for locked position
+    uint16_t pwmUnlocked; //!< PWM value for unlocked position
+}BoxSettings_t;
+
+// Initial and verify values for BoxSettings
+#define ReverseGeocache_BoxSettings_pwmLocked_InitValue 1000
+#define ReverseGeocache_BoxSettings_pwmLocked_VerifyMin 500
+#define ReverseGeocache_BoxSettings_pwmLocked_VerifyMax 2500
+#define ReverseGeocache_BoxSettings_pwmUnlocked_InitValue 2000
+#define ReverseGeocache_BoxSettings_pwmUnlocked_VerifyMin 500
+#define ReverseGeocache_BoxSettings_pwmUnlocked_VerifyMax 2500
+
+//! return the minimum encoded length for the BoxSettings_t structure
+#define getMinLengthOfBoxSettings_t() (4)
+
+//! Encode a BoxSettings_t structure into a byte array
+void encodeBoxSettings_t(uint8_t* data, int* bytecount, const BoxSettings_t* user);
+
+//! Decode a BoxSettings_t structure from a byte array
+int decodeBoxSettings_t(const uint8_t* data, int* bytecount, BoxSettings_t* user);
+
+//! Set a BoxSettings_t structure to initial values
+void initBoxSettings_t(BoxSettings_t* user);
+
+//! Verify a BoxSettings_t structure has acceptable values
+int verifyBoxSettings_t(BoxSettings_t* user);
+
 #ifdef __cplusplus
 }
 #endif

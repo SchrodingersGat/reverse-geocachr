@@ -17,7 +17,8 @@
         <Value name="RESET_INTO_BOOTLOADER" value="0x0A" comment="Enter USB bootloader mode"/>
         <Value name="ENABLE_DEBUG_MODE" comment="Enable extra debugging information"/>
 
-        <Value name="SETINGS" value="0x20" comment="System settings"/>
+        <Value name="SETTINGS" value="0x20" comment="System settings"/>
+        <Value name="GET_SETTINGS" comment="Request system settings"/>
         
         <Value name="SYSTEM_INFO" value="0xA0" comment="System information"/>
         
@@ -81,6 +82,11 @@
         <Data name="threshold" inMemoryType="unsigned16" comment="Distance threshold (m)"/>
         <Data name="type" enum="ClueTypes" comment="Clue type"/>
         <Data name="options" struct="ClueOptions" comment="Extra clue options"/>
+    </Structure>
+
+    <Structure name="BoxSettings" file="boxdefines">
+        <Data name="pwmLocked" inMemoryType="unsigned16" initialValue="1000" verifyMinValue="500" verifyMaxValue="2500" comment="PWM value for locked position"/>
+        <Data name="pwmUnlocked" inMemoryType="unsigned16" initialValue="2000" verifyMinValue="500" verifyMaxValue="2500" comment="PWM value for unlocked position"/>
     </Structure>
     
     <!-- Commands -->
@@ -147,4 +153,12 @@
         <Data name="clueNumber" inMemoryType="unsigned8"/>
         <Data name="lineNumber" inMemoryType="unsigned8"/>
     </Packet>
+
+    <Packet name="Settings" ID="MSG_SETTINGS" file="boxpackets" parameterInterface="true" structureInterface="true">
+        <Data name="settings" struct="BoxSettings" comment="Box settings"/>
+    </Packet>
+
+    <Packet name="RequestSettings" ID="MSG_GET_SETTINGS" file="boxpackets" parameterInterface="true">
+    </Packet>
+
 </Protocol>

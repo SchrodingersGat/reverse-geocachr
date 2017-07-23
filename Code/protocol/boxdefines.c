@@ -260,4 +260,110 @@ int decodeWaypoint_t(const uint8_t* data, int* bytecount, Waypoint_t* user)
 
 }// decodeWaypoint_t
 
+/*!
+ * \brief Encode a BoxSettings_t structure into a byte array
+ *
+
+ * \param data points to the byte array to add encoded data to
+ * \param bytecount points to the starting location in the byte array, and will be incremented by the number of encoded bytes.
+ * \param user is the data to encode in the byte array
+ */
+void encodeBoxSettings_t(uint8_t* data, int* bytecount, const BoxSettings_t* user)
+{
+    int byteindex = *bytecount;
+
+    // PWM value for locked position
+    uint16ToBeBytes((uint16_t)user->pwmLocked, data, &byteindex);
+
+    // PWM value for unlocked position
+    uint16ToBeBytes((uint16_t)user->pwmUnlocked, data, &byteindex);
+
+    *bytecount = byteindex;
+
+}// encodeBoxSettings_t
+
+/*!
+ * \brief Decode a BoxSettings_t structure from a byte array
+ *
+
+ * \param data points to the byte array to decoded data from
+ * \param bytecount points to the starting location in the byte array, and will be incremented by the number of bytes decoded
+ * \param user is the data to decode from the byte array
+ * \return 1 if the data are decoded, else 0. If 0 is returned bytecount will not be updated.
+ */
+int decodeBoxSettings_t(const uint8_t* data, int* bytecount, BoxSettings_t* user)
+{
+    int byteindex = *bytecount;
+
+    // PWM value for locked position
+    user->pwmLocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
+
+    // PWM value for unlocked position
+    user->pwmUnlocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
+
+    *bytecount = byteindex;
+
+    return 1;
+
+}// decodeBoxSettings_t
+
+/*!
+ * \brief Set a BoxSettings_t structure to initial values.
+ *
+ * Set a BoxSettings_t structure to initial values. Not all fields are set,
+ * only those which the protocol specifies.
+ * \param user is the structure whose data are set to initial values
+ */
+void initBoxSettings_t(BoxSettings_t* user)
+{
+
+    // PWM value for locked position
+    user->pwmLocked = 1000;
+
+    // PWM value for unlocked position
+    user->pwmUnlocked = 2000;
+
+}// initBoxSettings_t
+
+/*!
+ * \brief Verify a BoxSettings_t structure has acceptable values.
+ *
+ * Verify a BoxSettings_t structure has acceptable values. Not all fields are
+ * verified, only those which the protocol specifies. Fields which are outside
+ * the allowable range are changed to the maximum or minimum allowable value. 
+ * \param user is the structure whose data are verified
+ * \return 1 if all verifiable data where valid, else 0 if data had to be corrected
+ */
+int verifyBoxSettings_t(BoxSettings_t* user)
+{
+    int good = 1;
+
+    // PWM value for locked position
+    if(user->pwmLocked < 500)
+    {
+        user->pwmLocked = 500;
+        good = 0;
+    }
+    else if(user->pwmLocked > 2500)
+    {
+        user->pwmLocked = 2500;
+        good = 0;
+    }
+
+    // PWM value for unlocked position
+    if(user->pwmUnlocked < 500)
+    {
+        user->pwmUnlocked = 500;
+        good = 0;
+    }
+    else if(user->pwmUnlocked > 2500)
+    {
+        user->pwmUnlocked = 2500;
+        good = 0;
+    }
+
+    return good;
+
+}// verifyBoxSettings_t
+
 // end of boxdefines.c

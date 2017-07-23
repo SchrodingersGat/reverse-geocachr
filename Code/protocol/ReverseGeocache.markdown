@@ -75,7 +75,8 @@ USB Packet types
 | --------------------------------------------------------- | :---: | --------------------------------------- |
 | [`MSG_RESET_INTO_BOOTLOADER`](#MSG_RESET_INTO_BOOTLOADER) | 10    | Enter USB bootloader mode               |
 | [`MSG_ENABLE_DEBUG_MODE`](#MSG_ENABLE_DEBUG_MODE)         | 11    | Enable extra debugging information      |
-| `MSG_SETINGS`                                             | 32    | System settings                         |
+| [`MSG_SETTINGS`](#MSG_SETTINGS)                           | 32    | System settings                         |
+| [`MSG_GET_SETTINGS`](#MSG_GET_SETTINGS)                   | 33    | Request system settings                 |
 | [`MSG_SYSTEM_INFO`](#MSG_SYSTEM_INFO)                     | 160   | System information                      |
 | [`MSG_CLUE_INFO`](#MSG_CLUE_INFO)                         | 176   | Clue information                        |
 | [`MSG_GET_CLUE_INFO`](#MSG_GET_CLUE_INFO)                 | 177   | Request clue information                |
@@ -274,6 +275,26 @@ USB Packet types
 | ----- | ------------ | :---------: | :----: | ----------- |
 | 0     | 1)clueNumber | U8          | 1      |             |
 | 1     | 2)lineNumber | U8          | 1      |             |
+
+
+## <a name="MSG_SETTINGS"></a>Settings packet
+
+- packet identifier: `MSG_SETTINGS` : 32
+- data length: 4
+
+
+[Settings packet bytes]
+| Bytes | Name            | [Enc](#Enc) | Repeat | Description                      |
+| ----- | --------------- | :---------: | :----: | -------------------------------- |
+| 0...3 | 1)settings                   || 1      | Box settings                     |
+| 0...1 | 1.1)pwmLocked   | U16         | 1      | PWM value for locked position.   |
+| 2...3 | 1.2)pwmUnlocked | U16         | 1      | PWM value for unlocked position. |
+
+
+## <a name="MSG_GET_SETTINGS"></a>RequestSettings packet
+
+- packet identifier: `MSG_GET_SETTINGS` : 33
+- data length: 0
 
 
 ----------------------------

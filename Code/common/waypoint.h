@@ -1,14 +1,9 @@
-/*
-
-*/
-
 #ifndef _INC_WAYPOINT_H
 #define _INC_WAYPOINT_H
 
 
 #include <stdint.h>
 
-#include "boxdefines.h"
 #include "box_defines.h"
 
 #ifdef __cplusplus

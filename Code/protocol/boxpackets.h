@@ -304,6 +304,53 @@ int decodeRequestClueLinePacket(const void* pkt, uint8_t* clueNumber, uint8_t* l
 //! return the maximum encoded length for the RequestClueLine packet
 #define getRequestClueLineMaxDataLength() (2)
 
+typedef struct
+{
+    BoxSettings_t settings; //!< Box settings
+}Settings_t;
+
+//! Set a Settings_t structure to initial values
+void initSettings_t(Settings_t* user);
+
+//! Verify a Settings_t structure has acceptable values
+int verifySettings_t(Settings_t* user);
+
+//! Create the Settings packet
+void encodeSettingsPacketStructure(void* pkt, const Settings_t* user);
+
+//! Decode the Settings packet
+int decodeSettingsPacketStructure(const void* pkt, Settings_t* user);
+
+//! Create the Settings packet
+void encodeSettingsPacket(void* pkt, const BoxSettings_t* settings);
+
+//! Decode the Settings packet
+int decodeSettingsPacket(const void* pkt, BoxSettings_t* settings);
+
+//! return the packet ID for the Settings packet
+#define getSettingsPacketID() (MSG_SETTINGS)
+
+//! return the minimum encoded length for the Settings packet
+#define getSettingsMinDataLength() (4)
+
+//! return the maximum encoded length for the Settings packet
+#define getSettingsMaxDataLength() (4)
+
+//! Create the RequestSettings packet
+void encodeRequestSettingsPacket(void* pkt);
+
+//! Decode the RequestSettings packet
+int decodeRequestSettingsPacket(const void* pkt);
+
+//! return the packet ID for the RequestSettings packet
+#define getRequestSettingsPacketID() (MSG_GET_SETTINGS)
+
+//! return the minimum encoded length for the RequestSettings packet
+#define getRequestSettingsMinDataLength() 0
+
+//! return the maximum encoded length for the RequestSettings packet
+#define getRequestSettingsMaxDataLength() 0
+
 #ifdef __cplusplus
 }
 #endif

@@ -10,7 +10,6 @@
 #include "hidapi/hidapi/hidapi.h"
 
 #include "waypoint.h"
-#include "ReverseGeocacheProtocol.h"
 #include "boxpackets.h"
 
 #include "box_defines.h"

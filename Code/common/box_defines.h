@@ -5,6 +5,11 @@
 
 #include "boxdefines.h"
 
+// C++ compilers: don't mangle us
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //Box configuration
 #define BOX_MAX_CLUES 10
 #define BOX_WELCOME_MSG 0
@@ -38,5 +43,9 @@ typedef struct
 
 	uint16_t checksum;	//Stored checksum value
 } Clue_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

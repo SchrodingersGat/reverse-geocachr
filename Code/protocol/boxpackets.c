@@ -637,4 +637,167 @@ int decodeRequestClueLinePacket(const void* pkt, uint8_t* clueNumber, uint8_t* l
 
     return 1;
 }
+
+/*!
+ * \brief Set a Settings_t structure to initial values.
+ *
+ * Set a Settings_t structure to initial values. Not all fields are set,
+ * only those which the protocol specifies.
+ * \param user is the structure whose data are set to initial values
+ */
+void initSettings_t(Settings_t* user)
+{
+
+    // Box settings
+    initBoxSettings_t(&user->settings);
+
+}// initSettings_t
+
+/*!
+ * \brief Verify a Settings_t structure has acceptable values.
+ *
+ * Verify a Settings_t structure has acceptable values. Not all fields are
+ * verified, only those which the protocol specifies. Fields which are outside
+ * the allowable range are changed to the maximum or minimum allowable value. 
+ * \param user is the structure whose data are verified
+ * \return 1 if all verifiable data where valid, else 0 if data had to be corrected
+ */
+int verifySettings_t(Settings_t* user)
+{
+    int good = 1;
+
+    // Box settings
+    if(!verifyBoxSettings_t(&user->settings))
+        good = 0;
+
+    return good;
+
+}// verifySettings_t
+
+/*!
+ * \brief Create the Settings packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ * \param user points to the user data that will be encoded in pkt
+ */
+void encodeSettingsPacketStructure(void* pkt, const Settings_t* user)
+{
+    uint8_t* data = getReverseGeocachePacketData(pkt);
+    int byteindex = 0;
+
+    // Box settings
+    encodeBoxSettings_t(data, &byteindex, &user->settings);
+
+    // complete the process of creating the packet
+    finishReverseGeocachePacket(pkt, byteindex, getSettingsPacketID());
+}
+
+/*!
+ * \brief Decode the Settings packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \param user receives the data decoded from the packet
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeSettingsPacketStructure(const void* pkt, Settings_t* user)
+{
+    int numBytes;
+    int byteindex = 0;
+    const uint8_t* data;
+
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getSettingsPacketID())
+        return 0;
+
+    // Verify the packet size
+    numBytes = getReverseGeocachePacketSize(pkt);
+    if(numBytes < getSettingsMinDataLength())
+        return 0;
+
+    // The raw data from the packet
+    data = getReverseGeocachePacketDataConst(pkt);
+
+    // Box settings
+    if(decodeBoxSettings_t(data, &byteindex, &user->settings) == 0)
+        return 0;
+
+    return 1;
+}
+
+/*!
+ * \brief Create the Settings packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ * \param settings is Box settings
+ */
+void encodeSettingsPacket(void* pkt, const BoxSettings_t* settings)
+{
+    uint8_t* data = getReverseGeocachePacketData(pkt);
+    int byteindex = 0;
+
+    // Box settings
+    encodeBoxSettings_t(data, &byteindex, settings);
+
+    // complete the process of creating the packet
+    finishReverseGeocachePacket(pkt, byteindex, getSettingsPacketID());
+}
+
+/*!
+ * \brief Decode the Settings packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \param settings receives Box settings
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeSettingsPacket(const void* pkt, BoxSettings_t* settings)
+{
+    int byteindex = 0;
+    const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
+    int numBytes = getReverseGeocachePacketSize(pkt);
+
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getSettingsPacketID())
+        return 0;
+
+    if(numBytes < getSettingsMinDataLength())
+        return 0;
+
+    // Box settings
+    if(decodeBoxSettings_t(data, &byteindex, settings) == 0)
+        return 0;
+
+    return 1;
+}
+
+/*!
+ * \brief Create the RequestSettings packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ */
+void encodeRequestSettingsPacket(void* pkt)
+{
+    // Zero length packet, no data encoded
+    finishReverseGeocachePacket(pkt, 0, getRequestSettingsPacketID());
+}
+
+/*!
+ * \brief Decode the RequestSettings packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeRequestSettingsPacket(const void* pkt)
+{
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getRequestSettingsPacketID())
+        return 0;
+    else
+        return 1;
+}
 // end of boxpackets.c

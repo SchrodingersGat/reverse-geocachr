@@ -16,17 +16,16 @@ const QString SETTING_CLUE_TYPE = "Type";
 const QString SETTING_CLUE_OPTIONS = "Options";
 const QString SETTING_CLUE_LINE = "Line_";
 
-#include "waypoint.h"
 #include "debug.h"
 #include "ILI9340_font.h"
 
-ClueList::ClueList() {
-
+ClueList::ClueList()
+{
     Reset();
 }
 
-void ClueList::Reset() {
-
+void ClueList::Reset()
+{
     clues.clear();
     Clue_Init(&welcomeMessage);
     Clue_Init(&completeMessage);
@@ -36,29 +35,33 @@ void ClueList::Reset() {
     emit clueUpdated();
 }
 
-bool ClueList::IsClueSelected() {
+bool ClueList::IsClueSelected()
+{
     if (currentClue > 0 && currentClue <= clues.count()) return true;
 
     return false;
 }
 
-uint8_t ClueList::ClueIndex() {
+uint8_t ClueList::ClueIndex()
+{
     return currentClue;
 }
 
-uint8_t ClueList::ClueCount() {
+uint8_t ClueList::ClueCount()
+{
     return clues.count();
 }
 
-Clue_t* ClueList::GetCurrentClue() {
+Clue_t* ClueList::GetCurrentClue()
+{
     if (currentClue > BOX_COMPLETE_MSG) currentClue = BOX_WELCOME_MSG;
     if ((currentClue > clues.count()) && (currentClue < BOX_COMPLETE_MSG)) currentClue = BOX_WELCOME_MSG;
 
     return GetClueAtIndex(currentClue);
 }
 
-Clue_t* ClueList::GetClueAtIndex(uint8_t index) {
-
+Clue_t* ClueList::GetClueAtIndex(uint8_t index)
+{
     if (index == BOX_WELCOME_MSG) return &welcomeMessage;
     if (index == BOX_COMPLETE_MSG) return &completeMessage;
 
@@ -69,8 +72,10 @@ Clue_t* ClueList::GetClueAtIndex(uint8_t index) {
     return NULL;
 }
 
-QString ClueList::CurrentClueTitle() {
-    switch (currentClue) {
+QString ClueList::CurrentClueTitle()
+{
+    switch (currentClue)
+    {
     case BOX_WELCOME_MSG:
         return "Welcome Message";
     case BOX_COMPLETE_MSG:
@@ -80,8 +85,10 @@ QString ClueList::CurrentClueTitle() {
     }
 }
 
-QString ClueList::CurrentClueHeader() {
-    switch (currentClue) {
+QString ClueList::CurrentClueHeader()
+{
+    switch (currentClue)
+    {
     case BOX_WELCOME_MSG:
         return "Reverse Geocache";
     case BOX_COMPLETE_MSG:
@@ -91,8 +98,10 @@ QString ClueList::CurrentClueHeader() {
     }
 }
 
-QString ClueList::CurrentClueFooter() {
-    switch (currentClue) {
+QString ClueList::CurrentClueFooter()
+{
+    switch (currentClue)
+    {
     case BOX_WELCOME_MSG:
         return "";
     case BOX_COMPLETE_MSG:
@@ -102,11 +111,13 @@ QString ClueList::CurrentClueFooter() {
 
     Clue_t *c = GetCurrentClue();
 
-    if (c == NULL) {
+    if (c == NULL)
+    {
         return "";
     }
 
-    switch (c->waypoint.type) {
+    switch (c->waypoint.type)
+    {
     default:
     case CLUE_NO_HINT:
         return "";
@@ -123,48 +134,62 @@ QString ClueList::CurrentClueFooter() {
     }
 }
 
-void ClueList::SelectFirst() {
-
+void ClueList::SelectFirst()
+{
     if (clues.count() == 0) currentClue = BOX_WELCOME_MSG;
     else currentClue = 1;
 
     emit clueUpdated();
 }
 
-void ClueList::SelectLast() {
-
+void ClueList::SelectLast()
+{
     if (clues.count() == 0) currentClue = BOX_COMPLETE_MSG;
     else currentClue = clues.count();
 
     emit clueUpdated();
 }
 
-void ClueList::SelectPrev() {
-    if (currentClue >= BOX_COMPLETE_MSG) {
+void ClueList::SelectPrev()
+{
+    if (currentClue >= BOX_COMPLETE_MSG)
+    {
         currentClue = clues.count();
-    } else if (currentClue > BOX_WELCOME_MSG) {
+    }
+    else if (currentClue > BOX_WELCOME_MSG)
+    {
         currentClue--;
     }
 
     emit clueUpdated();
 }
 
-void ClueList::SelectClue(uint8_t index) {
-    if (index >= BOX_COMPLETE_MSG) {
+void ClueList::SelectClue(uint8_t index)
+{
+    if (index >= BOX_COMPLETE_MSG)
+    {
         currentClue = BOX_COMPLETE_MSG;
-    } else if (index > clues.count()) {
+    }
+    else if (index > clues.count())
+    {
         currentClue = BOX_WELCOME_MSG;
-    } else {
+    }
+    else
+    {
         currentClue = index;
     }
 
     emit clueUpdated();
 }
 
-void ClueList::SelectNext() {
-    if (currentClue < clues.count()) {
+void ClueList::SelectNext()
+{
+    if (currentClue < clues.count())
+    {
         currentClue++;
-    } else {
+    }
+    else
+    {
         currentClue = BOX_COMPLETE_MSG;
     }
 
@@ -172,7 +197,8 @@ void ClueList::SelectNext() {
 }
 
 //Swap the current clue with the one after it
-void ClueList::MoveClueDown() {
+void ClueList::MoveClueDown()
+{
 
     if (currentClue == BOX_WELCOME_MSG || currentClue == BOX_COMPLETE_MSG) return;
     if (clues.count() < 2) return; //needs at least two clues
@@ -190,7 +216,8 @@ void ClueList::MoveClueDown() {
 }
 
 //Swap the current clue with the one before it
-void ClueList::MoveClueUp() {
+void ClueList::MoveClueUp()
+{
     if (currentClue == BOX_WELCOME_MSG || currentClue == BOX_COMPLETE_MSG) return;
 
     if (clues.count() < 2) return;  //Needs at least two clues
@@ -207,7 +234,8 @@ void ClueList::MoveClueUp() {
     emit clueUpdated();
 }
 
-void ClueList::MoveClueFirst() {
+void ClueList::MoveClueFirst()
+{
     if (currentClue == BOX_WELCOME_MSG || currentClue == BOX_COMPLETE_MSG) return;
 
     if (clues.count() < 2) return; //needs at least two clues
@@ -215,7 +243,8 @@ void ClueList::MoveClueFirst() {
     emit clueUpdated();
 }
 
-void ClueList::MoveClueLast() {
+void ClueList::MoveClueLast()
+{
     if (currentClue == BOX_WELCOME_MSG || currentClue == BOX_COMPLETE_MSG) return;
 
     if (clues.count() < 2) return; //needs at least two clues
@@ -223,7 +252,8 @@ void ClueList::MoveClueLast() {
     emit clueUpdated();
 }
 
-bool ClueList::SaveToFile(QString filename) {
+bool ClueList::SaveToFile(QString filename)
+{
 
     /*
     QSettings settings(filename, QSettings::IniFormat);
@@ -261,7 +291,8 @@ bool ClueList::SaveToFile(QString filename) {
     return false;
 }
 
-bool ClueList::LoadFromFile(QString filename) {
+bool ClueList::LoadFromFile(QString filename)
+{
 
     /*
     QFileInfo check(filename);
@@ -314,11 +345,12 @@ bool ClueList::LoadFromFile(QString filename) {
     return false;
 }
 
-bool ClueList::ValidWaypoint(double lat, double lng) {
-
-    for (int i=0;i<clues.count();i++) {
-
-        if (Waypoint_Distance(lat,lng,&(clues[i].waypoint)) < 250) {
+bool ClueList::ValidWaypoint(double lat, double lng)
+{
+    for (int i=0;i<clues.count();i++)
+    {
+        if (Waypoint_Distance(lat,lng,&(clues[i].waypoint)) < 250)
+        {
             return false;
         }
     }
@@ -326,10 +358,12 @@ bool ClueList::ValidWaypoint(double lat, double lng) {
     return true;
 }
 
-bool ClueList::DeleteClue(uint8_t index) {
+bool ClueList::DeleteClue(uint8_t index)
+{
     //This one is special in that index is zero offset
 
-    if (index < clues.count()) {
+    if (index < clues.count())
+    {
         clues.removeAt(index);
         return true;
     }
@@ -337,8 +371,8 @@ bool ClueList::DeleteClue(uint8_t index) {
     return false;
 }
 
-bool ClueList::AddClue(Clue_t c) {
-
+bool ClueList::AddClue(Clue_t c)
+{
     if (clues.count() >= BOX_MAX_CLUES) return false;
 
     if (!ValidWaypoint(c.waypoint.lat,c.waypoint.lng)) return false;
@@ -351,12 +385,14 @@ bool ClueList::AddClue(Clue_t c) {
     return true;
 }
 
-void Clue_SetLineText(Clue_t *c, uint8_t line, QString text) {
+void Clue_SetLineText(Clue_t *c, uint8_t line, QString text)
+{
     if (c == NULL || line >= NUM_CLUE_LINES) return;
 
     text = escapeClueString(text);
 
-    for (int i=0;i<CLUE_LINE_LEN_MAX;i++) {
+    for (int i=0;i<CLUE_LINE_LEN_MAX;i++)
+    {
         if (i >= text.count()) c->lines[line][i] = 0;
         else c->lines[line][i] = (uint8_t) text.at(i).toLatin1();
     }
@@ -365,13 +401,16 @@ void Clue_SetLineText(Clue_t *c, uint8_t line, QString text) {
     c->lines[line][CLUE_LINE_LEN_MAX - 1] = 0;
 }
 
-QString Clue_GetLineText(Clue_t *c, uint8_t line) {
+QString Clue_GetLineText(Clue_t *c, uint8_t line)
+{
     if (c == NULL || line >= NUM_CLUE_LINES) return "";
 
     QString text = "";
 
-    for (int i=0;i<CLUE_LINE_LEN_MAX;i++) {
-        if (c->lines[line][i] != 0) {
+    for (int i=0;i<CLUE_LINE_LEN_MAX;i++)
+    {
+        if (c->lines[line][i] != 0)
+        {
             text.append(QChar((char) c->lines[line][i]));
         }
     }
@@ -379,11 +418,13 @@ QString Clue_GetLineText(Clue_t *c, uint8_t line) {
     return text;
 }
 
-QString escapeClueString(QString clue) {
+QString escapeClueString(QString clue)
+{
     QString s = "";
     QChar c;
 
-    for (int i=0;i<clue.size();i++) {
+    for (int i=0;i<clue.size();i++)
+    {
         c = clue.at(i);
 
         if (c >= ' ' && c < 127)
@@ -397,7 +438,8 @@ QString escapeClueString(QString clue) {
         s.truncate(CLUE_LINE_LEN_MAX - 1);
     }
 
-    while (line_width(s.toLocal8Bit().data()) > LINE_MAX_WIDTH) {
+    while (line_width(s.toLocal8Bit().data()) > LINE_MAX_WIDTH)
+    {
         s.chop(1);
     }
 

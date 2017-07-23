@@ -6,7 +6,6 @@
 #include "debug.h"
 #include "boxpackets.h"
 #include "box_defines.h"
-#include "ReverseGeocacheProtocol.h"
 
 #include "waypoints.h"
 
