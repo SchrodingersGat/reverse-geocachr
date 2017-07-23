@@ -50,8 +50,6 @@ BoxInfo_t boxInfo;
 
 /* USER CODE END Includes */
 
-uint8_t uartRxByte;
-
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
@@ -96,7 +94,6 @@ int main(void)
   /* USER CODE BEGIN 2 */
   LCD_Initialize();
 
-  //HAL_UART_Receive_IT(&huart1, &uartRxByte, 1);
 
   /* USER CODE END 2 */
 
@@ -118,29 +115,6 @@ int main(void)
   }
   /* USER CODE END 3 */
 
-}
-
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-	uint8_t msg;
-
-	msg = uartRxByte;
-
-	if (msg == '$')
-	{
-		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-	}
-
-	// Clear overrun error
-	if ( __HAL_UART_GET_IT( huart, UART_IT_ORE) != RESET )
-	{
-		__HAL_UART_CLEAR_IT(huart, UART_CLEAR_OREF);
-
-		huart->ErrorCode |= HAL_UART_ERROR_ORE;
-	}
-
-	// receive next byte
-	HAL_UART_Receive_IT(&huart1, &uartRxByte, 1);
 }
 
 /** System Clock Configuration

@@ -63,6 +63,15 @@ void MX_USART1_UART_Init(void)
     Error_Handler();
   }
 
+  /* Enable the UART Data Register not empty Interrupt */
+  __HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);
+
+  /* Enable the UART Parity Error Interrupt */
+  __HAL_UART_ENABLE_IT(&huart1, UART_IT_PE);
+
+  /* Enable the UART Error Interrupt: (Frame error, noise error, overrun error) */
+  __HAL_UART_ENABLE_IT(&huart1, UART_IT_ERR);
+
 }
 
 void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)

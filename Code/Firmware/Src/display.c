@@ -70,6 +70,8 @@ void Draw_Top_Bar(void)
 {
 	static int state =- 1;
 
+	ILI9340_SetBackgroundColor(BAR_COLOR);
+
 	if (state == -1)
 	{
 		state = 0;
@@ -163,6 +165,8 @@ void Draw_Header_String(void)
 void Draw_Bottom_Bar(void)
 {
 	static int state = -1;
+
+	ILI9340_SetBackgroundColor(BAR_COLOR);
 
 	if (state == -1)
 	{

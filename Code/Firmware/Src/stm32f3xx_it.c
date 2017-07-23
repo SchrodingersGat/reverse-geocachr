@@ -38,6 +38,10 @@
 /* USER CODE BEGIN 0 */
 #include "timer.h"
 #include "gpio.h"
+#include "gps.h"
+
+GPSBuffer_t buffer;
+
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -93,13 +97,21 @@ void USART1_IRQHandler(void)
 
   /* USER CODE END USART1_IRQn 0 */
 	uint8_t byte;
+
+	GPS_GGA_t gga;
+
 	if( USART1->ISR & UART_FLAG_RXNE )
 	{
 		//USART1->ICR |= ~UART_FLAG_RXNE;
 		byte = USART1->RDR;
 
-		if( byte == '$')
-			HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+		if (GPS_AddByte(&buffer, byte))
+		{
+			if (GPS_Scan_GGA(&buffer, &gga))
+			{
+				HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+			}
+		}
 	}
 
 	if ( USART1->ISR & UART_FLAG_ORE )
@@ -107,7 +119,8 @@ void USART1_IRQHandler(void)
 		USART1->ICR |= UART_CLEAR_OREF;
 		//USART1->ISR &= ~UART_FLAG_ORE;
 	}
-  //HAL_UART_IRQHandler(&huart1);
+
+	//HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
 
   /* USER CODE END USART1_IRQn 1 */
