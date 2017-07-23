@@ -1,17 +1,24 @@
-**.autosave
-**.zip
-**.csv
-**.html
-**.clue
-**.o
-**.cpp.*
-**.tmp
-**.pro.*
+*.autosave
+*.zip
+*.csv
+*.html
+*.clue
+*.o
+*.cpp.*
+*.tmp
+*.pro.*
+*.stash
+*.Debug
+*.Release
 
-Code/GUI/ReverseGeocachr/release/
-Code/GUI/ReverseGeocachr/debug/
+Code/GUI/release/
+Code/GUI/debug/
+Code/GUI/Makefile
 
 Code/Firmware/Debug/
 
 PCB/gerber/
 Datasheets/
+
+Code/protocol/html
+Code/protocol/doxygen_sqlite3.db
