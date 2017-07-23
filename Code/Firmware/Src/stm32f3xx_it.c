@@ -52,6 +52,7 @@ extern UART_HandleTypeDef huart1;
 */
 void SysTick_Handler(void)
 {
+	static int servoTimer = 0;
   /* USER CODE BEGIN SysTick_IRQn 0 */
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
@@ -61,6 +62,18 @@ void SysTick_Handler(void)
   {
 	  systemTimer--;
   }
+
+  if (servoTimer == 0)
+  {
+	  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_SET);
+  }
+  else
+  {
+	  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_RESET);
+  }
+
+  servoTimer = (servoTimer + 1) % 20;
+
   /* USER CODE END SysTick_IRQn 1 */
 }
 

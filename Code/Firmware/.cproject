@@ -36,6 +36,7 @@
 								<option id="gnu.c.compiler.option.include.paths.287834125" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../ILI9340"/>
 									<listOptionValue builtIn="false" value="../../common"/>
+									<listOptionValue builtIn="false" value="../../protocol"/>
 									<listOptionValue builtIn="false" value="../Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F3xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy"/>

@@ -26,16 +26,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>Drivers/ILI9340.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/ILI9340/ILI9340.h</locationURI>
-		</link>
-		<link>
-			<name>Drivers/ILI9340_font.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/ILI9340/ILI9340_font.h</locationURI>
-		</link>
-		<link>
 			<name>Inc/LCD</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -46,12 +36,22 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>Inc/protocol</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>Src/LCD</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>Src/common</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Src/protocol</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -71,54 +71,49 @@
 			<locationURI>PARENT-1-PROJECT_LOC/ILI9340/ILI9340_font.h</locationURI>
 		</link>
 		<link>
-			<name>Inc/common/ReverseGeocacheProtocol.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/ReverseGeocacheProtocol.h</locationURI>
-		</link>
-		<link>
-			<name>Inc/common/bitfieldspecial.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/bitfieldspecial.h</locationURI>
-		</link>
-		<link>
 			<name>Inc/common/box_defines.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/common/box_defines.h</locationURI>
 		</link>
 		<link>
-			<name>Inc/common/boxdefines.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/boxdefines.h</locationURI>
-		</link>
-		<link>
-			<name>Inc/common/boxpackets.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/boxpackets.h</locationURI>
-		</link>
-		<link>
-			<name>Inc/common/fielddecode.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/fielddecode.h</locationURI>
-		</link>
-		<link>
-			<name>Inc/common/fieldencode.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/fieldencode.h</locationURI>
-		</link>
-		<link>
-			<name>Inc/common/scaleddecode.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/scaleddecode.h</locationURI>
-		</link>
-		<link>
-			<name>Inc/common/scaledencode.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/scaledencode.h</locationURI>
-		</link>
-		<link>
 			<name>Inc/common/waypoint.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/common/waypoint.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/protocol/ReverseGeocacheProtocol.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/ReverseGeocacheProtocol.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/protocol/boxdefines.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/boxdefines.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/protocol/boxpackets.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/boxpackets.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/protocol/fielddecode.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/fielddecode.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/protocol/fieldencode.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/fieldencode.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/protocol/scaleddecode.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/scaleddecode.h</locationURI>
+		</link>
+		<link>
+			<name>Inc/protocol/scaledencode.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/scaledencode.h</locationURI>
 		</link>
 		<link>
 			<name>Src/LCD/ILI9340.c</name>
@@ -131,49 +126,44 @@
 			<locationURI>PARENT-1-PROJECT_LOC/ILI9340/ILI9340_font.c</locationURI>
 		</link>
 		<link>
-			<name>Src/common/bitfieldspecial.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/bitfieldspecial.c</locationURI>
-		</link>
-		<link>
-			<name>Src/common/boxdefines.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/boxdefines.c</locationURI>
-		</link>
-		<link>
-			<name>Src/common/boxpackets.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/boxpackets.c</locationURI>
-		</link>
-		<link>
-			<name>Src/common/fielddecode.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/fielddecode.c</locationURI>
-		</link>
-		<link>
-			<name>Src/common/fieldencode.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/fieldencode.c</locationURI>
-		</link>
-		<link>
-			<name>Src/common/protogenglue.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/protogenglue.c</locationURI>
-		</link>
-		<link>
-			<name>Src/common/scaleddecode.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/scaleddecode.c</locationURI>
-		</link>
-		<link>
-			<name>Src/common/scaledencode.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/scaledencode.c</locationURI>
-		</link>
-		<link>
 			<name>Src/common/waypoint.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/common/waypoint.c</locationURI>
+		</link>
+		<link>
+			<name>Src/protocol/boxdefines.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/boxdefines.c</locationURI>
+		</link>
+		<link>
+			<name>Src/protocol/boxpackets.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/boxpackets.c</locationURI>
+		</link>
+		<link>
+			<name>Src/protocol/fielddecode.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/fielddecode.c</locationURI>
+		</link>
+		<link>
+			<name>Src/protocol/fieldencode.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/fieldencode.c</locationURI>
+		</link>
+		<link>
+			<name>Src/protocol/protogenglue.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/protogenglue.c</locationURI>
+		</link>
+		<link>
+			<name>Src/protocol/scaleddecode.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/scaleddecode.c</locationURI>
+		</link>
+		<link>
+			<name>Src/protocol/scaledencode.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/scaledencode.c</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>

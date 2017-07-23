@@ -61,8 +61,7 @@ void Draw_Clue(void)
 
 		ILI9340_DrawString( 10, LCD_BAR_HEIGHT + 10 + i * (FONT_HEIGHT + 2),
 				            clue.lines[i],
-							BLACK,
-							1 );
+							BLACK);
 	}
 
 }
@@ -158,8 +157,7 @@ void Draw_Header_String(void)
 	ILI9340_DrawString(LCD_WIDTH/2,
 				   5,
 				   titleString,
-				   YELLOW,
-				   1);
+				   YELLOW);
 }
 
 void Draw_Bottom_Bar(void)
@@ -276,7 +274,7 @@ void Draw_Footer_String()
 	*/
 		ILI9340_SetTextOptions(ALIGN_CENTRE);
 
-		ILI9340_DrawString(LCD_WIDTH/2, LCD_FOOTER_Y, WAITING_FOR_GPS ,YELLOW, 1);
+		ILI9340_DrawString(LCD_WIDTH/2, LCD_FOOTER_Y, WAITING_FOR_GPS, YELLOW);
 	/*
 		break;
 	}
