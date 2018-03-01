@@ -21,8 +21,9 @@ class Box : public QThread
 public:
     Box();
 
-    //Box Info
-    BoxInfo_t info;
+    BoxStatus_t boxStatus;
+    BoxSettings_t boxSettings;
+    BoxVersion_t boxVersion;
 
     //USB Specific stuff
     volatile bool running;
@@ -44,8 +45,12 @@ public slots:
 
     bool ResetIntoBootloader();
 
-    bool RequestBoxInfo(int tries);
-    bool RequestBoxInfo();
+    // Request ALL box information
+    bool RequestBoxInfo(int tries = 5);
+
+    bool RequestBoxStatus();
+    bool RequestBoxSettings();
+    bool RequestBoxVersion();
 
     bool ReadClueData(int clueIndex, Clue_t *c, int tries);
     bool WriteClueData(int clueIndex, Clue_t *c, int tries);

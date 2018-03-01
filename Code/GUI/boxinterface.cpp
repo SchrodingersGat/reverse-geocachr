@@ -18,18 +18,53 @@ Box::Box()
     handle = NULL;
     running = false;
     connected = false;
+
+    memset(&boxVersion, 0, sizeof(boxVersion));
+    memset(&boxSettings, 0, sizeof(boxSettings));
+    memset(&boxStatus, 0, sizeof(boxStatus));
 }
 
 /* USB HID connection thread (polls every second)
  */
 void Box::run()
 {
+    int attempts = 0;
+    int cursor = 0;
+    bool result = false;
+
     running = true;
 
-    while (running) {
-        connected = RequestBoxInfo();
 
-        Sleep(1000);
+    while (running)
+    {
+        Sleep(200);
+
+        switch (cursor)
+        {
+        default:
+        case 0:
+            result = RequestBoxStatus();
+            break;
+        case 1:
+            result = RequestBoxSettings();
+            break;
+        case 2:
+            result = RequestBoxVersion();
+            break;
+        }
+
+        cursor = (cursor + 1) % 3;
+
+        if (result)
+        {
+            attempts = 5;
+        }
+        else if (attempts > 0)
+        {
+            attempts--;
+        }
+
+        connected = attempts > 0;
     }
 
     HIDDisconnect();
@@ -43,6 +78,11 @@ bool Box::HIDConnect()
     if (handle == NULL)
     {
         handle = hid_open(HID_VID, HID_PID, NULL);
+    }
+
+    if (!handle)
+    {
+        Debug("HIDConnect() failed");
     }
 
     return (handle != NULL);
@@ -61,35 +101,37 @@ void Box::HIDDisconnect()
 
 bool Box::RequestBoxInfo(int tries)
 {
-    bool result = false;
+    bool result = true;
 
-    do
+    for (int i = 0; i < tries; i ++)
     {
-        result = RequestBoxInfo();
-        tries--;
-        Sleep(10);
-    } while (result == false && tries > 0);
+        result &= RequestBoxStatus();
+        result &= RequestBoxSettings();
+        result &= RequestBoxVersion();
+
+        if (result)
+            break;
+    }
 
     return result;
 }
 
-/* Request box info
+/* Request box status
  */
-bool Box::RequestBoxInfo()
+bool Box::RequestBoxStatus()
 {
     int res;
 
     if (HIDConnect() == false)
     {
-        Debug("HIDConnect() failed");
         return false; //Connection failure
     }
 
     txBuf[0] = 0x00;
 
-    encodeRequestBoxInfoPacket(&txBuf[1]);
+    encodeRequestBoxStatusPacket(&txBuf[1]);
 
-    res = hid_write(handle,txBuf,HID_REPORT_SIZE+1);
+    res = hid_write(handle, txBuf, HID_REPORT_SIZE+1);
 
     //HID write was not successful
     if (res == -1) {
@@ -101,30 +143,109 @@ bool Box::RequestBoxInfo()
     //Read out the feature report
     res = hid_read_timeout(handle, rxBuf, HID_REPORT_SIZE, TIMEOUT);
 
-    if (res != HID_REPORT_SIZE) {
+    if (res != HID_REPORT_SIZE)
+    {
         Debug("HID Read Failed (res = " + QString::number(res) + ")");
         return false;
-    } else  {//read was successful, decode the data
-        if (decodeBoxInfoPacket(rxBuf, &info))
-        {
-        }
-        else
-        {
-            Debug("BOX_INFO message failed");
-            return false;
-        }
     }
 
-    return true;
+    //read was successful, decode the data
+    if (decodeBoxStatusPacketStructure(rxBuf, &boxStatus))
+    {
+        return true;
+    }
+    else
+    {
+        Debug("BOX_INFO message failed");
+        return false;
+    }
 }
+
+
+bool Box::RequestBoxSettings()
+{
+    int res;
+
+    if (!HIDConnect())
+    {
+        return false;
+    }
+
+    txBuf[0] = 0x00;
+
+    encodeRequestBoxSettingsPacket(&txBuf[1]);
+
+    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
+
+    if (res == -1)
+    {
+        Debug("RequestBoxSettings failed");
+        return false;
+    }
+
+    res = hid_read_timeout(handle, rxBuf, HID_REPORT_SIZE, TIMEOUT);
+
+    if (res != HID_REPORT_SIZE)
+    {
+        return false;
+    }
+
+    if (decodeBoxSettingsPacketStructure(rxBuf, &boxSettings))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+bool Box::RequestBoxVersion()
+{
+    int res = -1;
+
+    if (!HIDConnect())
+    {
+        return false;
+    }
+
+    txBuf[0] = 0x00;
+    encodeRequestBoxVersionPacket(&txBuf[1]);
+
+    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
+
+    if (res == -1)
+    {
+        Debug("RequestBoxVersion write failed");
+        return false;
+    }
+
+    res = hid_read_timeout(handle, rxBuf, HID_REPORT_SIZE, TIMEOUT);
+
+    if (res != HID_REPORT_SIZE)
+    {
+        return false;
+    }
+
+    if (decodeBoxVersionPacketStructure(rxBuf, &boxVersion))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
 
 bool Box::ResetIntoBootloader()
 {
     int res = -1;
 
-    if (HIDConnect() == false)
+    if (!HIDConnect())
     {
-        Debug("ResetIntoBootloader - HIDConnect() failed");
         return false;
     }
 
@@ -193,7 +314,6 @@ bool Box::SetClueInfo(int clueIndex, Clue_t *c)
     int i = 0;
 
     if (!HIDConnect()) {
-        Debug("HIDConnect failed");
         return false;
     }
 
@@ -249,7 +369,6 @@ bool Box::RequestClueInfo(int clueIndex, Clue_t *c)
     }
 
     if (HIDConnect() == false) {
-        Debug("HIDConnect failed");
         return false;
     }
 
@@ -326,7 +445,6 @@ bool Box::RequestClueHint(int clueIndex, Clue_t *c, int line)
     int i = 0;
 
     if (HIDConnect() == false) {
-        Debug("HIDConnect failed");
         return false;
     }
 
@@ -406,7 +524,6 @@ bool Box::SetClueHint(int clueIndex, Clue_t *c, int line)
     int i = 0;
 
     if (HIDConnect() == false) {
-        Debug("HIDConnect failed");
         return false;
     }
 
@@ -519,7 +636,6 @@ bool Box::SetNumberOfClues(int nClues)
     int i = 0;
 
     if (HIDConnect() == false) {
-        Debug("HIDConnect failed");
         return false;
     }
 
@@ -538,7 +654,7 @@ bool Box::SetNumberOfClues(int nClues)
         return false;
     }
 
-    if (nClues != info.totalClues) {
+    if (nClues != boxStatus.totalClues) {
         Debug("Clue count mismatch " + QString::number(nClues));
         return false;
     }

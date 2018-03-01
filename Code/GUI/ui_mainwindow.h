@@ -105,21 +105,19 @@ public:
     QHBoxLayout *horizontalLayout_4;
     QPushButton *clearText;
     QSpacerItem *horizontalSpacer_3;
-    QGridLayout *gridLayout_2;
-    QLabel *latString;
-    QLineEdit *latitude;
-    QLabel *lngString;
-    QLineEdit *longitude;
-    QHBoxLayout *horizontalLayout_2;
-    QLabel *lngString_2;
-    QLineEdit *threshold;
-    QLabel *lngString_3;
+    QGridLayout *gridLayout_10;
     QPushButton *setThreshold;
     QCheckBox *centerText;
-    QHBoxLayout *horizontalLayout_3;
+    QLabel *lngString;
+    QLabel *lngString_2;
+    QLineEdit *longitude;
     QLabel *lngString_4;
     QComboBox *clueType;
     QSpacerItem *horizontalSpacer;
+    QLabel *lngString_3;
+    QLineEdit *threshold;
+    QLabel *latString;
+    QLineEdit *latitude;
     QSpacerItem *verticalSpacer_2;
     QMenuBar *menuBar;
 
@@ -143,7 +141,6 @@ public:
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
         groupBox_3 = new QGroupBox(centralWidget);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        groupBox_3->setMinimumSize(QSize(260, 141));
         groupBox_3->setMaximumSize(QSize(260, 16777215));
         QFont font;
         font.setPointSize(10);
@@ -180,7 +177,6 @@ public:
 
         groupBox_6 = new QGroupBox(centralWidget);
         groupBox_6->setObjectName(QStringLiteral("groupBox_6"));
-        groupBox_6->setMinimumSize(QSize(260, 171));
         groupBox_6->setMaximumSize(QSize(260, 171));
         groupBox_6->setFont(font);
         gridLayout_4 = new QGridLayout(groupBox_6);
@@ -264,7 +260,6 @@ public:
 
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setMinimumSize(QSize(0, 150));
         tab_5 = new QWidget();
         tab_5->setObjectName(QStringLiteral("tab_5"));
         gridLayout_8 = new QGridLayout(tab_5);
@@ -366,7 +361,6 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
         groupBox->setSizePolicy(sizePolicy);
-        groupBox->setMinimumSize(QSize(260, 251));
         groupBox->setMaximumSize(QSize(260, 16777215));
         groupBox->setFont(font);
         gridLayout_9 = new QGridLayout(groupBox);
@@ -566,29 +560,34 @@ public:
 
         verticalLayout_3->addLayout(horizontalLayout_4);
 
-        gridLayout_2 = new QGridLayout();
-        gridLayout_2->setSpacing(6);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        latString = new QLabel(editClues);
-        latString->setObjectName(QStringLiteral("latString"));
-        latString->setFont(font2);
+        gridLayout_10 = new QGridLayout();
+        gridLayout_10->setSpacing(6);
+        gridLayout_10->setObjectName(QStringLiteral("gridLayout_10"));
+        setThreshold = new QPushButton(editClues);
+        setThreshold->setObjectName(QStringLiteral("setThreshold"));
+        setThreshold->setFont(font2);
 
-        gridLayout_2->addWidget(latString, 0, 0, 1, 1);
+        gridLayout_10->addWidget(setThreshold, 2, 3, 1, 1);
 
-        latitude = new QLineEdit(editClues);
-        latitude->setObjectName(QStringLiteral("latitude"));
-        latitude->setEnabled(true);
-        latitude->setFont(font2);
-        latitude->setAlignment(Qt::AlignCenter);
-        latitude->setReadOnly(true);
+        centerText = new QCheckBox(editClues);
+        centerText->setObjectName(QStringLiteral("centerText"));
+        centerText->setFont(font2);
 
-        gridLayout_2->addWidget(latitude, 0, 1, 1, 1);
+        gridLayout_10->addWidget(centerText, 3, 1, 1, 1);
 
         lngString = new QLabel(editClues);
         lngString->setObjectName(QStringLiteral("lngString"));
         lngString->setFont(font2);
+        lngString->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
-        gridLayout_2->addWidget(lngString, 1, 0, 1, 1);
+        gridLayout_10->addWidget(lngString, 1, 0, 1, 1);
+
+        lngString_2 = new QLabel(editClues);
+        lngString_2->setObjectName(QStringLiteral("lngString_2"));
+        lngString_2->setFont(font2);
+        lngString_2->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_10->addWidget(lngString_2, 2, 0, 1, 1);
 
         longitude = new QLineEdit(editClues);
         longitude->setObjectName(QStringLiteral("longitude"));
@@ -597,19 +596,31 @@ public:
         longitude->setAlignment(Qt::AlignCenter);
         longitude->setReadOnly(true);
 
-        gridLayout_2->addWidget(longitude, 1, 1, 1, 1);
+        gridLayout_10->addWidget(longitude, 1, 1, 1, 1);
 
+        lngString_4 = new QLabel(editClues);
+        lngString_4->setObjectName(QStringLiteral("lngString_4"));
+        lngString_4->setFont(font2);
+        lngString_4->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
-        verticalLayout_3->addLayout(gridLayout_2);
+        gridLayout_10->addWidget(lngString_4, 5, 0, 1, 1);
 
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setSpacing(6);
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        lngString_2 = new QLabel(editClues);
-        lngString_2->setObjectName(QStringLiteral("lngString_2"));
-        lngString_2->setFont(font2);
+        clueType = new QComboBox(editClues);
+        clueType->setObjectName(QStringLiteral("clueType"));
+        clueType->setMinimumSize(QSize(125, 0));
+        clueType->setFont(font2);
 
-        horizontalLayout_2->addWidget(lngString_2);
+        gridLayout_10->addWidget(clueType, 5, 1, 1, 1);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_10->addItem(horizontalSpacer, 5, 3, 1, 1);
+
+        lngString_3 = new QLabel(editClues);
+        lngString_3->setObjectName(QStringLiteral("lngString_3"));
+        lngString_3->setFont(font2);
+
+        gridLayout_10->addWidget(lngString_3, 2, 2, 1, 1);
 
         threshold = new QLineEdit(editClues);
         threshold->setObjectName(QStringLiteral("threshold"));
@@ -618,51 +629,26 @@ public:
         threshold->setAlignment(Qt::AlignCenter);
         threshold->setReadOnly(true);
 
-        horizontalLayout_2->addWidget(threshold);
+        gridLayout_10->addWidget(threshold, 2, 1, 1, 1);
 
-        lngString_3 = new QLabel(editClues);
-        lngString_3->setObjectName(QStringLiteral("lngString_3"));
-        lngString_3->setFont(font2);
+        latString = new QLabel(editClues);
+        latString->setObjectName(QStringLiteral("latString"));
+        latString->setFont(font2);
+        latString->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
-        horizontalLayout_2->addWidget(lngString_3);
+        gridLayout_10->addWidget(latString, 0, 0, 1, 1);
 
-        setThreshold = new QPushButton(editClues);
-        setThreshold->setObjectName(QStringLiteral("setThreshold"));
-        setThreshold->setFont(font2);
+        latitude = new QLineEdit(editClues);
+        latitude->setObjectName(QStringLiteral("latitude"));
+        latitude->setEnabled(true);
+        latitude->setFont(font2);
+        latitude->setAlignment(Qt::AlignCenter);
+        latitude->setReadOnly(true);
 
-        horizontalLayout_2->addWidget(setThreshold);
-
-        centerText = new QCheckBox(editClues);
-        centerText->setObjectName(QStringLiteral("centerText"));
-        centerText->setFont(font2);
-
-        horizontalLayout_2->addWidget(centerText);
+        gridLayout_10->addWidget(latitude, 0, 1, 1, 1);
 
 
-        verticalLayout_3->addLayout(horizontalLayout_2);
-
-        horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setSpacing(6);
-        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
-        lngString_4 = new QLabel(editClues);
-        lngString_4->setObjectName(QStringLiteral("lngString_4"));
-        lngString_4->setFont(font2);
-
-        horizontalLayout_3->addWidget(lngString_4);
-
-        clueType = new QComboBox(editClues);
-        clueType->setObjectName(QStringLiteral("clueType"));
-        clueType->setMinimumSize(QSize(125, 0));
-        clueType->setFont(font2);
-
-        horizontalLayout_3->addWidget(clueType);
-
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_3->addItem(horizontalSpacer);
-
-
-        verticalLayout_3->addLayout(horizontalLayout_3);
+        verticalLayout_3->addLayout(gridLayout_10);
 
 
         gridLayout_6->addWidget(editClues, 2, 0, 1, 1);
@@ -798,16 +784,16 @@ public:
         clearText->setToolTip(QApplication::translate("MainWindow", "Set the clue distance threshold", 0));
 #endif // QT_NO_TOOLTIP
         clearText->setText(QApplication::translate("MainWindow", "Clear Text", 0));
-        latString->setText(QApplication::translate("MainWindow", "Latitude: ", 0));
-        lngString->setText(QApplication::translate("MainWindow", "Longitude:", 0));
-        lngString_2->setText(QApplication::translate("MainWindow", "Threshold:", 0));
-        lngString_3->setText(QApplication::translate("MainWindow", "m", 0));
 #ifndef QT_NO_TOOLTIP
         setThreshold->setToolTip(QApplication::translate("MainWindow", "Set the clue distance threshold", 0));
 #endif // QT_NO_TOOLTIP
         setThreshold->setText(QApplication::translate("MainWindow", "Set", 0));
         centerText->setText(QApplication::translate("MainWindow", "Center Text", 0));
-        lngString_4->setText(QApplication::translate("MainWindow", "Clue Type:", 0));
+        lngString->setText(QApplication::translate("MainWindow", "Longitude", 0));
+        lngString_2->setText(QApplication::translate("MainWindow", "Threshold", 0));
+        lngString_4->setText(QApplication::translate("MainWindow", "Hint Type", 0));
+        lngString_3->setText(QApplication::translate("MainWindow", "m", 0));
+        latString->setText(QApplication::translate("MainWindow", "Latitude", 0));
     } // retranslateUi
 
 };

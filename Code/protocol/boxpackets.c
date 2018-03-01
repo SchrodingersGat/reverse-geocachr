@@ -91,6 +91,94 @@ int decodeLockPacket(const void* pkt)
 }
 
 /*!
+ * \brief Create the UnlockSettings packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ * \param password is 
+ */
+void encodeUnlockSettingsPacket(void* pkt, const char password[32])
+{
+    uint8_t* data = getReverseGeocachePacketData(pkt);
+    int byteindex = 0;
+
+    stringToBytes(password, data, &byteindex, 32, 0);
+
+    // complete the process of creating the packet
+    finishReverseGeocachePacket(pkt, byteindex, getUnlockSettingsPacketID());
+}
+
+/*!
+ * \brief Decode the UnlockSettings packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \param password receives 
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeUnlockSettingsPacket(const void* pkt, char password[32])
+{
+    int byteindex = 0;
+    const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
+    int numBytes = getReverseGeocachePacketSize(pkt);
+
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getUnlockSettingsPacketID())
+        return 0;
+
+    if(numBytes < getUnlockSettingsMinDataLength())
+        return 0;
+
+    stringFromBytes(password, data, &byteindex, 32, 0);
+
+    return 1;
+}
+
+/*!
+ * \brief Create the LockSettings packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ * \param password is 
+ */
+void encodeLockSettingsPacket(void* pkt, const char password[32])
+{
+    uint8_t* data = getReverseGeocachePacketData(pkt);
+    int byteindex = 0;
+
+    stringToBytes(password, data, &byteindex, 32, 0);
+
+    // complete the process of creating the packet
+    finishReverseGeocachePacket(pkt, byteindex, getLockSettingsPacketID());
+}
+
+/*!
+ * \brief Decode the LockSettings packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \param password receives 
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeLockSettingsPacket(const void* pkt, char password[32])
+{
+    int byteindex = 0;
+    const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
+    int numBytes = getReverseGeocachePacketSize(pkt);
+
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getLockSettingsPacketID())
+        return 0;
+
+    if(numBytes < getLockSettingsMinDataLength())
+        return 0;
+
+    stringFromBytes(password, data, &byteindex, 32, 0);
+
+    return 1;
+}
+
+/*!
  * \brief Create the NextClue packet
  *
 
@@ -203,43 +291,22 @@ int decodeLastCluePacket(const void* pkt)
 }
 
 /*!
- * \brief Create the Bootload packet
- *
-
- * \param pkt points to the packet which will be created by this function
- */
-void encodeBootloadPacket(void* pkt)
-{
-    // Zero length packet, no data encoded
-    finishReverseGeocachePacket(pkt, 0, getBootloadPacketID());
-}
-
-/*!
- * \brief Decode the Bootload packet
- *
-
- * \param pkt points to the packet being decoded by this function
- * \return 0 is returned if the packet ID or size is wrong, else 1
- */
-int decodeBootloadPacket(const void* pkt)
-{
-    // Verify the packet identifier
-    if(getReverseGeocachePacketID(pkt) != getBootloadPacketID())
-        return 0;
-    else
-        return 1;
-}
-
-/*!
  * \brief Create the EnableDebug packet
  *
 
  * \param pkt points to the packet which will be created by this function
+ * \param debugOn is Turn debug mode on (or off)
  */
-void encodeEnableDebugPacket(void* pkt)
+void encodeEnableDebugPacket(void* pkt, uint8_t debugOn)
 {
-    // Zero length packet, no data encoded
-    finishReverseGeocachePacket(pkt, 0, getEnableDebugPacketID());
+    uint8_t* data = getReverseGeocachePacketData(pkt);
+    int byteindex = 0;
+
+    // Turn debug mode on (or off)
+    uint8ToBytes((uint8_t)debugOn, data, &byteindex);
+
+    // complete the process of creating the packet
+    finishReverseGeocachePacket(pkt, byteindex, getEnableDebugPacketID());
 }
 
 /*!
@@ -247,15 +314,26 @@ void encodeEnableDebugPacket(void* pkt)
  *
 
  * \param pkt points to the packet being decoded by this function
+ * \param debugOn receives Turn debug mode on (or off)
  * \return 0 is returned if the packet ID or size is wrong, else 1
  */
-int decodeEnableDebugPacket(const void* pkt)
+int decodeEnableDebugPacket(const void* pkt, uint8_t* debugOn)
 {
+    int byteindex = 0;
+    const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
+    int numBytes = getReverseGeocachePacketSize(pkt);
+
     // Verify the packet identifier
     if(getReverseGeocachePacketID(pkt) != getEnableDebugPacketID())
         return 0;
-    else
-        return 1;
+
+    if(numBytes < getEnableDebugMinDataLength())
+        return 0;
+
+    // Turn debug mode on (or off)
+    *debugOn = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    return 1;
 }
 
 /*!
@@ -359,73 +437,598 @@ int decodeInvalidateCluesPacket(const void* pkt)
 }
 
 /*!
- * \brief Create the BoxInfo packet
+ * \brief Create the BoxStatus packet
  *
 
  * \param pkt points to the packet which will be created by this function
- * \param info is 
+ * \param user points to the user data that will be encoded in pkt
  */
-void encodeBoxInfoPacket(void* pkt, const BoxInfo_t* info)
+void encodeBoxStatusPacketStructure(void* pkt, const BoxStatus_t* user)
 {
     uint8_t* data = getReverseGeocachePacketData(pkt);
     int byteindex = 0;
 
-    encodeBoxInfo_t(data, &byteindex, info);
+    data[byteindex] = (uint8_t)user->locked << 7;
+
+    // Box is protected with password
+    data[byteindex] |= (uint8_t)user->passwordProtected << 6;
+
+    // 1 = GPS unit detected
+    data[byteindex] |= (uint8_t)user->gpsConnection << 5;
+
+    // GPS Status
+    data[byteindex] |= (uint8_t)user->gpsStatus << 3;
+
+    // Battery charging status
+    data[byteindex] |= (uint8_t)user->charging << 2;
+
+    data[byteindex] |= (uint8_t)user->debug << 1;
+    byteindex += 1; // close bit field
+
+    // Battery charge estimate, 0% to 100%
+    uint8ToBytes((uint8_t)user->charge, data, &byteindex);
+
+    // Index of current clue
+    uint8ToBytes((uint8_t)user->currentClue, data, &byteindex);
+
+    // Total clue count
+    uint8ToBytes((uint8_t)user->totalClues, data, &byteindex);
 
     // complete the process of creating the packet
-    finishReverseGeocachePacket(pkt, byteindex, getBoxInfoPacketID());
+    finishReverseGeocachePacket(pkt, byteindex, getBoxStatusPacketID());
 }
 
 /*!
- * \brief Decode the BoxInfo packet
+ * \brief Decode the BoxStatus packet
  *
 
  * \param pkt points to the packet being decoded by this function
- * \param info receives 
+ * \param user receives the data decoded from the packet
  * \return 0 is returned if the packet ID or size is wrong, else 1
  */
-int decodeBoxInfoPacket(const void* pkt, BoxInfo_t* info)
+int decodeBoxStatusPacketStructure(const void* pkt, BoxStatus_t* user)
+{
+    int numBytes;
+    int byteindex = 0;
+    const uint8_t* data;
+
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getBoxStatusPacketID())
+        return 0;
+
+    // Verify the packet size
+    numBytes = getReverseGeocachePacketSize(pkt);
+    if(numBytes < getBoxStatusMinDataLength())
+        return 0;
+
+    // The raw data from the packet
+    data = getReverseGeocachePacketDataConst(pkt);
+
+    user->locked = (data[byteindex] >> 7);
+
+    // Box is protected with password
+    user->passwordProtected = ((data[byteindex] >> 6) & 0x1);
+
+    // 1 = GPS unit detected
+    user->gpsConnection = ((data[byteindex] >> 5) & 0x1);
+
+    // GPS Status
+    user->gpsStatus = ((data[byteindex] >> 3) & 0x3);
+
+    // Battery charging status
+    user->charging = ((data[byteindex] >> 2) & 0x1);
+
+    user->debug = ((data[byteindex] >> 1) & 0x1);
+    byteindex += 1; // close bit field
+
+    // Battery charge estimate, 0% to 100%
+    user->charge = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    // Index of current clue
+    user->currentClue = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    // Total clue count
+    user->totalClues = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    return 1;
+}
+
+/*!
+ * \brief Create the BoxStatus packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ * \param locked is 
+ * \param passwordProtected is Box is protected with password
+ * \param gpsConnection is 1 = GPS unit detected
+ * \param gpsStatus is GPS Status
+ * \param charging is Battery charging status
+ * \param debug is 
+ * \param charge is Battery charge estimate, 0% to 100%
+ * \param currentClue is Index of current clue
+ * \param totalClues is Total clue count
+ */
+void encodeBoxStatusPacket(void* pkt, unsigned locked, unsigned passwordProtected, unsigned gpsConnection, unsigned gpsStatus, unsigned charging, unsigned debug, uint8_t charge, uint8_t currentClue, uint8_t totalClues)
+{
+    uint8_t* data = getReverseGeocachePacketData(pkt);
+    int byteindex = 0;
+
+    data[byteindex] = (uint8_t)locked << 7;
+
+    // Box is protected with password
+    data[byteindex] |= (uint8_t)passwordProtected << 6;
+
+    // 1 = GPS unit detected
+    data[byteindex] |= (uint8_t)gpsConnection << 5;
+
+    // GPS Status
+    data[byteindex] |= (uint8_t)gpsStatus << 3;
+
+    // Battery charging status
+    data[byteindex] |= (uint8_t)charging << 2;
+
+    data[byteindex] |= (uint8_t)debug << 1;
+    byteindex += 1; // close bit field
+
+    // Battery charge estimate, 0% to 100%
+    uint8ToBytes((uint8_t)charge, data, &byteindex);
+
+    // Index of current clue
+    uint8ToBytes((uint8_t)currentClue, data, &byteindex);
+
+    // Total clue count
+    uint8ToBytes((uint8_t)totalClues, data, &byteindex);
+
+    // complete the process of creating the packet
+    finishReverseGeocachePacket(pkt, byteindex, getBoxStatusPacketID());
+}
+
+/*!
+ * \brief Decode the BoxStatus packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \param locked receives 
+ * \param passwordProtected receives Box is protected with password
+ * \param gpsConnection receives 1 = GPS unit detected
+ * \param gpsStatus receives GPS Status
+ * \param charging receives Battery charging status
+ * \param debug receives 
+ * \param charge receives Battery charge estimate, 0% to 100%
+ * \param currentClue receives Index of current clue
+ * \param totalClues receives Total clue count
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeBoxStatusPacket(const void* pkt, unsigned* locked, unsigned* passwordProtected, unsigned* gpsConnection, unsigned* gpsStatus, unsigned* charging, unsigned* debug, uint8_t* charge, uint8_t* currentClue, uint8_t* totalClues)
 {
     int byteindex = 0;
     const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
     int numBytes = getReverseGeocachePacketSize(pkt);
 
     // Verify the packet identifier
-    if(getReverseGeocachePacketID(pkt) != getBoxInfoPacketID())
+    if(getReverseGeocachePacketID(pkt) != getBoxStatusPacketID())
         return 0;
 
-    if(numBytes < getBoxInfoMinDataLength())
+    if(numBytes < getBoxStatusMinDataLength())
         return 0;
 
-    if(decodeBoxInfo_t(data, &byteindex, info) == 0)
-        return 0;
+    (*locked) = (data[byteindex] >> 7);
+
+    // Box is protected with password
+    (*passwordProtected) = ((data[byteindex] >> 6) & 0x1);
+
+    // 1 = GPS unit detected
+    (*gpsConnection) = ((data[byteindex] >> 5) & 0x1);
+
+    // GPS Status
+    (*gpsStatus) = ((data[byteindex] >> 3) & 0x3);
+
+    // Battery charging status
+    (*charging) = ((data[byteindex] >> 2) & 0x1);
+
+    (*debug) = ((data[byteindex] >> 1) & 0x1);
+    byteindex += 1; // close bit field
+
+    // Battery charge estimate, 0% to 100%
+    *charge = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    // Index of current clue
+    *currentClue = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    // Total clue count
+    *totalClues = (uint8_t)uint8FromBytes(data, &byteindex);
 
     return 1;
 }
 
 /*!
- * \brief Create the RequestBoxInfo packet
+ * \brief Create the RequestBoxStatus packet
  *
 
  * \param pkt points to the packet which will be created by this function
  */
-void encodeRequestBoxInfoPacket(void* pkt)
+void encodeRequestBoxStatusPacket(void* pkt)
 {
     // Zero length packet, no data encoded
-    finishReverseGeocachePacket(pkt, 0, getRequestBoxInfoPacketID());
+    finishReverseGeocachePacket(pkt, 0, getRequestBoxStatusPacketID());
 }
 
 /*!
- * \brief Decode the RequestBoxInfo packet
+ * \brief Decode the RequestBoxStatus packet
  *
 
  * \param pkt points to the packet being decoded by this function
  * \return 0 is returned if the packet ID or size is wrong, else 1
  */
-int decodeRequestBoxInfoPacket(const void* pkt)
+int decodeRequestBoxStatusPacket(const void* pkt)
 {
     // Verify the packet identifier
-    if(getReverseGeocachePacketID(pkt) != getRequestBoxInfoPacketID())
+    if(getReverseGeocachePacketID(pkt) != getRequestBoxStatusPacketID())
+        return 0;
+    else
+        return 1;
+}
+
+/*!
+ * \brief Set a BoxSettings_t structure to initial values.
+ *
+ * Set a BoxSettings_t structure to initial values. Not all fields are set,
+ * only those which the protocol specifies.
+ * \param user is the structure whose data are set to initial values
+ */
+void initBoxSettings_t(BoxSettings_t* user)
+{
+
+    // PWM value for locked position
+    user->pwmLocked = 1000;
+
+    // PWM value for unlocked position
+    user->pwmUnlocked = 2000;
+
+}// initBoxSettings_t
+
+/*!
+ * \brief Verify a BoxSettings_t structure has acceptable values.
+ *
+ * Verify a BoxSettings_t structure has acceptable values. Not all fields are
+ * verified, only those which the protocol specifies. Fields which are outside
+ * the allowable range are changed to the maximum or minimum allowable value. 
+ * \param user is the structure whose data are verified
+ * \return 1 if all verifiable data where valid, else 0 if data had to be corrected
+ */
+int verifyBoxSettings_t(BoxSettings_t* user)
+{
+    int good = 1;
+
+    // PWM value for locked position
+    if(user->pwmLocked < 500)
+    {
+        user->pwmLocked = 500;
+        good = 0;
+    }
+    else if(user->pwmLocked > 2500)
+    {
+        user->pwmLocked = 2500;
+        good = 0;
+    }
+
+    // PWM value for unlocked position
+    if(user->pwmUnlocked < 500)
+    {
+        user->pwmUnlocked = 500;
+        good = 0;
+    }
+    else if(user->pwmUnlocked > 2500)
+    {
+        user->pwmUnlocked = 2500;
+        good = 0;
+    }
+
+    return good;
+
+}// verifyBoxSettings_t
+
+/*!
+ * \brief Create the BoxSettings packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ * \param user points to the user data that will be encoded in pkt
+ */
+void encodeBoxSettingsPacketStructure(void* pkt, const BoxSettings_t* user)
+{
+    uint8_t* data = getReverseGeocachePacketData(pkt);
+    int byteindex = 0;
+
+    // PWM value for locked position
+    uint16ToBeBytes((uint16_t)user->pwmLocked, data, &byteindex);
+
+    // PWM value for unlocked position
+    uint16ToBeBytes((uint16_t)user->pwmUnlocked, data, &byteindex);
+
+    // complete the process of creating the packet
+    finishReverseGeocachePacket(pkt, byteindex, getBoxSettingsPacketID());
+}
+
+/*!
+ * \brief Decode the BoxSettings packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \param user receives the data decoded from the packet
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeBoxSettingsPacketStructure(const void* pkt, BoxSettings_t* user)
+{
+    int numBytes;
+    int byteindex = 0;
+    const uint8_t* data;
+
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getBoxSettingsPacketID())
+        return 0;
+
+    // Verify the packet size
+    numBytes = getReverseGeocachePacketSize(pkt);
+    if(numBytes < getBoxSettingsMinDataLength())
+        return 0;
+
+    // The raw data from the packet
+    data = getReverseGeocachePacketDataConst(pkt);
+
+    // PWM value for locked position
+    user->pwmLocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
+
+    // PWM value for unlocked position
+    user->pwmUnlocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
+
+    return 1;
+}
+
+/*!
+ * \brief Create the BoxSettings packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ * \param pwmLocked is PWM value for locked position
+ * \param pwmUnlocked is PWM value for unlocked position
+ */
+void encodeBoxSettingsPacket(void* pkt, uint16_t pwmLocked, uint16_t pwmUnlocked)
+{
+    uint8_t* data = getReverseGeocachePacketData(pkt);
+    int byteindex = 0;
+
+    // PWM value for locked position
+    uint16ToBeBytes((uint16_t)pwmLocked, data, &byteindex);
+
+    // PWM value for unlocked position
+    uint16ToBeBytes((uint16_t)pwmUnlocked, data, &byteindex);
+
+    // complete the process of creating the packet
+    finishReverseGeocachePacket(pkt, byteindex, getBoxSettingsPacketID());
+}
+
+/*!
+ * \brief Decode the BoxSettings packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \param pwmLocked receives PWM value for locked position
+ * \param pwmUnlocked receives PWM value for unlocked position
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeBoxSettingsPacket(const void* pkt, uint16_t* pwmLocked, uint16_t* pwmUnlocked)
+{
+    int byteindex = 0;
+    const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
+    int numBytes = getReverseGeocachePacketSize(pkt);
+
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getBoxSettingsPacketID())
+        return 0;
+
+    if(numBytes < getBoxSettingsMinDataLength())
+        return 0;
+
+    // PWM value for locked position
+    *pwmLocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
+
+    // PWM value for unlocked position
+    *pwmUnlocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
+
+    return 1;
+}
+
+/*!
+ * \brief Create the RequestBoxSettings packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ */
+void encodeRequestBoxSettingsPacket(void* pkt)
+{
+    // Zero length packet, no data encoded
+    finishReverseGeocachePacket(pkt, 0, getRequestBoxSettingsPacketID());
+}
+
+/*!
+ * \brief Decode the RequestBoxSettings packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeRequestBoxSettingsPacket(const void* pkt)
+{
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getRequestBoxSettingsPacketID())
+        return 0;
+    else
+        return 1;
+}
+
+/*!
+ * \brief Create the BoxVersion packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ * \param user points to the user data that will be encoded in pkt
+ */
+void encodeBoxVersionPacketStructure(void* pkt, const BoxVersion_t* user)
+{
+    uint8_t* data = getReverseGeocachePacketData(pkt);
+    int byteindex = 0;
+
+    // Box serial number
+    uint16ToBeBytes((uint16_t)user->serialNumber, data, &byteindex);
+
+    // Firmware version, major
+    uint8ToBytes((uint8_t)user->versionMajor, data, &byteindex);
+
+    // Firmware version, minor
+    uint8ToBytes((uint8_t)user->versionMinor, data, &byteindex);
+
+    // PCB revision
+    uint8ToBytes((uint8_t)user->pcbRevision, data, &byteindex);
+
+    // complete the process of creating the packet
+    finishReverseGeocachePacket(pkt, byteindex, getBoxVersionPacketID());
+}
+
+/*!
+ * \brief Decode the BoxVersion packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \param user receives the data decoded from the packet
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeBoxVersionPacketStructure(const void* pkt, BoxVersion_t* user)
+{
+    int numBytes;
+    int byteindex = 0;
+    const uint8_t* data;
+
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getBoxVersionPacketID())
+        return 0;
+
+    // Verify the packet size
+    numBytes = getReverseGeocachePacketSize(pkt);
+    if(numBytes < getBoxVersionMinDataLength())
+        return 0;
+
+    // The raw data from the packet
+    data = getReverseGeocachePacketDataConst(pkt);
+
+    // Box serial number
+    user->serialNumber = (uint16_t)uint16FromBeBytes(data, &byteindex);
+
+    // Firmware version, major
+    user->versionMajor = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    // Firmware version, minor
+    user->versionMinor = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    // PCB revision
+    user->pcbRevision = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    return 1;
+}
+
+/*!
+ * \brief Create the BoxVersion packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ * \param serialNumber is Box serial number
+ * \param versionMajor is Firmware version, major
+ * \param versionMinor is Firmware version, minor
+ * \param pcbRevision is PCB revision
+ */
+void encodeBoxVersionPacket(void* pkt, uint16_t serialNumber, uint8_t versionMajor, uint8_t versionMinor, uint8_t pcbRevision)
+{
+    uint8_t* data = getReverseGeocachePacketData(pkt);
+    int byteindex = 0;
+
+    // Box serial number
+    uint16ToBeBytes((uint16_t)serialNumber, data, &byteindex);
+
+    // Firmware version, major
+    uint8ToBytes((uint8_t)versionMajor, data, &byteindex);
+
+    // Firmware version, minor
+    uint8ToBytes((uint8_t)versionMinor, data, &byteindex);
+
+    // PCB revision
+    uint8ToBytes((uint8_t)pcbRevision, data, &byteindex);
+
+    // complete the process of creating the packet
+    finishReverseGeocachePacket(pkt, byteindex, getBoxVersionPacketID());
+}
+
+/*!
+ * \brief Decode the BoxVersion packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \param serialNumber receives Box serial number
+ * \param versionMajor receives Firmware version, major
+ * \param versionMinor receives Firmware version, minor
+ * \param pcbRevision receives PCB revision
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeBoxVersionPacket(const void* pkt, uint16_t* serialNumber, uint8_t* versionMajor, uint8_t* versionMinor, uint8_t* pcbRevision)
+{
+    int byteindex = 0;
+    const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
+    int numBytes = getReverseGeocachePacketSize(pkt);
+
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getBoxVersionPacketID())
+        return 0;
+
+    if(numBytes < getBoxVersionMinDataLength())
+        return 0;
+
+    // Box serial number
+    *serialNumber = (uint16_t)uint16FromBeBytes(data, &byteindex);
+
+    // Firmware version, major
+    *versionMajor = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    // Firmware version, minor
+    *versionMinor = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    // PCB revision
+    *pcbRevision = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    return 1;
+}
+
+/*!
+ * \brief Create the RequestBoxVersion packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ */
+void encodeRequestBoxVersionPacket(void* pkt)
+{
+    // Zero length packet, no data encoded
+    finishReverseGeocachePacket(pkt, 0, getRequestBoxVersionPacketID());
+}
+
+/*!
+ * \brief Decode the RequestBoxVersion packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeRequestBoxVersionPacket(const void* pkt)
+{
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getRequestBoxVersionPacketID())
         return 0;
     else
         return 1;
@@ -636,168 +1239,5 @@ int decodeRequestClueLinePacket(const void* pkt, uint8_t* clueNumber, uint8_t* l
     *lineNumber = (uint8_t)uint8FromBytes(data, &byteindex);
 
     return 1;
-}
-
-/*!
- * \brief Set a Settings_t structure to initial values.
- *
- * Set a Settings_t structure to initial values. Not all fields are set,
- * only those which the protocol specifies.
- * \param user is the structure whose data are set to initial values
- */
-void initSettings_t(Settings_t* user)
-{
-
-    // Box settings
-    initBoxSettings_t(&user->settings);
-
-}// initSettings_t
-
-/*!
- * \brief Verify a Settings_t structure has acceptable values.
- *
- * Verify a Settings_t structure has acceptable values. Not all fields are
- * verified, only those which the protocol specifies. Fields which are outside
- * the allowable range are changed to the maximum or minimum allowable value. 
- * \param user is the structure whose data are verified
- * \return 1 if all verifiable data where valid, else 0 if data had to be corrected
- */
-int verifySettings_t(Settings_t* user)
-{
-    int good = 1;
-
-    // Box settings
-    if(!verifyBoxSettings_t(&user->settings))
-        good = 0;
-
-    return good;
-
-}// verifySettings_t
-
-/*!
- * \brief Create the Settings packet
- *
-
- * \param pkt points to the packet which will be created by this function
- * \param user points to the user data that will be encoded in pkt
- */
-void encodeSettingsPacketStructure(void* pkt, const Settings_t* user)
-{
-    uint8_t* data = getReverseGeocachePacketData(pkt);
-    int byteindex = 0;
-
-    // Box settings
-    encodeBoxSettings_t(data, &byteindex, &user->settings);
-
-    // complete the process of creating the packet
-    finishReverseGeocachePacket(pkt, byteindex, getSettingsPacketID());
-}
-
-/*!
- * \brief Decode the Settings packet
- *
-
- * \param pkt points to the packet being decoded by this function
- * \param user receives the data decoded from the packet
- * \return 0 is returned if the packet ID or size is wrong, else 1
- */
-int decodeSettingsPacketStructure(const void* pkt, Settings_t* user)
-{
-    int numBytes;
-    int byteindex = 0;
-    const uint8_t* data;
-
-    // Verify the packet identifier
-    if(getReverseGeocachePacketID(pkt) != getSettingsPacketID())
-        return 0;
-
-    // Verify the packet size
-    numBytes = getReverseGeocachePacketSize(pkt);
-    if(numBytes < getSettingsMinDataLength())
-        return 0;
-
-    // The raw data from the packet
-    data = getReverseGeocachePacketDataConst(pkt);
-
-    // Box settings
-    if(decodeBoxSettings_t(data, &byteindex, &user->settings) == 0)
-        return 0;
-
-    return 1;
-}
-
-/*!
- * \brief Create the Settings packet
- *
-
- * \param pkt points to the packet which will be created by this function
- * \param settings is Box settings
- */
-void encodeSettingsPacket(void* pkt, const BoxSettings_t* settings)
-{
-    uint8_t* data = getReverseGeocachePacketData(pkt);
-    int byteindex = 0;
-
-    // Box settings
-    encodeBoxSettings_t(data, &byteindex, settings);
-
-    // complete the process of creating the packet
-    finishReverseGeocachePacket(pkt, byteindex, getSettingsPacketID());
-}
-
-/*!
- * \brief Decode the Settings packet
- *
-
- * \param pkt points to the packet being decoded by this function
- * \param settings receives Box settings
- * \return 0 is returned if the packet ID or size is wrong, else 1
- */
-int decodeSettingsPacket(const void* pkt, BoxSettings_t* settings)
-{
-    int byteindex = 0;
-    const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
-    int numBytes = getReverseGeocachePacketSize(pkt);
-
-    // Verify the packet identifier
-    if(getReverseGeocachePacketID(pkt) != getSettingsPacketID())
-        return 0;
-
-    if(numBytes < getSettingsMinDataLength())
-        return 0;
-
-    // Box settings
-    if(decodeBoxSettings_t(data, &byteindex, settings) == 0)
-        return 0;
-
-    return 1;
-}
-
-/*!
- * \brief Create the RequestSettings packet
- *
-
- * \param pkt points to the packet which will be created by this function
- */
-void encodeRequestSettingsPacket(void* pkt)
-{
-    // Zero length packet, no data encoded
-    finishReverseGeocachePacket(pkt, 0, getRequestSettingsPacketID());
-}
-
-/*!
- * \brief Decode the RequestSettings packet
- *
-
- * \param pkt points to the packet being decoded by this function
- * \return 0 is returned if the packet ID or size is wrong, else 1
- */
-int decodeRequestSettingsPacket(const void* pkt)
-{
-    // Verify the packet identifier
-    if(getReverseGeocachePacketID(pkt) != getRequestSettingsPacketID())
-        return 0;
-    else
-        return 1;
 }
 // end of boxpackets.c

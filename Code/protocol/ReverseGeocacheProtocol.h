@@ -12,7 +12,7 @@ extern "C" {
  * \file
  * \mainpage ReverseGeocache protocol stack
  *
-
+ * Reverse Geocache USB message protocol
  *
  * The protocol API enumeration is incremented anytime the protocol is changed
  * in a way that affects compatibility with earlier versions of the protocol.
@@ -36,15 +36,15 @@ typedef enum
 {
     MSG_RESET_INTO_BOOTLOADER = 0x0A,//!< Enter USB bootloader mode
     MSG_ENABLE_DEBUG_MODE,           //!< Enable extra debugging information
-    MSG_SETTINGS = 0x20,             //!< System settings
-    MSG_GET_SETTINGS,                //!< Request system settings
-    MSG_SYSTEM_INFO = 0xA0,          //!< System information
+    MSG_SYSTEM_STATUS = 0xA0,        //!< System status information
+    MSG_SYSTEM_SETTINGS,             //!< System configuration information
+    MSG_SYSTEM_VERSION,              //!< System version information
     MSG_CLUE_INFO = 0xB0,            //!< Clue information
-    MSG_GET_CLUE_INFO,               //!< Request clue information
     MSG_CLUE_LINE = 0xC0,            //!< Single line of text for a given clue
-    MSG_GET_CLUE_LINE,               //!< Request clue line
     MSG_UNLOCK = 0xD0,               //!< Unlock the box
     MSG_LOCK,                        //!< Lock the box
+    MSG_UNLOCK_SETTINGS = 0xD5,      //!< Unlock settings with password
+    MSG_LOCK_SETTINGS,               //!< Lock settings with password
     MSG_NEXT_CLUE = 0xE0,            //!< Move to the next clue
     MSG_PREV_CLUE,                   //!< Move to the previous clue
     MSG_FIRST_CLUE,                  //!< Move to the first clue

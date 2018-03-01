@@ -8,39 +8,39 @@
           supportInt64="false"
           supportFloat64="false"
           supportSpecialFloat="false"
-          comment=""
+          comment="Reverse Geocache USB message protocol"
           >
 
     <Include name="string.h" comment="C string manipulation function header" global="true"/>
-    
+
     <Enum name="Packet" prefix="MSG_" comment="USB Packet types">
         <Value name="RESET_INTO_BOOTLOADER" value="0x0A" comment="Enter USB bootloader mode"/>
         <Value name="ENABLE_DEBUG_MODE" comment="Enable extra debugging information"/>
 
-        <Value name="SETTINGS" value="0x20" comment="System settings"/>
-        <Value name="GET_SETTINGS" comment="Request system settings"/>
-        
-        <Value name="SYSTEM_INFO" value="0xA0" comment="System information"/>
-        
+        <Value name="SYSTEM_STATUS" value="0xA0" comment="System status information"/>
+        <Value name="SYSTEM_SETTINGS" comment="System configuration information"/>
+		<Value name="SYSTEM_VERSION" comment="System version information"/>
+
         <Value name="CLUE_INFO" value="0xB0" comment="Clue information"/>
-        <Value name="GET_CLUE_INFO" comment="Request clue information"/>
-        
+
         <Value name="CLUE_LINE" value="0xC0" comment="Single line of text for a given clue"/>
-        <Value name="GET_CLUE_LINE" comment="Request clue line"/>
-        
+
         <Value name="UNLOCK" value="0xD0" comment="Unlock the box"/>
         <Value name="LOCK" comment="Lock the box"/>
-        
+
+        <Value name="UNLOCK_SETTINGS" value="0xD5" comment="Unlock settings with password"/>
+        <Value name="LOCK_SETTINGS" comment="Lock settings with password"/>
+
         <Value name="NEXT_CLUE" value="0xE0" comment="Move to the next clue"/>
         <Value name="PREV_CLUE" comment="Move to the previous clue"/>
         <Value name="FIRST_CLUE" comment="Move to the first clue"/>
         <Value name="LAST_CLUE" comment="Move to the last clue"/>
-        
+
         <Value name="SET_CLUE_COUNT" value="0xF0" comment="Set the total number of clues"/>
         <Value name="INVALIDATE_CLUES" comment="Mark clues as invalid (before download)"/>
         <Value name="VALIDATE_CLUES" comment="Mark clues as valid (after download)"/>
     </Enum>
-    
+
     <Enum name="ClueTypes" prefix="CLUE_">
         <Value name="NO_HINT" value="0x00" comment="No extra hint"/>
         <Value name="SHOW_DISTANCE" comment="Show distance to location"/>
@@ -48,117 +48,117 @@
         <Value name="WARMER_COOLER" comment="Show warmer / cooler (than previous try)"/>
         <Value name="SHOW_HEADING"  comment="Show heading to location in degrees"/>
         <Value name="SHOW_CARDINAL" comment="Show heading to location in cardinal directions"/>
-        
+
         <Value name="NUM_CLUE_TYPES" ignorePrefix="true" comment="Number of clue types (not a clue type itself)"/>
     </Enum>
-    
-    <Structure name="BoxStatus"  file="boxdefines">
-        <Data name="locked" inMemoryType="bitfield1"/>
-        <Data name="gpsConnection" inMemoryType="bitfield1" comment="1 = GPS unit detected"/>
-        <Data name="gpsStatus" inMemoryType="bitfield2" comment="GPS Status"/>
-        <Data name="charging" inMemoryType="bitfield1" comment="Battery charging status"/>
-        <Data name="debug" inMemoryType="bitfield1"/>
-    </Structure>
-    
-    <Structure name="ClueOptions" file="boxdefines">
+
+    <Structure name="ClueOptionBits" file="boxdefines">
         <Data name="centerText" inMemoryType="bitfield1" comment="Text is centered on the screen"/>
     </Structure>
 
-    
-    <Structure name="BoxInfo" file="boxdefines">
-        <Data name="serialNumber" inMemoryType="unsigned16" comment="Box serial number"/>
-        <Data name="versionMajor" inMemoryType="unsigned8" comment="Firmware version, major"/>
-        <Data name="versionMinor" inMemoryType="unsigned8" comment="Firmware version, minor"/>
-        <Data name="pcbRevision" inMemoryType="unsigned8" comment="PCB revision"/>
-        <Data name="status" struct="BoxStatus"/>
-        <Data name="charge" inMemoryType="unsigned8" comment="Battery charge estimate, 0% to 100%"/>
-        <Data name="currentClue" inMemoryType="unsigned8" comment="Index of current clue"/>
-        <Data name="totalClues" inMemoryType="unsigned8" comment="Total clue count"/>
-    </Structure>
-    
     <Structure name="Waypoint" file="boxdefines">
         <Data name="lat" inMemoryType="float" comment="Location latitude"/>
         <Data name="lng" inMemoryType="float" comment="Location longitude"/>
         <Data name="threshold" inMemoryType="unsigned16" comment="Distance threshold (m)"/>
         <Data name="type" enum="ClueTypes" comment="Clue type"/>
-        <Data name="options" struct="ClueOptions" comment="Extra clue options"/>
+        <Data name="options" struct="ClueOptionBits" comment="Extra clue options"/>
     </Structure>
 
-    <Structure name="BoxSettings" file="boxdefines">
-        <Data name="pwmLocked" inMemoryType="unsigned16" initialValue="1000" verifyMinValue="500" verifyMaxValue="2500" comment="PWM value for locked position"/>
-        <Data name="pwmUnlocked" inMemoryType="unsigned16" initialValue="2000" verifyMinValue="500" verifyMaxValue="2500" comment="PWM value for unlocked position"/>
-    </Structure>
-    
     <!-- Commands -->
     <Packet name="Reset" ID="MSG_RESET_INTO_BOOTLOADER" file="boxpackets" parameterInterface="true">
     </Packet>
-    
+
     <Packet name="Unlock" ID="MSG_UNLOCK" file="boxpackets" parameterInterface="true">
     </Packet>
-    
+
     <Packet name="Lock" ID="MSG_LOCK" file="boxpackets" parameterInterface="true">
     </Packet>
-    
+
+    <Packet name="UnlockSettings" ID="MSG_UNLOCK_SETTINGS" file="boxpackets">
+      <Data name="password" inMemoryType="string" array="32"/>
+    </Packet>
+
+    <Packet name="LockSettings" ID="MSG_LOCK_SETTINGS" file="boxpackets">
+      <Data name="password" inMemoryType="string" array="32"/>
+    </Packet>
+
     <Packet name="NextClue" ID="MSG_NEXT_CLUE" file="boxpackets" parameterInterface="true">
     </Packet>
-    
+
     <Packet name="PrevClue" ID="MSG_PREV_CLUE" file="boxpackets" parameterInterface="true">
     </Packet>
-    
+
     <Packet name="FirstClue" ID="MSG_FIRST_CLUE" file="boxpackets" parameterInterface="true">
     </Packet>
-    
+
     <Packet name="LastClue" ID="MSG_LAST_CLUE" file="boxpackets" parameterInterface="true">
     </Packet>
-    
-    <Packet name="Bootload" ID="MSG_RESET_INTO_BOOTLOADER" file="boxpackets" parameterInterface="true">
-    </Packet>
-    
+
     <Packet name="EnableDebug" ID="MSG_ENABLE_DEBUG_MODE" file="boxpackets" parameterInterface="true">
+      <Data name="debugOn" inMemoryType="unsigned8" comment="Turn debug mode on (or off)"/>
     </Packet>
-    
+
     <Packet name="SetClueCount" ID="MSG_SET_CLUE_COUNT" file="boxpackets" parameterInterface="true">
         <Data name="clueCount" inMemoryType="unsigned8"/>
     </Packet>
-    
+
     <Packet name="ValidateClues" ID="MSG_VALIDATE_CLUES" file="boxpackets" parameterInterface="true">
     </Packet>
-    
+
     <Packet name="InvalidateClues" ID="MSG_VALIDATE_CLUES" file="boxpackets" parameterInterface="true">
     </Packet>
-    
-    <Packet name="BoxInfo" ID="MSG_SYSTEM_INFO" file="boxpackets" parameterInterface="true">
-        <Data name="info" struct="BoxInfo"/>
+	
+	<Packet name="BoxStatus" ID="MSG_SYSTEM_STATUS" file="boxpackets" parameterInterface="true" structureInterface="true">
+		<Data name="locked" inMemoryType="bitfield1"/>
+		<Data name="passwordProtected" inMemoryType="bitfield1" comment="Box is protected with password"/>
+		<Data name="gpsConnection" inMemoryType="bitfield1" comment="1 = GPS unit detected"/>
+		<Data name="gpsStatus" inMemoryType="bitfield2" comment="GPS Status"/>
+		<Data name="charging" inMemoryType="bitfield1" comment="Battery charging status"/>
+		<Data name="debug" inMemoryType="bitfield1"/>
+		<Data name="charge" inMemoryType="unsigned8" comment="Battery charge estimate, 0% to 100%"/>
+		<Data name="currentClue" inMemoryType="unsigned8" comment="Index of current clue"/>
+		<Data name="totalClues" inMemoryType="unsigned8" comment="Total clue count"/>
+	</Packet>
+	
+	<Packet name="RequestBoxStatus" ID="MSG_SYSTEM_STATUS" file="boxpackets">
+	</Packet>
+	
+	<Packet name="BoxSettings" ID="MSG_SYSTEM_SETTINGS" file="boxpackets" parameterInterface="true" structureInterface="true">
+        <Data name="pwmLocked" inMemoryType="unsigned16" initialValue="1000" verifyMinValue="500" verifyMaxValue="2500" comment="PWM value for locked position"/>
+        <Data name="pwmUnlocked" inMemoryType="unsigned16" initialValue="2000" verifyMinValue="500" verifyMaxValue="2500" comment="PWM value for unlocked position"/>
+	</Packet>
+	
+	<Packet name="RequestBoxSettings" ID="MSG_SYSTEM_SETTINGS" file="boxpackets">
+	</Packet>
+
+    <Packet name="BoxVersion" ID="MSG_SYSTEM_VERSION" file="boxpackets" parameterInterface="true" structureInterface="true">
+      <Data name="serialNumber" inMemoryType="unsigned16" comment="Box serial number"/>
+      <Data name="versionMajor" inMemoryType="unsigned8" comment="Firmware version, major"/>
+      <Data name="versionMinor" inMemoryType="unsigned8" comment="Firmware version, minor"/>
+      <Data name="pcbRevision" inMemoryType="unsigned8" comment="PCB revision"/>
     </Packet>
-    
-    <Packet name="RequestBoxInfo" ID="MSG_SYSTEM_INFO" file="boxpackets" parameterInterface="true">
-    </Packet>
-    
+	
+	<Packet name="RequestBoxVersion" ID="MSG_SYSTEM_VERSION" file="boxpackets">
+	</Packet>
+
     <Packet name="ClueInfo" ID="MSG_CLUE_INFO" file="boxpackets" parameterInterface="true">
         <Data name="clueNumber" inMemoryType="unsigned8"/>
         <Data name="clueInfo" struct="Waypoint"/>
     </Packet>
-    
-    <Packet name="RequestClueInfo" ID="MSG_GET_CLUE_INFO" file="boxpackets" parameterInterface="true">
+
+    <Packet name="RequestClueInfo" ID="MSG_CLUE_INFO" file="boxpackets" parameterInterface="true">
         <Data name="clueNumber" inMemoryType="unsigned8"/>
     </Packet>
-    
+
     <Packet name="ClueLine" ID="MSG_CLUE_LINE" file="boxpackets" parameterInterface="true">
         <Data name="clueNumber" inMemoryType="unsigned8" comment="Index of clue"/>
         <Data name="lineNumber" inMemoryType="unsigned8" comment="Line number"/>
         <Data name="lineText" inMemoryType="string" array="40" comment="Line data"/>
     </Packet>
-    
+
     <Packet name="RequestClueLine" ID="MSG_CLUE_LINE" file="boxpackets" parameterInterface="true">
         <Data name="clueNumber" inMemoryType="unsigned8"/>
         <Data name="lineNumber" inMemoryType="unsigned8"/>
-    </Packet>
-
-    <Packet name="Settings" ID="MSG_SETTINGS" file="boxpackets" parameterInterface="true" structureInterface="true">
-        <Data name="settings" struct="BoxSettings" comment="Box settings"/>
-    </Packet>
-
-    <Packet name="RequestSettings" ID="MSG_GET_SETTINGS" file="boxpackets" parameterInterface="true">
     </Packet>
 
 </Protocol>

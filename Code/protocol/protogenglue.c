@@ -26,8 +26,8 @@ void finishReverseGeocachePacket(void* pkt, int size, uint32_t packetID)
     uint8_t *ptr = (uint8_t*) pkt;
     
     //Copy across the size and the ID
-    ptr[0] = packetID;
-    ptr[1] = size;
+    ptr[0] = (uint8_t) packetID;
+    ptr[1] = (uint8_t) size;
 }
 
 //! \return the size of a packet from the packet header

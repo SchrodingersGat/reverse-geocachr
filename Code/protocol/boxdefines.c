@@ -7,77 +7,14 @@
 #include "scaledencode.h"
 
 /*!
- * \brief Encode a BoxStatus_t structure into a byte array
+ * \brief Encode a ClueOptionBits_t structure into a byte array
  *
 
  * \param data points to the byte array to add encoded data to
  * \param bytecount points to the starting location in the byte array, and will be incremented by the number of encoded bytes.
  * \param user is the data to encode in the byte array
  */
-void encodeBoxStatus_t(uint8_t* data, int* bytecount, const BoxStatus_t* user)
-{
-    int byteindex = *bytecount;
-
-    data[byteindex] = (uint8_t)user->locked << 7;
-
-    // 1 = GPS unit detected
-    data[byteindex] |= (uint8_t)user->gpsConnection << 6;
-
-    // GPS Status
-    data[byteindex] |= (uint8_t)user->gpsStatus << 4;
-
-    // Battery charging status
-    data[byteindex] |= (uint8_t)user->charging << 3;
-
-    data[byteindex] |= (uint8_t)user->debug << 2;
-    byteindex += 1; // close bit field
-
-    *bytecount = byteindex;
-
-}// encodeBoxStatus_t
-
-/*!
- * \brief Decode a BoxStatus_t structure from a byte array
- *
-
- * \param data points to the byte array to decoded data from
- * \param bytecount points to the starting location in the byte array, and will be incremented by the number of bytes decoded
- * \param user is the data to decode from the byte array
- * \return 1 if the data are decoded, else 0. If 0 is returned bytecount will not be updated.
- */
-int decodeBoxStatus_t(const uint8_t* data, int* bytecount, BoxStatus_t* user)
-{
-    int byteindex = *bytecount;
-
-    user->locked = (data[byteindex] >> 7);
-
-    // 1 = GPS unit detected
-    user->gpsConnection = ((data[byteindex] >> 6) & 0x1);
-
-    // GPS Status
-    user->gpsStatus = ((data[byteindex] >> 4) & 0x3);
-
-    // Battery charging status
-    user->charging = ((data[byteindex] >> 3) & 0x1);
-
-    user->debug = ((data[byteindex] >> 2) & 0x1);
-    byteindex += 1; // close bit field
-
-    *bytecount = byteindex;
-
-    return 1;
-
-}// decodeBoxStatus_t
-
-/*!
- * \brief Encode a ClueOptions_t structure into a byte array
- *
-
- * \param data points to the byte array to add encoded data to
- * \param bytecount points to the starting location in the byte array, and will be incremented by the number of encoded bytes.
- * \param user is the data to encode in the byte array
- */
-void encodeClueOptions_t(uint8_t* data, int* bytecount, const ClueOptions_t* user)
+void encodeClueOptionBits_t(uint8_t* data, int* bytecount, const ClueOptionBits_t* user)
 {
     int byteindex = *bytecount;
 
@@ -87,10 +24,10 @@ void encodeClueOptions_t(uint8_t* data, int* bytecount, const ClueOptions_t* use
 
     *bytecount = byteindex;
 
-}// encodeClueOptions_t
+}// encodeClueOptionBits_t
 
 /*!
- * \brief Decode a ClueOptions_t structure from a byte array
+ * \brief Decode a ClueOptionBits_t structure from a byte array
  *
 
  * \param data points to the byte array to decoded data from
@@ -98,7 +35,7 @@ void encodeClueOptions_t(uint8_t* data, int* bytecount, const ClueOptions_t* use
  * \param user is the data to decode from the byte array
  * \return 1 if the data are decoded, else 0. If 0 is returned bytecount will not be updated.
  */
-int decodeClueOptions_t(const uint8_t* data, int* bytecount, ClueOptions_t* user)
+int decodeClueOptionBits_t(const uint8_t* data, int* bytecount, ClueOptionBits_t* user)
 {
     int byteindex = *bytecount;
 
@@ -110,89 +47,7 @@ int decodeClueOptions_t(const uint8_t* data, int* bytecount, ClueOptions_t* user
 
     return 1;
 
-}// decodeClueOptions_t
-
-/*!
- * \brief Encode a BoxInfo_t structure into a byte array
- *
-
- * \param data points to the byte array to add encoded data to
- * \param bytecount points to the starting location in the byte array, and will be incremented by the number of encoded bytes.
- * \param user is the data to encode in the byte array
- */
-void encodeBoxInfo_t(uint8_t* data, int* bytecount, const BoxInfo_t* user)
-{
-    int byteindex = *bytecount;
-
-    // Box serial number
-    uint16ToBeBytes((uint16_t)user->serialNumber, data, &byteindex);
-
-    // Firmware version, major
-    uint8ToBytes((uint8_t)user->versionMajor, data, &byteindex);
-
-    // Firmware version, minor
-    uint8ToBytes((uint8_t)user->versionMinor, data, &byteindex);
-
-    // PCB revision
-    uint8ToBytes((uint8_t)user->pcbRevision, data, &byteindex);
-
-    encodeBoxStatus_t(data, &byteindex, &user->status);
-
-    // Battery charge estimate, 0% to 100%
-    uint8ToBytes((uint8_t)user->charge, data, &byteindex);
-
-    // Index of current clue
-    uint8ToBytes((uint8_t)user->currentClue, data, &byteindex);
-
-    // Total clue count
-    uint8ToBytes((uint8_t)user->totalClues, data, &byteindex);
-
-    *bytecount = byteindex;
-
-}// encodeBoxInfo_t
-
-/*!
- * \brief Decode a BoxInfo_t structure from a byte array
- *
-
- * \param data points to the byte array to decoded data from
- * \param bytecount points to the starting location in the byte array, and will be incremented by the number of bytes decoded
- * \param user is the data to decode from the byte array
- * \return 1 if the data are decoded, else 0. If 0 is returned bytecount will not be updated.
- */
-int decodeBoxInfo_t(const uint8_t* data, int* bytecount, BoxInfo_t* user)
-{
-    int byteindex = *bytecount;
-
-    // Box serial number
-    user->serialNumber = (uint16_t)uint16FromBeBytes(data, &byteindex);
-
-    // Firmware version, major
-    user->versionMajor = (uint8_t)uint8FromBytes(data, &byteindex);
-
-    // Firmware version, minor
-    user->versionMinor = (uint8_t)uint8FromBytes(data, &byteindex);
-
-    // PCB revision
-    user->pcbRevision = (uint8_t)uint8FromBytes(data, &byteindex);
-
-    if(decodeBoxStatus_t(data, &byteindex, &user->status) == 0)
-        return 0;
-
-    // Battery charge estimate, 0% to 100%
-    user->charge = (uint8_t)uint8FromBytes(data, &byteindex);
-
-    // Index of current clue
-    user->currentClue = (uint8_t)uint8FromBytes(data, &byteindex);
-
-    // Total clue count
-    user->totalClues = (uint8_t)uint8FromBytes(data, &byteindex);
-
-    *bytecount = byteindex;
-
-    return 1;
-
-}// decodeBoxInfo_t
+}// decodeClueOptionBits_t
 
 /*!
  * \brief Encode a Waypoint_t structure into a byte array
@@ -219,7 +74,7 @@ void encodeWaypoint_t(uint8_t* data, int* bytecount, const Waypoint_t* user)
     uint8ToBytes((uint8_t)user->type, data, &byteindex);
 
     // Extra clue options
-    encodeClueOptions_t(data, &byteindex, &user->options);
+    encodeClueOptionBits_t(data, &byteindex, &user->options);
 
     *bytecount = byteindex;
 
@@ -251,7 +106,7 @@ int decodeWaypoint_t(const uint8_t* data, int* bytecount, Waypoint_t* user)
     user->type = (ClueTypes)uint8FromBytes(data, &byteindex);
 
     // Extra clue options
-    if(decodeClueOptions_t(data, &byteindex, &user->options) == 0)
+    if(decodeClueOptionBits_t(data, &byteindex, &user->options) == 0)
         return 0;
 
     *bytecount = byteindex;
@@ -259,111 +114,5 @@ int decodeWaypoint_t(const uint8_t* data, int* bytecount, Waypoint_t* user)
     return 1;
 
 }// decodeWaypoint_t
-
-/*!
- * \brief Encode a BoxSettings_t structure into a byte array
- *
-
- * \param data points to the byte array to add encoded data to
- * \param bytecount points to the starting location in the byte array, and will be incremented by the number of encoded bytes.
- * \param user is the data to encode in the byte array
- */
-void encodeBoxSettings_t(uint8_t* data, int* bytecount, const BoxSettings_t* user)
-{
-    int byteindex = *bytecount;
-
-    // PWM value for locked position
-    uint16ToBeBytes((uint16_t)user->pwmLocked, data, &byteindex);
-
-    // PWM value for unlocked position
-    uint16ToBeBytes((uint16_t)user->pwmUnlocked, data, &byteindex);
-
-    *bytecount = byteindex;
-
-}// encodeBoxSettings_t
-
-/*!
- * \brief Decode a BoxSettings_t structure from a byte array
- *
-
- * \param data points to the byte array to decoded data from
- * \param bytecount points to the starting location in the byte array, and will be incremented by the number of bytes decoded
- * \param user is the data to decode from the byte array
- * \return 1 if the data are decoded, else 0. If 0 is returned bytecount will not be updated.
- */
-int decodeBoxSettings_t(const uint8_t* data, int* bytecount, BoxSettings_t* user)
-{
-    int byteindex = *bytecount;
-
-    // PWM value for locked position
-    user->pwmLocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
-
-    // PWM value for unlocked position
-    user->pwmUnlocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
-
-    *bytecount = byteindex;
-
-    return 1;
-
-}// decodeBoxSettings_t
-
-/*!
- * \brief Set a BoxSettings_t structure to initial values.
- *
- * Set a BoxSettings_t structure to initial values. Not all fields are set,
- * only those which the protocol specifies.
- * \param user is the structure whose data are set to initial values
- */
-void initBoxSettings_t(BoxSettings_t* user)
-{
-
-    // PWM value for locked position
-    user->pwmLocked = 1000;
-
-    // PWM value for unlocked position
-    user->pwmUnlocked = 2000;
-
-}// initBoxSettings_t
-
-/*!
- * \brief Verify a BoxSettings_t structure has acceptable values.
- *
- * Verify a BoxSettings_t structure has acceptable values. Not all fields are
- * verified, only those which the protocol specifies. Fields which are outside
- * the allowable range are changed to the maximum or minimum allowable value. 
- * \param user is the structure whose data are verified
- * \return 1 if all verifiable data where valid, else 0 if data had to be corrected
- */
-int verifyBoxSettings_t(BoxSettings_t* user)
-{
-    int good = 1;
-
-    // PWM value for locked position
-    if(user->pwmLocked < 500)
-    {
-        user->pwmLocked = 500;
-        good = 0;
-    }
-    else if(user->pwmLocked > 2500)
-    {
-        user->pwmLocked = 2500;
-        good = 0;
-    }
-
-    // PWM value for unlocked position
-    if(user->pwmUnlocked < 500)
-    {
-        user->pwmUnlocked = 500;
-        good = 0;
-    }
-    else if(user->pwmUnlocked > 2500)
-    {
-        user->pwmUnlocked = 2500;
-        good = 0;
-    }
-
-    return good;
-
-}// verifyBoxSettings_t
 
 // end of boxdefines.c

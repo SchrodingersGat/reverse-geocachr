@@ -60,6 +60,36 @@ int decodeLockPacket(const void* pkt);
 //! return the maximum encoded length for the Lock packet
 #define getLockMaxDataLength() 0
 
+//! Create the UnlockSettings packet
+void encodeUnlockSettingsPacket(void* pkt, const char password[32]);
+
+//! Decode the UnlockSettings packet
+int decodeUnlockSettingsPacket(const void* pkt, char password[32]);
+
+//! return the packet ID for the UnlockSettings packet
+#define getUnlockSettingsPacketID() (MSG_UNLOCK_SETTINGS)
+
+//! return the minimum encoded length for the UnlockSettings packet
+#define getUnlockSettingsMinDataLength() (1)
+
+//! return the maximum encoded length for the UnlockSettings packet
+#define getUnlockSettingsMaxDataLength() (32)
+
+//! Create the LockSettings packet
+void encodeLockSettingsPacket(void* pkt, const char password[32]);
+
+//! Decode the LockSettings packet
+int decodeLockSettingsPacket(const void* pkt, char password[32]);
+
+//! return the packet ID for the LockSettings packet
+#define getLockSettingsPacketID() (MSG_LOCK_SETTINGS)
+
+//! return the minimum encoded length for the LockSettings packet
+#define getLockSettingsMinDataLength() (1)
+
+//! return the maximum encoded length for the LockSettings packet
+#define getLockSettingsMaxDataLength() (32)
+
 //! Create the NextClue packet
 void encodeNextCluePacket(void* pkt);
 
@@ -120,35 +150,20 @@ int decodeLastCluePacket(const void* pkt);
 //! return the maximum encoded length for the LastClue packet
 #define getLastClueMaxDataLength() 0
 
-//! Create the Bootload packet
-void encodeBootloadPacket(void* pkt);
-
-//! Decode the Bootload packet
-int decodeBootloadPacket(const void* pkt);
-
-//! return the packet ID for the Bootload packet
-#define getBootloadPacketID() (MSG_RESET_INTO_BOOTLOADER)
-
-//! return the minimum encoded length for the Bootload packet
-#define getBootloadMinDataLength() 0
-
-//! return the maximum encoded length for the Bootload packet
-#define getBootloadMaxDataLength() 0
-
 //! Create the EnableDebug packet
-void encodeEnableDebugPacket(void* pkt);
+void encodeEnableDebugPacket(void* pkt, uint8_t debugOn);
 
 //! Decode the EnableDebug packet
-int decodeEnableDebugPacket(const void* pkt);
+int decodeEnableDebugPacket(const void* pkt, uint8_t* debugOn);
 
 //! return the packet ID for the EnableDebug packet
 #define getEnableDebugPacketID() (MSG_ENABLE_DEBUG_MODE)
 
 //! return the minimum encoded length for the EnableDebug packet
-#define getEnableDebugMinDataLength() 0
+#define getEnableDebugMinDataLength() (1)
 
 //! return the maximum encoded length for the EnableDebug packet
-#define getEnableDebugMaxDataLength() 0
+#define getEnableDebugMaxDataLength() (1)
 
 //! Create the SetClueCount packet
 void encodeSetClueCountPacket(void* pkt, uint8_t clueCount);
@@ -195,35 +210,154 @@ int decodeInvalidateCluesPacket(const void* pkt);
 //! return the maximum encoded length for the InvalidateClues packet
 #define getInvalidateCluesMaxDataLength() 0
 
-//! Create the BoxInfo packet
-void encodeBoxInfoPacket(void* pkt, const BoxInfo_t* info);
+typedef struct
+{
+    unsigned locked : 1;           
+    unsigned passwordProtected : 1; //!< Box is protected with password
+    unsigned gpsConnection : 1;     //!< 1 = GPS unit detected
+    unsigned gpsStatus : 2;         //!< GPS Status
+    unsigned charging : 1;          //!< Battery charging status
+    unsigned debug : 1;            
+    uint8_t  charge;                //!< Battery charge estimate, 0% to 100%
+    uint8_t  currentClue;           //!< Index of current clue
+    uint8_t  totalClues;            //!< Total clue count
+}BoxStatus_t;
 
-//! Decode the BoxInfo packet
-int decodeBoxInfoPacket(const void* pkt, BoxInfo_t* info);
+//! Create the BoxStatus packet
+void encodeBoxStatusPacketStructure(void* pkt, const BoxStatus_t* user);
 
-//! return the packet ID for the BoxInfo packet
-#define getBoxInfoPacketID() (MSG_SYSTEM_INFO)
+//! Decode the BoxStatus packet
+int decodeBoxStatusPacketStructure(const void* pkt, BoxStatus_t* user);
 
-//! return the minimum encoded length for the BoxInfo packet
-#define getBoxInfoMinDataLength() (9)
+//! Create the BoxStatus packet
+void encodeBoxStatusPacket(void* pkt, unsigned locked, unsigned passwordProtected, unsigned gpsConnection, unsigned gpsStatus, unsigned charging, unsigned debug, uint8_t charge, uint8_t currentClue, uint8_t totalClues);
 
-//! return the maximum encoded length for the BoxInfo packet
-#define getBoxInfoMaxDataLength() (9)
+//! Decode the BoxStatus packet
+int decodeBoxStatusPacket(const void* pkt, unsigned* locked, unsigned* passwordProtected, unsigned* gpsConnection, unsigned* gpsStatus, unsigned* charging, unsigned* debug, uint8_t* charge, uint8_t* currentClue, uint8_t* totalClues);
 
-//! Create the RequestBoxInfo packet
-void encodeRequestBoxInfoPacket(void* pkt);
+//! return the packet ID for the BoxStatus packet
+#define getBoxStatusPacketID() (MSG_SYSTEM_STATUS)
 
-//! Decode the RequestBoxInfo packet
-int decodeRequestBoxInfoPacket(const void* pkt);
+//! return the minimum encoded length for the BoxStatus packet
+#define getBoxStatusMinDataLength() (4)
 
-//! return the packet ID for the RequestBoxInfo packet
-#define getRequestBoxInfoPacketID() (MSG_SYSTEM_INFO)
+//! return the maximum encoded length for the BoxStatus packet
+#define getBoxStatusMaxDataLength() (4)
 
-//! return the minimum encoded length for the RequestBoxInfo packet
-#define getRequestBoxInfoMinDataLength() 0
+//! Create the RequestBoxStatus packet
+void encodeRequestBoxStatusPacket(void* pkt);
 
-//! return the maximum encoded length for the RequestBoxInfo packet
-#define getRequestBoxInfoMaxDataLength() 0
+//! Decode the RequestBoxStatus packet
+int decodeRequestBoxStatusPacket(const void* pkt);
+
+//! return the packet ID for the RequestBoxStatus packet
+#define getRequestBoxStatusPacketID() (MSG_SYSTEM_STATUS)
+
+//! return the minimum encoded length for the RequestBoxStatus packet
+#define getRequestBoxStatusMinDataLength() 0
+
+//! return the maximum encoded length for the RequestBoxStatus packet
+#define getRequestBoxStatusMaxDataLength() 0
+
+typedef struct
+{
+    uint16_t pwmLocked;   //!< PWM value for locked position
+    uint16_t pwmUnlocked; //!< PWM value for unlocked position
+}BoxSettings_t;
+
+// Initial and verify values for BoxSettings
+#define ReverseGeocache_BoxSettings_pwmLocked_InitValue 1000
+#define ReverseGeocache_BoxSettings_pwmLocked_VerifyMin 500
+#define ReverseGeocache_BoxSettings_pwmLocked_VerifyMax 2500
+#define ReverseGeocache_BoxSettings_pwmUnlocked_InitValue 2000
+#define ReverseGeocache_BoxSettings_pwmUnlocked_VerifyMin 500
+#define ReverseGeocache_BoxSettings_pwmUnlocked_VerifyMax 2500
+
+//! Set a BoxSettings_t structure to initial values
+void initBoxSettings_t(BoxSettings_t* user);
+
+//! Verify a BoxSettings_t structure has acceptable values
+int verifyBoxSettings_t(BoxSettings_t* user);
+
+//! Create the BoxSettings packet
+void encodeBoxSettingsPacketStructure(void* pkt, const BoxSettings_t* user);
+
+//! Decode the BoxSettings packet
+int decodeBoxSettingsPacketStructure(const void* pkt, BoxSettings_t* user);
+
+//! Create the BoxSettings packet
+void encodeBoxSettingsPacket(void* pkt, uint16_t pwmLocked, uint16_t pwmUnlocked);
+
+//! Decode the BoxSettings packet
+int decodeBoxSettingsPacket(const void* pkt, uint16_t* pwmLocked, uint16_t* pwmUnlocked);
+
+//! return the packet ID for the BoxSettings packet
+#define getBoxSettingsPacketID() (MSG_SYSTEM_SETTINGS)
+
+//! return the minimum encoded length for the BoxSettings packet
+#define getBoxSettingsMinDataLength() (4)
+
+//! return the maximum encoded length for the BoxSettings packet
+#define getBoxSettingsMaxDataLength() (4)
+
+//! Create the RequestBoxSettings packet
+void encodeRequestBoxSettingsPacket(void* pkt);
+
+//! Decode the RequestBoxSettings packet
+int decodeRequestBoxSettingsPacket(const void* pkt);
+
+//! return the packet ID for the RequestBoxSettings packet
+#define getRequestBoxSettingsPacketID() (MSG_SYSTEM_SETTINGS)
+
+//! return the minimum encoded length for the RequestBoxSettings packet
+#define getRequestBoxSettingsMinDataLength() 0
+
+//! return the maximum encoded length for the RequestBoxSettings packet
+#define getRequestBoxSettingsMaxDataLength() 0
+
+typedef struct
+{
+    uint16_t serialNumber; //!< Box serial number
+    uint8_t  versionMajor; //!< Firmware version, major
+    uint8_t  versionMinor; //!< Firmware version, minor
+    uint8_t  pcbRevision;  //!< PCB revision
+}BoxVersion_t;
+
+//! Create the BoxVersion packet
+void encodeBoxVersionPacketStructure(void* pkt, const BoxVersion_t* user);
+
+//! Decode the BoxVersion packet
+int decodeBoxVersionPacketStructure(const void* pkt, BoxVersion_t* user);
+
+//! Create the BoxVersion packet
+void encodeBoxVersionPacket(void* pkt, uint16_t serialNumber, uint8_t versionMajor, uint8_t versionMinor, uint8_t pcbRevision);
+
+//! Decode the BoxVersion packet
+int decodeBoxVersionPacket(const void* pkt, uint16_t* serialNumber, uint8_t* versionMajor, uint8_t* versionMinor, uint8_t* pcbRevision);
+
+//! return the packet ID for the BoxVersion packet
+#define getBoxVersionPacketID() (MSG_SYSTEM_VERSION)
+
+//! return the minimum encoded length for the BoxVersion packet
+#define getBoxVersionMinDataLength() (5)
+
+//! return the maximum encoded length for the BoxVersion packet
+#define getBoxVersionMaxDataLength() (5)
+
+//! Create the RequestBoxVersion packet
+void encodeRequestBoxVersionPacket(void* pkt);
+
+//! Decode the RequestBoxVersion packet
+int decodeRequestBoxVersionPacket(const void* pkt);
+
+//! return the packet ID for the RequestBoxVersion packet
+#define getRequestBoxVersionPacketID() (MSG_SYSTEM_VERSION)
+
+//! return the minimum encoded length for the RequestBoxVersion packet
+#define getRequestBoxVersionMinDataLength() 0
+
+//! return the maximum encoded length for the RequestBoxVersion packet
+#define getRequestBoxVersionMaxDataLength() 0
 
 typedef struct
 {
@@ -253,7 +387,7 @@ void encodeRequestClueInfoPacket(void* pkt, uint8_t clueNumber);
 int decodeRequestClueInfoPacket(const void* pkt, uint8_t* clueNumber);
 
 //! return the packet ID for the RequestClueInfo packet
-#define getRequestClueInfoPacketID() (MSG_GET_CLUE_INFO)
+#define getRequestClueInfoPacketID() (MSG_CLUE_INFO)
 
 //! return the minimum encoded length for the RequestClueInfo packet
 #define getRequestClueInfoMinDataLength() (1)
@@ -303,53 +437,6 @@ int decodeRequestClueLinePacket(const void* pkt, uint8_t* clueNumber, uint8_t* l
 
 //! return the maximum encoded length for the RequestClueLine packet
 #define getRequestClueLineMaxDataLength() (2)
-
-typedef struct
-{
-    BoxSettings_t settings; //!< Box settings
-}Settings_t;
-
-//! Set a Settings_t structure to initial values
-void initSettings_t(Settings_t* user);
-
-//! Verify a Settings_t structure has acceptable values
-int verifySettings_t(Settings_t* user);
-
-//! Create the Settings packet
-void encodeSettingsPacketStructure(void* pkt, const Settings_t* user);
-
-//! Decode the Settings packet
-int decodeSettingsPacketStructure(const void* pkt, Settings_t* user);
-
-//! Create the Settings packet
-void encodeSettingsPacket(void* pkt, const BoxSettings_t* settings);
-
-//! Decode the Settings packet
-int decodeSettingsPacket(const void* pkt, BoxSettings_t* settings);
-
-//! return the packet ID for the Settings packet
-#define getSettingsPacketID() (MSG_SETTINGS)
-
-//! return the minimum encoded length for the Settings packet
-#define getSettingsMinDataLength() (4)
-
-//! return the maximum encoded length for the Settings packet
-#define getSettingsMaxDataLength() (4)
-
-//! Create the RequestSettings packet
-void encodeRequestSettingsPacket(void* pkt);
-
-//! Decode the RequestSettings packet
-int decodeRequestSettingsPacket(const void* pkt);
-
-//! return the packet ID for the RequestSettings packet
-#define getRequestSettingsPacketID() (MSG_GET_SETTINGS)
-
-//! return the minimum encoded length for the RequestSettings packet
-#define getRequestSettingsMinDataLength() 0
-
-//! return the maximum encoded length for the RequestSettings packet
-#define getRequestSettingsMaxDataLength() 0
 
 #ifdef __cplusplus
 }

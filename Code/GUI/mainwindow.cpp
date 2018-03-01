@@ -205,7 +205,10 @@ bool MainWindow::downloadAllClues() {
 
     downloading = true;
 
-    downloadProgress = new QProgressDialog("Downloading Clues ...","Cancel",0,box.info.totalClues+2,this);
+    downloadProgress = new QProgressDialog("Downloading Clues ...", "Cancel",
+                                           0,
+                                           box.boxStatus.totalClues + 2,
+                                           this);
 
     downloadProgress->setWindowModality(Qt::WindowModal);
 
@@ -317,11 +320,14 @@ void MainWindow::uploadClues()
     mb.exec();
 }
 
-bool MainWindow::uploadAllClues() {
-
+bool MainWindow::uploadAllClues()
+{
     uploading = true;
 
-    downloadProgress = new QProgressDialog("Uploading Clues ...","Cancel",0,box.info.totalClues+2,this);
+    downloadProgress = new QProgressDialog("Uploading Clues ...","Cancel",
+                                           0,
+                                           box.boxStatus.totalClues + 2,
+                                           this);
 
     downloadProgress->setWindowModality(Qt::WindowModal);
 
@@ -362,8 +368,8 @@ bool MainWindow::uploadAllClues() {
     Clue_t c;
 
 
-    for (int i=0;i<box.info.totalClues;i++) {
-
+    for (int i = 0; i < box.boxStatus.totalClues; i++)
+    {
         if (!uploading) {
             cancelUploadDownload();
             return false;
@@ -550,14 +556,14 @@ void MainWindow::refreshDisplay()
         //various messages depending on box status
 
         //Charge indicator
-        ui->boxCharge->setText(QString::number(box.info.charge) + "%");
+        ui->boxCharge->setText(QString::number(box.boxStatus.charge) + "%");
 
         //Firmware info
         ui->boxVersion->setText(
-                    QString::number(box.info.versionMajor) + "." +
-                    QString::number(box.info.versionMinor));
+                    QString::number(box.boxVersion.versionMajor) + "." +
+                    QString::number(box.boxVersion.versionMinor));
 
-        ui->nBoxClues->setText(QString::number(box.info.totalClues));
+        ui->nBoxClues->setText(QString::number(box.boxStatus.totalClues));
     }
 
     ui->boxStatus->setText(connectionString);
@@ -565,7 +571,7 @@ void MainWindow::refreshDisplay()
     QString s = "Box not connected";
 
     if (box.connected) {
-        switch (box.info.currentClue) {
+        switch (box.boxStatus.currentClue) {
         case BOX_WELCOME_MSG:
             s = "Welcome Message";
             break;
@@ -573,7 +579,7 @@ void MainWindow::refreshDisplay()
             s = "Completion Message";
             break;
         default:
-            s = "Clue " + QString::number(box.info.currentClue) + " of " + QString::number(box.info.totalClues);
+            s = "Clue " + QString::number(box.boxStatus.currentClue) + " of " + QString::number(box.boxStatus.totalClues);
             break;
         }
     }
@@ -689,7 +695,7 @@ void MainWindow::newMarkerRequested(double lat, double lng) {
     QMessageBox mb;
     mb.setStandardButtons(QMessageBox::Ok);
 
-    if (box.info.totalClues >= BOX_MAX_CLUES){
+    if (box.boxStatus.totalClues >= BOX_MAX_CLUES){
         mb.setWindowTitle("Maximum Clues Reached");
         mb.setText("You have reached the maximum number of clues");
 

@@ -27,12 +27,6 @@
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
          <widget class="QGroupBox" name="groupBox_3">
-          <property name="minimumSize">
-           <size>
-            <width>260</width>
-            <height>141</height>
-           </size>
-          </property>
           <property name="maximumSize">
            <size>
             <width>260</width>
@@ -104,12 +98,6 @@ Save clues to file or download to box</string>
         </item>
         <item row="1" column="0">
          <widget class="QGroupBox" name="groupBox_6">
-          <property name="minimumSize">
-           <size>
-            <width>260</width>
-            <height>171</height>
-           </size>
-          </property>
           <property name="maximumSize">
            <size>
             <width>260</width>
@@ -322,12 +310,6 @@ Save clues to file or download to box</string>
         </item>
         <item row="3" column="0">
          <widget class="QTabWidget" name="tabWidget">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>150</height>
-           </size>
-          </property>
           <property name="currentIndex">
            <number>0</number>
           </property>
@@ -551,12 +533,6 @@ Save clues to file or download to box</string>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>260</width>
-            <height>251</height>
-           </size>
           </property>
           <property name="maximumSize">
            <size>
@@ -1021,9 +997,26 @@ Save clues to file or download to box</string>
             </layout>
            </item>
            <item>
-            <layout class="QGridLayout" name="gridLayout_2">
-             <item row="0" column="0">
-              <widget class="QLabel" name="latString">
+            <layout class="QGridLayout" name="gridLayout_10">
+             <item row="2" column="3">
+              <widget class="QPushButton" name="setThreshold">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="toolTip">
+                <string>Set the clue distance threshold</string>
+               </property>
+               <property name="text">
+                <string>Set</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QCheckBox" name="centerText">
                <property name="font">
                 <font>
                  <pointsize>8</pointsize>
@@ -1032,27 +1025,7 @@ Save clues to file or download to box</string>
                 </font>
                </property>
                <property name="text">
-                <string>Latitude: </string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QLineEdit" name="latitude">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
+                <string>Center Text</string>
                </property>
               </widget>
              </item>
@@ -1066,7 +1039,27 @@ Save clues to file or download to box</string>
                 </font>
                </property>
                <property name="text">
-                <string>Longitude:</string>
+                <string>Longitude</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="lngString_2">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Threshold</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -1090,12 +1083,8 @@ Save clues to file or download to box</string>
                </property>
               </widget>
              </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <item>
-              <widget class="QLabel" name="lngString_2">
+             <item row="5" column="0">
+              <widget class="QLabel" name="lngString_4">
                <property name="font">
                 <font>
                  <pointsize>8</pointsize>
@@ -1104,11 +1093,58 @@ Save clues to file or download to box</string>
                 </font>
                </property>
                <property name="text">
-                <string>Threshold:</string>
+                <string>Hint Type</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
-             <item>
+             <item row="5" column="1">
+              <widget class="QComboBox" name="clueType">
+               <property name="minimumSize">
+                <size>
+                 <width>125</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="3">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="lngString_3">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>m</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
               <widget class="QLineEdit" name="threshold">
                <property name="enabled">
                 <bool>true</bool>
@@ -1128,8 +1164,8 @@ Save clues to file or download to box</string>
                </property>
               </widget>
              </item>
-             <item>
-              <widget class="QLabel" name="lngString_3">
+             <item row="0" column="0">
+              <widget class="QLabel" name="latString">
                <property name="font">
                 <font>
                  <pointsize>8</pointsize>
@@ -1138,66 +1174,17 @@ Save clues to file or download to box</string>
                 </font>
                </property>
                <property name="text">
-                <string>m</string>
+                <string>Latitude</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
-             <item>
-              <widget class="QPushButton" name="setThreshold">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="toolTip">
-                <string>Set the clue distance threshold</string>
-               </property>
-               <property name="text">
-                <string>Set</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="centerText">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Center Text</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
-              <widget class="QLabel" name="lngString_4">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Clue Type:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="clueType">
-               <property name="minimumSize">
-                <size>
-                 <width>125</width>
-                 <height>0</height>
-                </size>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="latitude">
+               <property name="enabled">
+                <bool>true</bool>
                </property>
                <property name="font">
                 <font>
@@ -1206,20 +1193,13 @@ Save clues to file or download to box</string>
                  <bold>false</bold>
                 </font>
                </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
               </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
              </item>
             </layout>
            </item>

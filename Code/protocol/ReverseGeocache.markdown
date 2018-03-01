@@ -60,6 +60,8 @@
 
 # ReverseGeocache Protocol
 
+Reverse Geocache USB message protocol
+
  Protocol version is 1.0.0.a.
 
  Protocol API is 1.
@@ -75,15 +77,15 @@ USB Packet types
 | --------------------------------------------------------- | :---: | --------------------------------------- |
 | [`MSG_RESET_INTO_BOOTLOADER`](#MSG_RESET_INTO_BOOTLOADER) | 10    | Enter USB bootloader mode               |
 | [`MSG_ENABLE_DEBUG_MODE`](#MSG_ENABLE_DEBUG_MODE)         | 11    | Enable extra debugging information      |
-| [`MSG_SETTINGS`](#MSG_SETTINGS)                           | 32    | System settings                         |
-| [`MSG_GET_SETTINGS`](#MSG_GET_SETTINGS)                   | 33    | Request system settings                 |
-| [`MSG_SYSTEM_INFO`](#MSG_SYSTEM_INFO)                     | 160   | System information                      |
+| [`MSG_SYSTEM_STATUS`](#MSG_SYSTEM_STATUS)                 | 160   | System status information               |
+| [`MSG_SYSTEM_SETTINGS`](#MSG_SYSTEM_SETTINGS)             | 161   | System configuration information        |
+| [`MSG_SYSTEM_VERSION`](#MSG_SYSTEM_VERSION)               | 162   | System version information              |
 | [`MSG_CLUE_INFO`](#MSG_CLUE_INFO)                         | 176   | Clue information                        |
-| [`MSG_GET_CLUE_INFO`](#MSG_GET_CLUE_INFO)                 | 177   | Request clue information                |
 | [`MSG_CLUE_LINE`](#MSG_CLUE_LINE)                         | 192   | Single line of text for a given clue    |
-| `MSG_GET_CLUE_LINE`                                       | 193   | Request clue line                       |
 | [`MSG_UNLOCK`](#MSG_UNLOCK)                               | 208   | Unlock the box                          |
 | [`MSG_LOCK`](#MSG_LOCK)                                   | 209   | Lock the box                            |
+| [`MSG_UNLOCK_SETTINGS`](#MSG_UNLOCK_SETTINGS)             | 213   | Unlock settings with password           |
+| [`MSG_LOCK_SETTINGS`](#MSG_LOCK_SETTINGS)                 | 214   | Lock settings with password             |
 | [`MSG_NEXT_CLUE`](#MSG_NEXT_CLUE)                         | 224   | Move to the next clue                   |
 | [`MSG_PREV_CLUE`](#MSG_PREV_CLUE)                         | 225   | Move to the previous clue               |
 | [`MSG_FIRST_CLUE`](#MSG_FIRST_CLUE)                       | 226   | Move to the first clue                  |
@@ -127,6 +129,32 @@ USB Packet types
 - data length: 0
 
 
+## <a name="MSG_UNLOCK_SETTINGS"></a>UnlockSettings packet
+
+- packet identifier: `MSG_UNLOCK_SETTINGS` : 213
+- minimum data length: 1
+- maximum data length: 32
+
+
+[UnlockSettings packet bytes]
+| Bytes  | Name       | [Enc](#Enc)                           | Repeat | Description |
+| ------ | ---------- | :-----------------------------------: | :----: | ----------- |
+| 0...31 | 1)password | Zero-terminated string up to 32 bytes         ||             |
+
+
+## <a name="MSG_LOCK_SETTINGS"></a>LockSettings packet
+
+- packet identifier: `MSG_LOCK_SETTINGS` : 214
+- minimum data length: 1
+- maximum data length: 32
+
+
+[LockSettings packet bytes]
+| Bytes  | Name       | [Enc](#Enc)                           | Repeat | Description |
+| ------ | ---------- | :-----------------------------------: | :----: | ----------- |
+| 0...31 | 1)password | Zero-terminated string up to 32 bytes         ||             |
+
+
 ## <a name="MSG_NEXT_CLUE"></a>NextClue packet
 
 - packet identifier: `MSG_NEXT_CLUE` : 224
@@ -151,16 +179,16 @@ USB Packet types
 - data length: 0
 
 
-## <a name="MSG_RESET_INTO_BOOTLOADER"></a>Bootload packet
-
-- packet identifier: `MSG_RESET_INTO_BOOTLOADER` : 10
-- data length: 0
-
-
 ## <a name="MSG_ENABLE_DEBUG_MODE"></a>EnableDebug packet
 
 - packet identifier: `MSG_ENABLE_DEBUG_MODE` : 11
-- data length: 0
+- data length: 1
+
+
+[EnableDebug packet bytes]
+| Bytes | Name      | [Enc](#Enc) | Repeat | Description                  |
+| ----- | --------- | :---------: | :----: | ---------------------------- |
+| 0     | 1)debugOn | U8          | 1      | Turn debug mode on (or off). |
 
 
 ## <a name="MSG_SET_CLUE_COUNT"></a>SetClueCount packet
@@ -187,34 +215,69 @@ USB Packet types
 - data length: 0
 
 
-## <a name="MSG_SYSTEM_INFO"></a>BoxInfo packet
+## <a name="MSG_SYSTEM_STATUS"></a>BoxStatus packet
 
-- packet identifier: `MSG_SYSTEM_INFO` : 160
-- data length: 9
+- packet identifier: `MSG_SYSTEM_STATUS` : 160
+- data length: 4
 
 
-[BoxInfo packet bytes]
+[BoxStatus packet bytes]
 | Bytes     | Name                | [Enc](#Enc) | Repeat | Description                          |
 | --------- | ------------------- | :---------: | :----: | ------------------------------------ |
-| 0...8     | 1)info                           || 1      |                                      |
-| 0...1     | 1.1)serialNumber    | U16         | 1      | Box serial number.                   |
-| 2         | 1.2)versionMajor    | U8          | 1      | Firmware version, major.             |
-| 3         | 1.3)versionMinor    | U8          | 1      | Firmware version, minor.             |
-| 4         | 1.4)pcbRevision     | U8          | 1      | PCB revision.                        |
-| 5         | 1.5)status                       || 1      |                                      |
-| 5:7       | 1.5.1)locked        | B1          | 1      |                                      |
-| 5:6       | 1.5.2)gpsConnection | B1          | 1      | 1 = GPS unit detected.               |
-| 5:5...5:4 | 1.5.3)gpsStatus     | B2          | 1      | GPS Status.                          |
-| 5:3       | 1.5.4)charging      | B1          | 1      | Battery charging status.             |
-| 5:2       | 1.5.5)debug         | B1          | 1      |                                      |
-| 6         | 1.6)charge          | U8          | 1      | Battery charge estimate, 0% to 100%. |
-| 7         | 1.7)currentClue     | U8          | 1      | Index of current clue.               |
-| 8         | 1.8)totalClues      | U8          | 1      | Total clue count.                    |
+| 0:7       | 1)locked            | B1          | 1      |                                      |
+| 0:6       | 2)passwordProtected | B1          | 1      | Box is protected with password.      |
+| 0:5       | 3)gpsConnection     | B1          | 1      | 1 = GPS unit detected.               |
+| 0:4...0:3 | 4)gpsStatus         | B2          | 1      | GPS Status.                          |
+| 0:2       | 5)charging          | B1          | 1      | Battery charging status.             |
+| 0:1       | 6)debug             | B1          | 1      |                                      |
+| 1         | 7)charge            | U8          | 1      | Battery charge estimate, 0% to 100%. |
+| 2         | 8)currentClue       | U8          | 1      | Index of current clue.               |
+| 3         | 9)totalClues        | U8          | 1      | Total clue count.                    |
 
 
-## <a name="MSG_SYSTEM_INFO"></a>RequestBoxInfo packet
+## <a name="MSG_SYSTEM_STATUS"></a>RequestBoxStatus packet
 
-- packet identifier: `MSG_SYSTEM_INFO` : 160
+- packet identifier: `MSG_SYSTEM_STATUS` : 160
+- data length: 0
+
+
+## <a name="MSG_SYSTEM_SETTINGS"></a>BoxSettings packet
+
+- packet identifier: `MSG_SYSTEM_SETTINGS` : 161
+- data length: 4
+
+
+[BoxSettings packet bytes]
+| Bytes | Name          | [Enc](#Enc) | Repeat | Description                      |
+| ----- | ------------- | :---------: | :----: | -------------------------------- |
+| 0...1 | 1)pwmLocked   | U16         | 1      | PWM value for locked position.   |
+| 2...3 | 2)pwmUnlocked | U16         | 1      | PWM value for unlocked position. |
+
+
+## <a name="MSG_SYSTEM_SETTINGS"></a>RequestBoxSettings packet
+
+- packet identifier: `MSG_SYSTEM_SETTINGS` : 161
+- data length: 0
+
+
+## <a name="MSG_SYSTEM_VERSION"></a>BoxVersion packet
+
+- packet identifier: `MSG_SYSTEM_VERSION` : 162
+- data length: 5
+
+
+[BoxVersion packet bytes]
+| Bytes | Name           | [Enc](#Enc) | Repeat | Description              |
+| ----- | -------------- | :---------: | :----: | ------------------------ |
+| 0...1 | 1)serialNumber | U16         | 1      | Box serial number.       |
+| 2     | 2)versionMajor | U8          | 1      | Firmware version, major. |
+| 3     | 3)versionMinor | U8          | 1      | Firmware version, minor. |
+| 4     | 4)pcbRevision  | U8          | 1      | PCB revision.            |
+
+
+## <a name="MSG_SYSTEM_VERSION"></a>RequestBoxVersion packet
+
+- packet identifier: `MSG_SYSTEM_VERSION` : 162
 - data length: 0
 
 
@@ -237,9 +300,9 @@ USB Packet types
 | 12:7   | 2.5.1)centerText       | B1          | 1      | Text is centered on the screen. |
 
 
-## <a name="MSG_GET_CLUE_INFO"></a>RequestClueInfo packet
+## <a name="MSG_CLUE_INFO"></a>RequestClueInfo packet
 
-- packet identifier: `MSG_GET_CLUE_INFO` : 177
+- packet identifier: `MSG_CLUE_INFO` : 176
 - data length: 1
 
 
@@ -275,26 +338,6 @@ USB Packet types
 | ----- | ------------ | :---------: | :----: | ----------- |
 | 0     | 1)clueNumber | U8          | 1      |             |
 | 1     | 2)lineNumber | U8          | 1      |             |
-
-
-## <a name="MSG_SETTINGS"></a>Settings packet
-
-- packet identifier: `MSG_SETTINGS` : 32
-- data length: 4
-
-
-[Settings packet bytes]
-| Bytes | Name            | [Enc](#Enc) | Repeat | Description                      |
-| ----- | --------------- | :---------: | :----: | -------------------------------- |
-| 0...3 | 1)settings                   || 1      | Box settings                     |
-| 0...1 | 1.1)pwmLocked   | U16         | 1      | PWM value for locked position.   |
-| 2...3 | 1.2)pwmUnlocked | U16         | 1      | PWM value for unlocked position. |
-
-
-## <a name="MSG_GET_SETTINGS"></a>RequestSettings packet
-
-- packet identifier: `MSG_GET_SETTINGS` : 33
-- data length: 0
 
 
 ----------------------------

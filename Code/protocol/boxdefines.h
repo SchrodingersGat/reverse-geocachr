@@ -16,64 +16,25 @@ extern "C" {
 
 typedef struct
 {
-    unsigned locked : 1;       
-    unsigned gpsConnection : 1; //!< 1 = GPS unit detected
-    unsigned gpsStatus : 2;     //!< GPS Status
-    unsigned charging : 1;      //!< Battery charging status
-    unsigned debug : 1;        
-}BoxStatus_t;
-
-//! return the minimum encoded length for the BoxStatus_t structure
-#define getMinLengthOfBoxStatus_t() (1)
-
-//! Encode a BoxStatus_t structure into a byte array
-void encodeBoxStatus_t(uint8_t* data, int* bytecount, const BoxStatus_t* user);
-
-//! Decode a BoxStatus_t structure from a byte array
-int decodeBoxStatus_t(const uint8_t* data, int* bytecount, BoxStatus_t* user);
-
-typedef struct
-{
     unsigned centerText : 1; //!< Text is centered on the screen
-}ClueOptions_t;
+}ClueOptionBits_t;
 
-//! return the minimum encoded length for the ClueOptions_t structure
-#define getMinLengthOfClueOptions_t() (1)
+//! return the minimum encoded length for the ClueOptionBits_t structure
+#define getMinLengthOfClueOptionBits_t() (1)
 
-//! Encode a ClueOptions_t structure into a byte array
-void encodeClueOptions_t(uint8_t* data, int* bytecount, const ClueOptions_t* user);
+//! Encode a ClueOptionBits_t structure into a byte array
+void encodeClueOptionBits_t(uint8_t* data, int* bytecount, const ClueOptionBits_t* user);
 
-//! Decode a ClueOptions_t structure from a byte array
-int decodeClueOptions_t(const uint8_t* data, int* bytecount, ClueOptions_t* user);
-
-typedef struct
-{
-    uint16_t    serialNumber; //!< Box serial number
-    uint8_t     versionMajor; //!< Firmware version, major
-    uint8_t     versionMinor; //!< Firmware version, minor
-    uint8_t     pcbRevision;  //!< PCB revision
-    BoxStatus_t status;      
-    uint8_t     charge;       //!< Battery charge estimate, 0% to 100%
-    uint8_t     currentClue;  //!< Index of current clue
-    uint8_t     totalClues;   //!< Total clue count
-}BoxInfo_t;
-
-//! return the minimum encoded length for the BoxInfo_t structure
-#define getMinLengthOfBoxInfo_t() (9)
-
-//! Encode a BoxInfo_t structure into a byte array
-void encodeBoxInfo_t(uint8_t* data, int* bytecount, const BoxInfo_t* user);
-
-//! Decode a BoxInfo_t structure from a byte array
-int decodeBoxInfo_t(const uint8_t* data, int* bytecount, BoxInfo_t* user);
+//! Decode a ClueOptionBits_t structure from a byte array
+int decodeClueOptionBits_t(const uint8_t* data, int* bytecount, ClueOptionBits_t* user);
 
 typedef struct
 {
-    float         lat;       //!< Location latitude
-    float         lng;       //!< Location longitude
-    uint16_t      threshold; //!< Distance threshold (m)
-    ClueTypes     type;      //!< Clue type
-    ClueOptions_t options;   //!< Extra clue options
+    float            lat;       //!< Location latitude
+    float            lng;       //!< Location longitude
+    uint16_t         threshold; //!< Distance threshold (m)
+    ClueTypes        type;      //!< Clue type
+    ClueOptionBits_t options;   //!< Extra clue options
 }Waypoint_t;
 
 //! return the minimum encoded length for the Waypoint_t structure
@@ -84,35 +45,6 @@ void encodeWaypoint_t(uint8_t* data, int* bytecount, const Waypoint_t* user);
 
 //! Decode a Waypoint_t structure from a byte array
 int decodeWaypoint_t(const uint8_t* data, int* bytecount, Waypoint_t* user);
-
-typedef struct
-{
-    uint16_t pwmLocked;   //!< PWM value for locked position
-    uint16_t pwmUnlocked; //!< PWM value for unlocked position
-}BoxSettings_t;
-
-// Initial and verify values for BoxSettings
-#define ReverseGeocache_BoxSettings_pwmLocked_InitValue 1000
-#define ReverseGeocache_BoxSettings_pwmLocked_VerifyMin 500
-#define ReverseGeocache_BoxSettings_pwmLocked_VerifyMax 2500
-#define ReverseGeocache_BoxSettings_pwmUnlocked_InitValue 2000
-#define ReverseGeocache_BoxSettings_pwmUnlocked_VerifyMin 500
-#define ReverseGeocache_BoxSettings_pwmUnlocked_VerifyMax 2500
-
-//! return the minimum encoded length for the BoxSettings_t structure
-#define getMinLengthOfBoxSettings_t() (4)
-
-//! Encode a BoxSettings_t structure into a byte array
-void encodeBoxSettings_t(uint8_t* data, int* bytecount, const BoxSettings_t* user);
-
-//! Decode a BoxSettings_t structure from a byte array
-int decodeBoxSettings_t(const uint8_t* data, int* bytecount, BoxSettings_t* user);
-
-//! Set a BoxSettings_t structure to initial values
-void initBoxSettings_t(BoxSettings_t* user);
-
-//! Verify a BoxSettings_t structure has acceptable values
-int verifyBoxSettings_t(BoxSettings_t* user);
 
 #ifdef __cplusplus
 }
