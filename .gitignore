@@ -10,6 +10,8 @@
 *.stash
 *.Debug
 *.Release
+*.pdf
+*.pyc
 
 Code/GUI/release/
 Code/GUI/debug/
