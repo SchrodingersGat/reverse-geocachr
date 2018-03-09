@@ -60,7 +60,7 @@
         <Data name="lat" inMemoryType="float" comment="Location latitude"/>
         <Data name="lng" inMemoryType="float" comment="Location longitude"/>
         <Data name="threshold" inMemoryType="unsigned16" comment="Distance threshold (m)"/>
-        <Data name="type" enum="ClueTypes" comment="Clue type"/>
+        <Data name="type" inMemoryType="unsigned8" comment="Clue type"/>
         <Data name="options" struct="ClueOptionBits" comment="Extra clue options"/>
     </Structure>
 

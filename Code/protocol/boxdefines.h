@@ -33,7 +33,7 @@ typedef struct
     float            lat;       //!< Location latitude
     float            lng;       //!< Location longitude
     uint16_t         threshold; //!< Distance threshold (m)
-    ClueTypes        type;      //!< Clue type
+    uint8_t          type;      //!< Clue type
     ClueOptionBits_t options;   //!< Extra clue options
 }Waypoint_t;
 

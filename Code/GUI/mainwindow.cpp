@@ -436,7 +436,7 @@ void MainWindow::saveCurrentClue()
 
     if (c == NULL) return;
 
-    for (int i=0;i<NUM_CLUE_LINES;i++)
+    for (int i=0; i<NUM_CLUE_LINES; i++)
     {
         if (ui->clueTable->item(i,0) == NULL)
         {
@@ -460,7 +460,7 @@ void MainWindow::reloadClueTable()
 
     if (c == NULL) return;
 
-    QTableWidgetItem *item;
+    QTableWidgetItem *item = nullptr;
 
     ui->clueTable->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
@@ -880,6 +880,7 @@ void MainWindow::loadClues()
     updateClueList();
     redrawMap();
     jsFitMapToClues();
+    reloadClueTable();
 }
 
 /* Save the list of clues to a .clue file

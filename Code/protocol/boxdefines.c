@@ -103,7 +103,7 @@ int decodeWaypoint_t(const uint8_t* data, int* bytecount, Waypoint_t* user)
     user->threshold = (uint16_t)uint16FromBeBytes(data, &byteindex);
 
     // Clue type
-    user->type = (ClueTypes)uint8FromBytes(data, &byteindex);
+    user->type = (uint8_t)uint8FromBytes(data, &byteindex);
 
     // Extra clue options
     if(decodeClueOptionBits_t(data, &byteindex, &user->options) == 0)

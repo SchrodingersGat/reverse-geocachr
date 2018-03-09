@@ -2,19 +2,9 @@
 #include "display_constants.h"
 #include <QSettings>
 
-//Global settings
-const QString SETTING_NUM_CLUES = "NumberOfClues";
-const QString SETTING_WELCOME_MSG = "WelcomeMsg";
-const QString SETTING_CLUE = "Clue";
-const QString SETTING_COMPLETE_MSG = "CompleteMsg";
 
-//Titles for the various settings
-const QString SETTING_CLUE_LAT = "Latitude";
-const QString SETTING_CLUE_LNG = "Longitude";
-const QString SETTING_CLUE_THRESHOLD = "Threshold";
-const QString SETTING_CLUE_TYPE = "Type";
-const QString SETTING_CLUE_OPTIONS = "Options";
-const QString SETTING_CLUE_LINE = "Line_";
+#include <qfileinfo.h>
+#include <qfile.h>
 
 #include "debug.h"
 #include "ILI9340_font.h"
@@ -255,95 +245,173 @@ void ClueList::MoveClueLast()
 bool ClueList::SaveToFile(QString filename)
 {
 
-    /*
     QSettings settings(filename, QSettings::IniFormat);
 
-    if (!settings.isWritable()) return;
+    if (!settings.isWritable()) return false;
 
     settings.clear();
 
     //Number of clues
-    settings.setValue(SETTING_NUM_CLUES, box.clues.count());
+    settings.setValue("NumberOfClues", ClueCount());
 
     //Welcome Message
-    settings.beginGroup(SETTING_WELCOME_MSG);
-    box.welcomeMessage.save(&settings);
+    settings.beginGroup("WelcomeMessage");
+    SaveClue(settings, welcomeMessage, BOX_WELCOME_MSG);
     settings.endGroup();
-
-    //Completion message
-    settings.beginGroup(SETTING_COMPLETE_MSG);
-    box.completeMessage.save(&settings);
-    settings.endGroup();
-
-    Waypoint *w;
 
     //For each of the clues
-    for (int i=0;i<box.clues.count();i++)
+    for (int i=0; i < ClueCount(); i++)
     {
-        settings.beginGroup(SETTING_CLUE + "_" + QString::number(i));
+        settings.beginGroup("Clue_" + QString::number(i + 1));
 
-        w = &box.waypoints[i];
-        w->save(&settings);
+        SaveClue(settings, clues[i], i+1);
 
         settings.endGroup();
     }
-    */
-    return false;
+
+    //Completion message
+    settings.beginGroup("CompleteMessage");
+    SaveClue(settings, completeMessage, BOX_COMPLETE_MSG);
+    settings.endGroup();
+
+    return true;
 }
+
+
+void ClueList::SaveClue(QSettings &settings, Clue_t clue, int clueId)
+{
+    uint8_t options = 0x00;
+
+    if (clueId > BOX_WELCOME_MSG && clueId < BOX_COMPLETE_MSG)
+    {
+        settings.setValue("Lat", QString::number(clue.waypoint.lat, 'f', 10));
+        settings.setValue("Lng", QString::number(clue.waypoint.lng, 'f', 10));
+        settings.setValue("Threshold", clue.waypoint.threshold);
+        settings.setValue("Type", (uint8_t) clue.waypoint.type);
+
+    }
+
+    // Extract option bits
+    auto& opt = clue.waypoint.options;
+
+    if (opt.centerText)
+    {
+        options |= 0x01;
+    }
+
+    settings.setValue("Options", options);
+
+    for (int i = 0; i < NUM_CLUE_LINES; i++)
+    {
+        QString line(clue.lines[i]);
+        settings.setValue("Line_" + QString::number(i), line);
+    }
+}
+
 
 bool ClueList::LoadFromFile(QString filename)
 {
-
-    /*
     QFileInfo check(filename);
 
-    if (!check.exists() || !check.isFile()) return;
+    if (!check.exists() || !check.isFile()) return false;
 
     QSettings settings(filename, QSettings::IniFormat);
 
-    bool ok;
+    bool ok = false;
 
-    int nClues = settings.value(SETTING_NUM_CLUES,0).toInt(&ok);
+    int nClues = settings.value("NumberOfClues", 0).toInt(&ok);
 
     if (!ok)
     {
-        nClues = 0;
-        //error msg here
+        return false;
     }
 
     if (nClues == 0)
     {
         //error msg here
+        return false;
     }
 
-    box.clues.clear();
+    clues.clear();
+
+    Clue_Init(&welcomeMessage);
+    Clue_Init(&completeMessage);
 
     //Welcome message
-    settings.beginGroup(SETTING_WELCOME_MSG);
-    box.welcomeMessage.load(&settings);
+    settings.beginGroup("WelcomeMessage");
+    LoadClue(settings, welcomeMessage, BOX_WELCOME_MSG);
     settings.endGroup();
 
-    settings.beginGroup(SETTING_COMPLETE_MSG);
-    box.completeMessage.load(&settings);
+    settings.beginGroup("CompleteMessage");
+    LoadClue(settings, completeMessage, BOX_COMPLETE_MSG);
     settings.endGroup();
 
-    Waypoint w;
+    Clue_t clue;
 
-    //Each clue
-    for (int i=0;i<nClues;i++)
+    for (int i = 0; i < nClues; i++)
     {
-        settings.beginGroup(SETTING_CLUE+"_"+QString::number(i));
+        Clue_Init(&clue);
 
-        if (w.load(&settings))
-        {
-            box.clues.append(w);
-        }
+        settings.beginGroup("Clue_" + QString::number(i+1));
+
+        LoadClue(settings, clue, i+1);
 
         settings.endGroup();
+
+        clues.append(clue);
     }
-    */
-    return false;
+
+    return true;
 }
+
+
+void ClueList::LoadClue(QSettings &settings, Clue_t &clue, int clueId)
+{
+    if (clueId > BOX_WELCOME_MSG && clueId < BOX_COMPLETE_MSG)
+    {
+        bool ok = false;
+
+        float f = settings.value("Lat").toString().toFloat(&ok);
+
+        if (ok)
+        {
+            clue.waypoint.lat = f;
+        }
+
+        f = settings.value("Lng").toString().toFloat(&ok);
+
+        if (ok)
+        {
+            clue.waypoint.lng = f;
+        }
+
+        clue.waypoint.lat = settings.value("Lat", 0.0f).toFloat();
+        clue.waypoint.lng = settings.value("Lng", 0.0f).toFloat();
+        clue.waypoint.threshold = settings.value("Threshold", 100).toInt();
+        clue.waypoint.type = settings.value("Type", CLUE_NO_HINT).toInt();
+    }
+
+    uint8_t opt = settings.value("Options", 0x00).toInt();
+
+    // Individually read out option bits
+    clue.waypoint.options.centerText = (opt & 0x01) > 0;
+
+    QString line;
+
+    for (int i = 0; i < NUM_CLUE_LINES; i++)
+    {
+        line = settings.value("Line_" + QString::number(i), QString()).toString();
+
+        auto bytes = line.toLatin1();
+
+        for (int j = 0; j < bytes.count() && j < CLUE_LINE_LEN_MAX; j++)
+        {
+            clue.lines[i][j] = (char) bytes.at(j);
+        }
+    }
+
+}
+
 
 bool ClueList::ValidWaypoint(double lat, double lng)
 {

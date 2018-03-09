@@ -11,15 +11,17 @@ void Clue_Init(Clue_t *clue)
 
     Waypoint_Init(&clue->waypoint);
     
-    for (i=0;i<NUM_CLUE_LINES;i++) {
-        for (j=0;j<CLUE_LINE_LEN_MAX;j++) {
+    for (i=0;i<NUM_CLUE_LINES;i++)
+    {
+        for (j=0;j<CLUE_LINE_LEN_MAX;j++)
+        {
             clue->lines[i][j] = 0; //zero-out the text
         }
     }
 }
 
-void Waypoint_Init(Waypoint_t *waypoint) {
-    
+void Waypoint_Init(Waypoint_t *waypoint)
+{
     waypoint->lat = 0;
     waypoint->lng = 0;
     waypoint->threshold = WAYPOINT_THRESHOLD_DEFAULT;
@@ -93,12 +95,13 @@ double Waypoint_Distance(double lat, double lng, Waypoint_t *w) {
     return c * 6371 * 1000;
 }
 
-double Waypoint_Heading(double lat, double lng, Waypoint_t *w) {
+double Waypoint_Heading(double lat, double lng, Waypoint_t *w)
+{
     return 0;
 }
 
-void Clue_SetLine(Clue_t *c, uint8_t line, char *text) {
-
+void Clue_SetLine(Clue_t *c, uint8_t line, char *text)
+{
 	uint8_t i = 0;
 
 	uint8_t endFound = 0;

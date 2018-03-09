@@ -11,7 +11,7 @@ extern "C" {
 #endif
 
 //Box configuration
-#define BOX_MAX_CLUES 10
+#define BOX_MAX_CLUES 100
 #define BOX_WELCOME_MSG 0
 #define BOX_FIRST_CLUE 1
 #define BOX_COMPLETE_MSG (BOX_MAX_CLUES + 1)

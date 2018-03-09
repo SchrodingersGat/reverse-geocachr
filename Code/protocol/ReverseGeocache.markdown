@@ -288,16 +288,16 @@ USB Packet types
 
 
 [ClueInfo packet bytes]
-| Bytes  | Name                   | [Enc](#Enc) | Repeat | Description                     |
-| ------ | ---------------------- | :---------: | :----: | ------------------------------- |
-| 0      | 1)clueNumber           | U8          | 1      |                                 |
-| 1...12 | 2)clueInfo                          || 1      |                                 |
-| 1...4  | 2.1)lat                | F32         | 1      | Location latitude.              |
-| 5...8  | 2.2)lng                | F32         | 1      | Location longitude.             |
-| 9...10 | 2.3)threshold          | U16         | 1      | Distance threshold (m).         |
-| 11     | 2.4)[type](#ClueTypes) | U8          | 1      | Clue type.                      |
-| 12     | 2.5)options                         || 1      | Extra clue options              |
-| 12:7   | 2.5.1)centerText       | B1          | 1      | Text is centered on the screen. |
+| Bytes  | Name             | [Enc](#Enc) | Repeat | Description                     |
+| ------ | ---------------- | :---------: | :----: | ------------------------------- |
+| 0      | 1)clueNumber     | U8          | 1      |                                 |
+| 1...12 | 2)clueInfo                    || 1      |                                 |
+| 1...4  | 2.1)lat          | F32         | 1      | Location latitude.              |
+| 5...8  | 2.2)lng          | F32         | 1      | Location longitude.             |
+| 9...10 | 2.3)threshold    | U16         | 1      | Distance threshold (m).         |
+| 11     | 2.4)type         | U8          | 1      | Clue type.                      |
+| 12     | 2.5)options                   || 1      | Extra clue options              |
+| 12:7   | 2.5.1)centerText | B1          | 1      | Text is centered on the screen. |
 
 
 ## <a name="MSG_CLUE_INFO"></a>RequestClueInfo packet

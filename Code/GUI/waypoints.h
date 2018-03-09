@@ -6,6 +6,7 @@
 #include <QString>
 #include <stdint.h>
 
+#include <qsettings.h>
 #include <QObject>
 
 #include "waypoint.h"
@@ -58,7 +59,10 @@ public slots:
     void MoveClueFirst();
     void MoveClueLast();
 
-private:
+protected:
+    void SaveClue(QSettings& settings, Clue_t clue, int clueId);
+    void LoadClue(QSettings& settings, Clue_t& clue, int clueId);
+
     //Private data / functions
     uint8_t currentClue;
 
