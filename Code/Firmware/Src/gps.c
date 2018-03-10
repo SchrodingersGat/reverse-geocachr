@@ -1,6 +1,21 @@
 #include <stdio.h>
+//#include <string.h>
 
 #include "gps.h"
+
+/**
+ * Convert DDMM.MMMM format to decimal degrees
+ */
+float ddmm2dec(float ddmm)
+{
+    // Calculate degrees portion
+    float deg = (float) (int) (ddmm / 100);
+
+    // Calculate remainder
+    float dec = (ddmm - (deg * 100)) / 60;
+
+    return deg + dec;
+}
 
 bool GPS_AddByte(GPSBuffer_t* buffer, uint8_t byte)
 {
@@ -25,14 +40,14 @@ bool GPS_AddByte(GPSBuffer_t* buffer, uint8_t byte)
 
 bool GPS_Scan_GGA(GPSBuffer_t* buffer, GPS_GGA_t* gga)
 {
-	uint8_t n = 0;
+	int n = 0;
 
-	n = sscanf((char*) buffer,
+	n = sscanf((char*) buffer->data,
 		"$GPGGA,%f,%f,%c,%f,%c,%u,%u,%f,%f",
 		&gga->utc,
-		&gga->lat,
+		&gga->latddmm,
 		&gga->nsi,
-		&gga->lng,
+		&gga->lngddmm,
 		&gga->ewi,
 		&gga->pfi,
 		&gga->sat,
@@ -40,5 +55,24 @@ bool GPS_Scan_GGA(GPSBuffer_t* buffer, GPS_GGA_t* gga)
 		&gga->msl
 		);
 
-	return n >= 10;
+	bool result = (n >= 9);
+
+	if (result)
+	{
+		gga->lat = ddmm2dec(gga->latddmm);
+
+		if (gga->nsi == 'S')
+		{
+			gga->lat *= -1;
+		}
+
+		gga->lng = ddmm2dec(gga->lngddmm);
+
+		if (gga->ewi == 'W')
+		{
+			gga->lng *= -1;
+		}
+	}
+
+	return result;
 }

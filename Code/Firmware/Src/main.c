@@ -45,8 +45,9 @@
 #include "ILI9340.h"
 
 // Instantiate global variables
-BoxStatus_t boxStatus;
-BoxInfo_t boxInfo;
+BoxStatus_t status;
+BoxSettings_t settings;
+BoxVersion_t version;
 
 /* USER CODE END Includes */
 
@@ -91,6 +92,9 @@ int main(void)
   MX_SPI3_Init();
   MX_USART1_UART_Init();
 
+  ILI9340_Reset_Low();
+  PauseMs(50);
+
   /* USER CODE BEGIN 2 */
   LCD_Initialize();
 
@@ -107,7 +111,7 @@ int main(void)
 	   */
 
 	  LCD_Update();
-	  PauseMs(20);
+	  PauseMs(10);
 
   /* USER CODE END WHILE */
 

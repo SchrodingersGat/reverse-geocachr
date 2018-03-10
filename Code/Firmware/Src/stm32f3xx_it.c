@@ -41,6 +41,7 @@
 #include "gps.h"
 
 GPSBuffer_t buffer;
+GPS_GGA_t gga;
 
 /* USER CODE END 0 */
 
@@ -98,18 +99,22 @@ void USART1_IRQHandler(void)
   /* USER CODE END USART1_IRQn 0 */
 	uint8_t byte;
 
-	GPS_GGA_t gga;
-
 	if( USART1->ISR & UART_FLAG_RXNE )
 	{
 		//USART1->ICR |= ~UART_FLAG_RXNE;
 		byte = USART1->RDR;
 
-		if (GPS_AddByte(&buffer, byte))
+		if (GPS_AddByte(&buffer, byte) && (buffer.length > 20))
 		{
 			if (GPS_Scan_GGA(&buffer, &gga))
 			{
 				HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+			}
+
+			// Clear out the buffer...
+			for (int i = 1; i < GPS_BUF_SIZE; i++)
+			{
+				buffer.data[i] = 0;
 			}
 		}
 	}

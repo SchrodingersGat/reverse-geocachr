@@ -9,7 +9,7 @@
 typedef struct
 {
 	// Buffered data
-	uint8_t data[GPS_BUF_SIZE];
+	char data[GPS_BUF_SIZE];
 
 	// Cursor
 	uint8_t cursor;
@@ -21,15 +21,17 @@ typedef struct
 
 typedef struct
 {
-	float 	utc;	//!< UTC position
-	float 	lat;	//!< Latitude
-	char  	nsi;	//!< North/South indicator
-	float 	lng;	//!< Longitude
-	char  	ewi;	//!< East/West indicator
-	uint8_t pfi;	//!< Position fix indicator
-	uint8_t sat;	//!< Satellite count
-	float   hdp;	//!< Horizontal dilution of precision
-	float   msl;	//!< Altitude
+	float 	utc;		//!< UTC position
+	float   latddmm;	//!< Latitude in ddmm.mmmm format
+	char  	nsi;		//!< North/South indicator
+	float 	lat;		//!< Latitude
+	float   lngddmm;	//!< Longitude in ddmm.mmmm format
+	char  	ewi;		//!< East/West indicator
+	float 	lng;		//!< Longitude
+	unsigned int pfi;	//!< Position fix indicator
+	unsigned int sat;	//!< Satellite count
+	float   hdp;		//!< Horizontal dilution of precision
+	float   msl;		//!< Altitude
 } GPS_GGA_t;
 
 typedef struct
@@ -46,6 +48,8 @@ typedef struct
 {
 
 } GPS_GSV_t;
+
+float ddmm2dec(float ddmm);
 
 bool GPS_AddByte(GPSBuffer_t* buffer, uint8_t byte);
 

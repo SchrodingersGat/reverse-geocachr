@@ -12,9 +12,11 @@
 #include "box_defines.h"
 #include "boxdefines.h"
 #include "waypoint.h"
+#include "boxpackets.h"
 
-extern BoxStatus_t boxStatus;
-extern BoxInfo_t boxInfo;
+extern BoxStatus_t status;
+extern BoxSettings_t settings;
+extern BoxVersion_t version;
 
 #define VERSION_MAJOR 1
 #define VERSION_MINOR 0
