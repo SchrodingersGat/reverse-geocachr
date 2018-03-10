@@ -17,7 +17,6 @@ void Waypoint_Init(Waypoint_t *waypoint);
 
 uint8_t Waypoint_Validate(Waypoint_t *waypoint);
 
-
 double Waypoint_Distance(double lat, double lng, Waypoint_t *w);
 double Waypoint_Heading(double lat, double lng, Waypoint_t *w);
 

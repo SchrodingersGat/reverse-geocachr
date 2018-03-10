@@ -59,15 +59,19 @@ bool GPS_Scan_GGA(GPSBuffer_t* buffer, GPS_GGA_t* gga)
 
 	if (result)
 	{
+		// Convert latitude to decimal degrees
 		gga->lat = ddmm2dec(gga->latddmm);
 
+		// If 'South', invert the reading
 		if (gga->nsi == 'S')
 		{
 			gga->lat *= -1;
 		}
 
+		// Convert longitude to decimal degrees
 		gga->lng = ddmm2dec(gga->lngddmm);
 
+		// If 'West', invert the reading
 		if (gga->ewi == 'W')
 		{
 			gga->lng *= -1;

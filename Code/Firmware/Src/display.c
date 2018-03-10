@@ -7,7 +7,7 @@ Clue_t clue;
 /* Default strings */
 const char* WAITING_FOR_GPS = "Searching for GPS";
 
-void LCD_Initialize(void)
+void LCD_Initialize()
 {
 	ILI9340_Reset();
 
@@ -31,7 +31,7 @@ void LCD_Initialize(void)
 				BG_COLOR);
 }
 
-void LCD_Update(void)
+void LCD_Update()
 {
 	Draw_Top_Bar();
 	Draw_Bottom_Bar();
@@ -39,7 +39,7 @@ void LCD_Update(void)
 	Draw_Clue();
 }
 
-void Draw_Clue(void)
+void Draw_Clue()
 {
 	static int currentClue = -1;
 
@@ -66,7 +66,7 @@ void Draw_Clue(void)
 
 }
 
-void Draw_Top_Bar(void)
+void Draw_Top_Bar()
 {
 	static int state =- 1;
 
@@ -82,7 +82,7 @@ void Draw_Top_Bar(void)
 	Draw_Battery_Indicator();
 }
 
-void Draw_Battery_Indicator(void)
+void Draw_Battery_Indicator()
 {
 	#define BATT_Y 7
 	#define BATT_X 280
@@ -132,7 +132,7 @@ void Draw_Battery_Indicator(void)
 				 BAR_COLOR);
 }
 
-void Draw_Header_String(void)
+void Draw_Header_String()
 {
 	char titleString[32];
 
@@ -162,7 +162,7 @@ void Draw_Header_String(void)
 				   YELLOW);
 }
 
-void Draw_Bottom_Bar(void)
+void Draw_Bottom_Bar()
 {
 	static int state = -1;
 
@@ -184,7 +184,7 @@ void Draw_Bottom_Bar(void)
 
 }
 
-void Draw_Progress_Bar(void)
+void Draw_Progress_Bar()
 {
 	uint16_t colorA;
 	uint16_t colorB;

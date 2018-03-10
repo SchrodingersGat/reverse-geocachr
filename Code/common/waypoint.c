@@ -11,9 +11,9 @@ void Clue_Init(Clue_t *clue)
 
     Waypoint_Init(&clue->waypoint);
     
-    for (i=0;i<NUM_CLUE_LINES;i++)
+    for (i = 0; i < NUM_CLUE_LINES; i++)
     {
-        for (j=0;j<CLUE_LINE_LEN_MAX;j++)
+        for (j = 0; j < CLUE_LINE_LEN_MAX; j++)
         {
             clue->lines[i][j] = 0; //zero-out the text
         }
@@ -32,8 +32,8 @@ void Waypoint_Init(Waypoint_t *waypoint)
 
 }
 
-uint8_t Waypoint_Validate(Waypoint_t *waypoint) {
-    
+uint8_t Waypoint_Validate(Waypoint_t *waypoint)
+{
     if (waypoint->threshold < WAYPOINT_THRESHOLD_MINIMUM) return 0;
     if (waypoint->threshold > WAYPOINT_THRESHOLD_MAXIMUM) return 0;
     
@@ -41,13 +41,14 @@ uint8_t Waypoint_Validate(Waypoint_t *waypoint) {
     return 1;
 }
 
-uint16_t Clue_CalculateChecksum(Clue_t *clue) {
-    
+uint16_t Clue_CalculateChecksum(Clue_t *clue)
+{
     uint8_t i = 0;
     uint8_t *ptr = (uint8_t*) clue;
     uint16_t checksum = 0;
     
-    for (i=0;i<(sizeof(Clue_t)-2);i++) {
+    for (i = 0; i < (sizeof(Clue_t) - 2); i++)
+    {
         checksum ^= ptr[i];
     }
    
@@ -55,7 +56,8 @@ uint16_t Clue_CalculateChecksum(Clue_t *clue) {
 }
 
 //Return distance to waypoint in metres
-double Waypoint_Distance(double lat, double lng, Waypoint_t *w) {
+double Waypoint_Distance(double lat, double lng, Waypoint_t *w)
+{
 
     double dLat;
     double dLng;

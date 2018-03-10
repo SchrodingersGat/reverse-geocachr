@@ -60,9 +60,13 @@
 							</tool>
 							<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.linker.97056195" name="MCU GCC Linker" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.linker">
 								<option id="fr.ac6.managedbuild.tool.gnu.cross.c.linker.script.140285649" name="Linker Script (-T)" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.linker.script" value="../STM32F302R8Tx_FLASH.ld" valueType="string"/>
-								<option id="gnu.c.link.option.libs.422794370" name="Libraries (-l)" superClass="gnu.c.link.option.libs"/>
+								<option id="gnu.c.link.option.libs.422794370" name="Libraries (-l)" superClass="gnu.c.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="c"/>
+									<listOptionValue builtIn="false" value="m"/>
+								</option>
 								<option id="gnu.c.link.option.paths.437488073" name="Library search path (-L)" superClass="gnu.c.link.option.paths"/>
 								<option id="gnu.c.link.option.ldflags.989839572" name="Linker flags" superClass="gnu.c.link.option.ldflags" value="-specs=nosys.specs -specs=nano.specs -u _scanf_float -u _printf_float" valueType="string"/>
+								<option id="fr.ac6.managedbuild.tool.gnu.cross.c.linker.libmath.529369286" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.linker.libmath" value="false" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.962665941" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
