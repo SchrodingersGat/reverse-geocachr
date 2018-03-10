@@ -48,6 +48,8 @@
 BoxStatus_t status;
 BoxSettings_t settings;
 BoxVersion_t version;
+GPSData_t gps;
+Timers_t timers;
 
 /* USER CODE END Includes */
 
@@ -92,12 +94,13 @@ int main(void)
   MX_SPI3_Init();
   MX_USART1_UART_Init();
 
+  status.state = STATE_POWERON;
+
   ILI9340_Reset_Low();
   PauseMs(50);
 
   /* USER CODE BEGIN 2 */
   LCD_Initialize();
-
 
   /* USER CODE END 2 */
 
@@ -110,7 +113,71 @@ int main(void)
 	   * All we have to here is update the display
 	   */
 
+	  /*
+	   * Check for new GPS reading
+	   * 1. Turn off UART Rx interrupt
+	   * 2. Copy GPS data (if there is a new reading)
+	   * 3. Turn UART Rx interrupts back on
+	   */
+
+	  __HAL_UART_DISABLE_IT(&huart1, UART_IT_RXNE);
+
+	  if (GPS_CopyData(&gps))
+	  {
+		  status.gpsStatus = gps.pfi;
+		  status.gpsConnection = 1;
+	  }
+
+	  __HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);
+
+	  // Update main state machine
+	  switch (status.state)
+	  {
+	  // Progress between GPS acquisition states
+	  case STATE_POWERON:
+	  case STATE_GPS_ACQUIRING:
+	  case STATE_GPS_LOCKING:
+	  case STATE_GPS_LOCKED:
+		  // GPS is connected
+		  if (status.gpsConnection)
+		  {
+			  // No lock for 5 minutes
+			  if (timers.gpsNoLock > TIMEOUT_NO_GPS_LOCK)
+			  {
+				  status.state = STATE_GPS_NO_LOCK;
+			  }
+			  else
+			  {
+				  switch (status.gpsStatus)
+				  {
+				  case 0: // No lock yet
+					  status.state = STATE_GPS_ACQUIRING;
+					  break;
+				  case 1:
+					  status.state = STATE_GPS_LOCKING;
+					  break;
+				  case 2:
+				  case 3:
+					  status.state = STATE_GPS_LOCKED;
+					  break;
+				  default:
+					  status.state = STATE_GPS_ERROR;
+					  break;
+				  }
+			  }
+		  }
+		  else
+		  {
+			  // Ten seconds without any GPS comms
+			  if (timers.gpsNoRx > TIMEOUT_NO_GPS_DATA)
+			  {
+				  status.state = STATE_GPS_NO_DATA;
+			  }
+		  }
+	  }
+
 	  LCD_Update();
+
 	  PauseMs(10);
 
   /* USER CODE END WHILE */

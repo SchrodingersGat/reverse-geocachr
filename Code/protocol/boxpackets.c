@@ -448,6 +448,9 @@ void encodeBoxStatusPacketStructure(void* pkt, const BoxStatus_t* user)
     uint8_t* data = getReverseGeocachePacketData(pkt);
     int byteindex = 0;
 
+    // State machine status
+    uint8ToBytes((uint8_t)user->state, data, &byteindex);
+
     data[byteindex] = (uint8_t)user->locked << 7;
 
     // Box is protected with password
@@ -504,6 +507,9 @@ int decodeBoxStatusPacketStructure(const void* pkt, BoxStatus_t* user)
     // The raw data from the packet
     data = getReverseGeocachePacketDataConst(pkt);
 
+    // State machine status
+    user->state = (uint8_t)uint8FromBytes(data, &byteindex);
+
     user->locked = (data[byteindex] >> 7);
 
     // Box is protected with password
@@ -538,6 +544,7 @@ int decodeBoxStatusPacketStructure(const void* pkt, BoxStatus_t* user)
  *
 
  * \param pkt points to the packet which will be created by this function
+ * \param state is State machine status
  * \param locked is 
  * \param passwordProtected is Box is protected with password
  * \param gpsConnection is 1 = GPS unit detected
@@ -548,10 +555,13 @@ int decodeBoxStatusPacketStructure(const void* pkt, BoxStatus_t* user)
  * \param currentClue is Index of current clue
  * \param totalClues is Total clue count
  */
-void encodeBoxStatusPacket(void* pkt, unsigned locked, unsigned passwordProtected, unsigned gpsConnection, unsigned gpsStatus, unsigned charging, unsigned debug, uint8_t charge, uint8_t currentClue, uint8_t totalClues)
+void encodeBoxStatusPacket(void* pkt, uint8_t state, unsigned locked, unsigned passwordProtected, unsigned gpsConnection, unsigned gpsStatus, unsigned charging, unsigned debug, uint8_t charge, uint8_t currentClue, uint8_t totalClues)
 {
     uint8_t* data = getReverseGeocachePacketData(pkt);
     int byteindex = 0;
+
+    // State machine status
+    uint8ToBytes((uint8_t)state, data, &byteindex);
 
     data[byteindex] = (uint8_t)locked << 7;
 
@@ -588,6 +598,7 @@ void encodeBoxStatusPacket(void* pkt, unsigned locked, unsigned passwordProtecte
  *
 
  * \param pkt points to the packet being decoded by this function
+ * \param state receives State machine status
  * \param locked receives 
  * \param passwordProtected receives Box is protected with password
  * \param gpsConnection receives 1 = GPS unit detected
@@ -599,7 +610,7 @@ void encodeBoxStatusPacket(void* pkt, unsigned locked, unsigned passwordProtecte
  * \param totalClues receives Total clue count
  * \return 0 is returned if the packet ID or size is wrong, else 1
  */
-int decodeBoxStatusPacket(const void* pkt, unsigned* locked, unsigned* passwordProtected, unsigned* gpsConnection, unsigned* gpsStatus, unsigned* charging, unsigned* debug, uint8_t* charge, uint8_t* currentClue, uint8_t* totalClues)
+int decodeBoxStatusPacket(const void* pkt, uint8_t* state, unsigned* locked, unsigned* passwordProtected, unsigned* gpsConnection, unsigned* gpsStatus, unsigned* charging, unsigned* debug, uint8_t* charge, uint8_t* currentClue, uint8_t* totalClues)
 {
     int byteindex = 0;
     const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
@@ -611,6 +622,9 @@ int decodeBoxStatusPacket(const void* pkt, unsigned* locked, unsigned* passwordP
 
     if(numBytes < getBoxStatusMinDataLength())
         return 0;
+
+    // State machine status
+    *state = (uint8_t)uint8FromBytes(data, &byteindex);
 
     (*locked) = (data[byteindex] >> 7);
 

@@ -212,6 +212,7 @@ int decodeInvalidateCluesPacket(const void* pkt);
 
 typedef struct
 {
+    uint8_t  state;                 //!< State machine status
     unsigned locked : 1;           
     unsigned passwordProtected : 1; //!< Box is protected with password
     unsigned gpsConnection : 1;     //!< 1 = GPS unit detected
@@ -230,19 +231,19 @@ void encodeBoxStatusPacketStructure(void* pkt, const BoxStatus_t* user);
 int decodeBoxStatusPacketStructure(const void* pkt, BoxStatus_t* user);
 
 //! Create the BoxStatus packet
-void encodeBoxStatusPacket(void* pkt, unsigned locked, unsigned passwordProtected, unsigned gpsConnection, unsigned gpsStatus, unsigned charging, unsigned debug, uint8_t charge, uint8_t currentClue, uint8_t totalClues);
+void encodeBoxStatusPacket(void* pkt, uint8_t state, unsigned locked, unsigned passwordProtected, unsigned gpsConnection, unsigned gpsStatus, unsigned charging, unsigned debug, uint8_t charge, uint8_t currentClue, uint8_t totalClues);
 
 //! Decode the BoxStatus packet
-int decodeBoxStatusPacket(const void* pkt, unsigned* locked, unsigned* passwordProtected, unsigned* gpsConnection, unsigned* gpsStatus, unsigned* charging, unsigned* debug, uint8_t* charge, uint8_t* currentClue, uint8_t* totalClues);
+int decodeBoxStatusPacket(const void* pkt, uint8_t* state, unsigned* locked, unsigned* passwordProtected, unsigned* gpsConnection, unsigned* gpsStatus, unsigned* charging, unsigned* debug, uint8_t* charge, uint8_t* currentClue, uint8_t* totalClues);
 
 //! return the packet ID for the BoxStatus packet
 #define getBoxStatusPacketID() (MSG_SYSTEM_STATUS)
 
 //! return the minimum encoded length for the BoxStatus packet
-#define getBoxStatusMinDataLength() (4)
+#define getBoxStatusMinDataLength() (5)
 
 //! return the maximum encoded length for the BoxStatus packet
-#define getBoxStatusMaxDataLength() (4)
+#define getBoxStatusMaxDataLength() (5)
 
 //! Create the RequestBoxStatus packet
 void encodeRequestBoxStatusPacket(void* pkt);

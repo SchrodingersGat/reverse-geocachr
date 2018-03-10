@@ -68,6 +68,29 @@ Reverse Geocache USB message protocol
 
 ----------------------------
 
+## BoxStates enumeration
+
+Box state machine enumeration
+
+[<a name="BoxStates"></a>BoxStates enumeration]
+| Name                  | Value | Description                        |
+| --------------------- | :---: | ---------------------------------- |
+| `STATE_POWERON`       | 1     | Initial system power-up            |
+| `STATE_GPS_ACQUIRING` | 16    | Acquiring GPS lock                 |
+| `STATE_GPS_LOCKING`   | 17    | GPS locking                        |
+| `STATE_GPS_LOCKED`    | 18    | GPS lock acquired                  |
+| `STATE_GPS_NO_DATA`   | 26    | No GPS UART data after ten seconds |
+| `STATE_GPS_NO_MSG`    | 27    | No valid GPS messages              |
+| `STATE_GPS_NO_LOCK`   | 28    | Could not get GPS lock             |
+| `STATE_GPS_ERROR`     | 29    | GPS error (other)                  |
+| `STATE_TOO_FAR`       | 32    | Too far from clue                  |
+| `STATE_CLUE_FOUND`    | 33    | Found clue!                        |
+| `STATE_NEXT_CLUE`     | 34    | Progress to next clue              |
+| `STATE_COMPLETE`      | 42    | Puzzle complete                    |
+| `STATE_DEBUG`         | 48    | Debug mode                         |
+
+
+
 ## Packet enumeration
 
 USB Packet types
@@ -218,21 +241,22 @@ USB Packet types
 ## <a name="MSG_SYSTEM_STATUS"></a>BoxStatus packet
 
 - packet identifier: `MSG_SYSTEM_STATUS` : 160
-- data length: 4
+- data length: 5
 
 
 [BoxStatus packet bytes]
 | Bytes     | Name                | [Enc](#Enc) | Repeat | Description                          |
 | --------- | ------------------- | :---------: | :----: | ------------------------------------ |
-| 0:7       | 1)locked            | B1          | 1      |                                      |
-| 0:6       | 2)passwordProtected | B1          | 1      | Box is protected with password.      |
-| 0:5       | 3)gpsConnection     | B1          | 1      | 1 = GPS unit detected.               |
-| 0:4...0:3 | 4)gpsStatus         | B2          | 1      | GPS Status.                          |
-| 0:2       | 5)charging          | B1          | 1      | Battery charging status.             |
-| 0:1       | 6)debug             | B1          | 1      |                                      |
-| 1         | 7)charge            | U8          | 1      | Battery charge estimate, 0% to 100%. |
-| 2         | 8)currentClue       | U8          | 1      | Index of current clue.               |
-| 3         | 9)totalClues        | U8          | 1      | Total clue count.                    |
+| 0         | 1)state             | U8          | 1      | State machine status.                |
+| 1:7       | 2)locked            | B1          | 1      |                                      |
+| 1:6       | 3)passwordProtected | B1          | 1      | Box is protected with password.      |
+| 1:5       | 4)gpsConnection     | B1          | 1      | 1 = GPS unit detected.               |
+| 1:4...1:3 | 5)gpsStatus         | B2          | 1      | GPS Status.                          |
+| 1:2       | 6)charging          | B1          | 1      | Battery charging status.             |
+| 1:1       | 7)debug             | B1          | 1      |                                      |
+| 2         | 8)charge            | U8          | 1      | Battery charge estimate, 0% to 100%. |
+| 3         | 9)currentClue       | U8          | 1      | Index of current clue.               |
+| 4         | 10)totalClues       | U8          | 1      | Total clue count.                    |
 
 
 ## <a name="MSG_SYSTEM_STATUS"></a>RequestBoxStatus packet

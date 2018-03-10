@@ -13,6 +13,30 @@
 
     <Include name="string.h" comment="C string manipulation function header" global="true"/>
 
+	<Enum name="BoxStates" prefix="STATE_" comment="Box state machine enumeration">
+		<Value name="POWERON" value="0x01" comment="Initial system power-up"/>
+		
+		<!-- GPS acuisition states -->
+		<Value name="GPS_ACQUIRING" value="0x10" comment="Acquiring GPS lock"/>
+		<Value name="GPS_LOCKING" comment="GPS locking"/>
+		<Value name="GPS_LOCKED" comment="GPS lock acquired"/>
+		
+		<Value name="GPS_NO_DATA" value="0x1A" comment="No GPS UART data after ten seconds"/>
+		<Value name="GPS_NO_MSG" comment="No valid GPS messages"/>
+		<Value name="GPS_NO_LOCK" comment="Could not get GPS lock"/>
+		<Value name="GPS_ERROR" comment="GPS error (other)"/>
+		
+		<!-- Clue status -->
+		<Value name="TOO_FAR" value="0x20" comment="Too far from clue"/>
+		<Value name="CLUE_FOUND" comment="Found clue!"/>
+		<Value name="NEXT_CLUE" comment="Progress to next clue"/>
+		
+		<Value name="COMPLETE" value = "0x2A" comment="Puzzle complete"/>
+		
+		<Value name="DEBUG" value="0x30" comment="Debug mode"/>
+	
+	</Enum>
+	
     <Enum name="Packet" prefix="MSG_" comment="USB Packet types">
         <Value name="RESET_INTO_BOOTLOADER" value="0x0A" comment="Enter USB bootloader mode"/>
         <Value name="ENABLE_DEBUG_MODE" comment="Enable extra debugging information"/>
@@ -109,6 +133,7 @@
     </Packet>
 	
 	<Packet name="BoxStatus" ID="MSG_SYSTEM_STATUS" file="boxpackets" parameterInterface="true" structureInterface="true">
+		<Data name="state" inMemoryType="unsigned8" comment="State machine status"/>
 		<Data name="locked" inMemoryType="bitfield1"/>
 		<Data name="passwordProtected" inMemoryType="bitfield1" comment="Box is protected with password"/>
 		<Data name="gpsConnection" inMemoryType="bitfield1" comment="1 = GPS unit detected"/>

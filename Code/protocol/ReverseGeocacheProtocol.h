@@ -30,6 +30,26 @@ extern "C" {
 //! \return the protocol version string
 #define getReverseGeocacheVersion() "1.0.0.a"
 /*!
+ * Box state machine enumeration
+ */
+typedef enum
+{
+    STATE_POWERON = 0x01,    //!< Initial system power-up
+    STATE_GPS_ACQUIRING = 0x10,//!< Acquiring GPS lock
+    STATE_GPS_LOCKING,       //!< GPS locking
+    STATE_GPS_LOCKED,        //!< GPS lock acquired
+    STATE_GPS_NO_DATA = 0x1A,//!< No GPS UART data after ten seconds
+    STATE_GPS_NO_MSG,        //!< No valid GPS messages
+    STATE_GPS_NO_LOCK,       //!< Could not get GPS lock
+    STATE_GPS_ERROR,         //!< GPS error (other)
+    STATE_TOO_FAR = 0x20,    //!< Too far from clue
+    STATE_CLUE_FOUND,        //!< Found clue!
+    STATE_NEXT_CLUE,         //!< Progress to next clue
+    STATE_COMPLETE = 0x2A,   //!< Puzzle complete
+    STATE_DEBUG = 0x30       //!< Debug mode
+} BoxStates;
+
+/*!
  * USB Packet types
  */
 typedef enum

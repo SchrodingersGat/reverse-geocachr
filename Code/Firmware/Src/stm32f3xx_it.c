@@ -39,9 +39,7 @@
 #include "timer.h"
 #include "gpio.h"
 #include "gps.h"
-
-GPSBuffer_t buffer;
-GPS_GGA_t gga;
+#include "types.h"
 
 /* USER CODE END 0 */
 
@@ -63,11 +61,22 @@ void SysTick_Handler(void)
   HAL_IncTick();
   HAL_SYSTICK_IRQHandler();
   /* USER CODE BEGIN SysTick_IRQn 1 */
+
+  // Decrement systemTimer (used for blocking pause functionality)
   if (systemTimer > 0)
   {
 	  systemTimer--;
   }
 
+  // Increment the no lock timer if GPS lock not yet achieved
+  if (status.gpsStatus < 2 && timers.gpsNoLock < 0xF00000)
+	  timers.gpsNoLock++;
+
+  // Increment the no Rx timer if no GPS messages have been received
+  if (!status.gpsConnection && timers.gpsNoRx < 0xF000)
+	  timers.gpsNoRx++;
+
+  /*
   if (servoTimer == 0)
   {
 	  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_SET);
@@ -76,6 +85,7 @@ void SysTick_Handler(void)
   {
 	  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_RESET);
   }
+  */
 
   servoTimer = (servoTimer + 1) % 20;
 
@@ -104,18 +114,9 @@ void USART1_IRQHandler(void)
 		//USART1->ICR |= ~UART_FLAG_RXNE;
 		byte = USART1->RDR;
 
-		if (GPS_AddByte(&buffer, byte) && (buffer.length > 20))
+		if (GPS_AddByte(byte))
 		{
-			if (GPS_Scan_GGA(&buffer, &gga))
-			{
-				HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-			}
-
-			// Clear out the buffer...
-			for (int i = 1; i < GPS_BUF_SIZE; i++)
-			{
-				buffer.data[i] = 0;
-			}
+			HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 		}
 	}
 

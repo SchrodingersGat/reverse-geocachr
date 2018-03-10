@@ -32,28 +32,16 @@ typedef struct
 	unsigned int sat;	//!< Satellite count
 	float   hdp;		//!< Horizontal dilution of precision
 	float   msl;		//!< Altitude
-} GPS_GGA_t;
 
-typedef struct
-{
-
-} GPS_GLL_t;
-
-typedef struct
-{
-
-} GPS_GSA_t;
-
-typedef struct
-{
-
-} GPS_GSV_t;
+	bool	newData;	//!< New data available
+} GPSData_t;
 
 float ddmm2dec(float ddmm);
 
-bool GPS_AddByte(GPSBuffer_t* buffer, uint8_t byte);
+bool GPS_AddByte(uint8_t byte);
+bool GPS_Parse();
 
-bool GPS_Scan_GGA(GPSBuffer_t* buffer, GPS_GGA_t* gga);
+bool GPS_CopyData(GPSData_t* data);
 
 
 #endif //_GPS_H_

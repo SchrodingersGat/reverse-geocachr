@@ -4,8 +4,7 @@
 
 Clue_t clue;
 
-/* Default strings */
-const char* WAITING_FOR_GPS = "Searching for GPS";
+char sbuf[64];
 
 void LCD_Initialize()
 {
@@ -68,17 +67,7 @@ void Draw_Clue()
 
 void Draw_Top_Bar()
 {
-	static int state =- 1;
-
-	ILI9340_SetBackgroundColor(BAR_COLOR);
-
-	if (state == -1)
-	{
-		state = 0;
-		ILI9340_FillRect(0, 0, LCD_WIDTH, LCD_BAR_HEIGHT, BAR_COLOR);
-		Draw_Header_String();
-	}
-
+	Draw_Header_String();
 	Draw_Battery_Indicator();
 }
 
@@ -134,7 +123,25 @@ void Draw_Battery_Indicator()
 
 void Draw_Header_String()
 {
-	char titleString[32];
+	static int state = -1;
+	static int currentClue = -1;
+
+	if (state != status.state)
+	{
+		state = status.state;
+
+		ILI9340_SetBackgroundColor(BAR_COLOR);
+		ILI9340_FillRect(0, 0, LCD_WIDTH, LCD_BAR_HEIGHT, BAR_COLOR);
+
+		sprintf(sbuf, "This is the title");
+
+		ILI9340_SetTextOptions(ALIGN_CENTRE);
+
+		ILI9340_DrawString(LCD_WIDTH/2,
+					   5,
+					   sbuf,
+					   YELLOW);
+	}
 
 	/*
 	switch (boxInfo.currentClue) {
@@ -152,36 +159,32 @@ void Draw_Header_String()
 	}
 	*/
 
-	sprintf(titleString, "This is the title");
 
-	ILI9340_SetTextOptions(ALIGN_CENTRE);
-
-	ILI9340_DrawString(LCD_WIDTH/2,
-				   5,
-				   titleString,
-				   YELLOW);
 }
 
 void Draw_Bottom_Bar()
 {
 	static int state = -1;
 
-	ILI9340_SetBackgroundColor(BAR_COLOR);
-
-	if (state == -1)
+	if (state != status.state)
 	{
-		state = 0;
+		ILI9340_SetBackgroundColor(BAR_COLOR);
 		ILI9340_FillRect(
-					0,
-					LCD_HEIGHT - LCD_BAR_HEIGHT,
-					LCD_WIDTH,
-					LCD_BAR_HEIGHT,
-					BAR_COLOR);
-		Draw_Footer_String();
+			0,
+			LCD_HEIGHT - LCD_BAR_HEIGHT,
+			LCD_WIDTH,
+			LCD_BAR_HEIGHT,
+			BAR_COLOR);
+
+		state = status.state;
 	}
 
-	Draw_Progress_Bar();
+	Draw_Footer_String();
 
+	if (status.state >= STATE_GPS_ACQUIRING && status.state <= STATE_GPS_LOCKED)
+	{
+		Draw_Progress_Bar();
+	}
 }
 
 void Draw_Progress_Bar()
@@ -190,6 +193,23 @@ void Draw_Progress_Bar()
 	uint16_t colorB;
 
 	uint16_t color = GREEN;
+
+	switch (gps.pfi)
+	{
+	case 0: // No lock
+		color = ORANGE;
+		break;
+	case 1: // Acquiring lock
+		color = YELLOW;
+		break;
+	case 2: // Lock acquired!
+	case 3:
+		color = GREEN;
+		break;
+	default: // Error case
+		color = RED;
+		break;
+	}
 
 	int8_t progressBarMax = 0;
 
@@ -200,22 +220,26 @@ void Draw_Progress_Bar()
 
 	//Draw a 'progress' bar (if searching for GPS)
 
-	//if (boxInfo.status & SEARCHING_FOR_GPS) {
-	progressBarMax = LCD_WIDTH/2 - line_width(WAITING_FOR_GPS)/2 - 2 * PROGRESS_BAR_SPACING;
+	progressBarMax = LCD_WIDTH / 2 - 100 - 2 * PROGRESS_BAR_SPACING;
 
-	if (progressBarWidth < 0) {
+	if (progressBarWidth < 0)
+	{
 		w1 = 0;
 		w2 = progressBarMax;
 
 		colorA = color;
 		colorB = BAR_COLOR;
-	} else if (progressBarDir > 0) {
+	}
+	else if (progressBarDir > 0)
+	{
 		w1 = progressBarWidth;
 		w2 = progressBarMax - progressBarWidth;
 
 		colorA = color;
 		colorB = BAR_COLOR;
-	} else {
+	}
+	else
+	{
 		w1 = progressBarMax - progressBarWidth;
 		w2 = progressBarWidth;
 
@@ -254,13 +278,15 @@ void Draw_Progress_Bar()
 
 	progressBarWidth += progressBarDir * 2;
 
-	if (progressBarWidth >=  progressBarMax){
+	if (progressBarWidth >=  progressBarMax)
+	{
 		progressBarDir = -1;
 		progressBarWidth = progressBarMax;
 	}
 
 	//Any time spent below zero acts as a delay
-	if (progressBarWidth <= -progressBarMax/2) {
+	if (progressBarWidth <= -progressBarMax/2)
+	{
 		progressBarDir =  1;
 		progressBarWidth = 0;
 	}
@@ -268,19 +294,44 @@ void Draw_Progress_Bar()
 
 void Draw_Footer_String()
 {
-	/*
-	switch (boxInfo.currentClue) {
-	case BOX_WELCOME_MSG:
-	case BOX_COMPLETE_MSG:
+	static int state =- 1;
+
+	if (state == status.state)
+	{
+		return;
+	}
+
+	state = status.state;
+
+	int x = LCD_WIDTH / 2;
+	int y = LCD_FOOTER_Y;
+
+	ILI9340_SetTextOptions(ALIGN_CENTRE);
+
+	switch (status.state)
+	{
+	case STATE_POWERON:
+		// Nothing to display here yet...
 		break;
-
+	case STATE_GPS_ACQUIRING:
+		ILI9340_DrawString(x, y, "Waiting for GPS", ORANGE);
+		break;
+	case STATE_GPS_LOCKING:
+		ILI9340_DrawString(x, y, "Acquiring GPS", YELLOW);
+		break;
+	case STATE_GPS_LOCKED:
+		ILI9340_DrawString(x, y, "Locked!", GREEN);
+		break;
+	case STATE_GPS_NO_DATA:
+	case STATE_GPS_NO_MSG:
+		ILI9340_DrawString(x, y, "GPS disconnected", RED);
+		break;
+	case STATE_GPS_NO_LOCK:
+		ILI9340_DrawString(x, y, "Could not acquire GPS lock", ORANGE);
+		break;
 	default:
-	*/
-		ILI9340_SetTextOptions(ALIGN_CENTRE);
-
-		ILI9340_DrawString(LCD_WIDTH/2, LCD_FOOTER_Y, WAITING_FOR_GPS, YELLOW);
-	/*
+		sprintf(sbuf, "Error state: %d", status.state);
+		ILI9340_DrawString(x, y, sbuf, RED);
 		break;
 	}
-	*/
 }
