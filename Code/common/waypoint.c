@@ -77,10 +77,9 @@ double Waypoint_Distance(double lat, double lng, Waypoint_t *w)
     a1 = sin(dLat/2);
     a1 = pow(a1,2);
 
-    // a1 = pow(sin(dLat/2),2);
     a2 = sin(dLng/2);
     a2 = pow(a2,2);
-    // a2 = pow(sin(dLon/2),2);
+
     a3 = cos(lat * PI / 180);
     a2 *= a3;
     a3 = cos(w->lat * PI / 180);
@@ -97,9 +96,31 @@ double Waypoint_Distance(double lat, double lng, Waypoint_t *w)
     return c * 6371 * 1000;
 }
 
+
+/*
+ * Calculate the heading angle FROM the supplied lat/lng coord TO the waypoint
+ * Return heading angle in degrees
+ */
 double Waypoint_Heading(double lat, double lng, Waypoint_t *w)
 {
-    return 0;
+	double dLng = w->lng - lng;
+
+	double y = sin(dLng) * cos(w->lat);
+	double x = cos(lat) * sin(w->lat) -
+			(sin(lat) * cos(w->lat) * cos(dLng));
+
+	double angle = atan2(y, x) * 180 / M_PI;
+
+	while (angle < 0)
+	{
+		angle += 360;
+	}
+	while (angle > 360)
+	{
+		angle += 360;
+	}
+
+	return angle;
 }
 
 void Clue_SetLine(Clue_t *c, uint8_t line, char *text)
