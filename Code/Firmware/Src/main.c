@@ -142,6 +142,11 @@ int main(void)
 	  {
 	  // Progress between GPS acquisition states
 	  case STATE_POWERON:
+		  if (timers.stateTimer > 3)
+		  {
+			  SetState(STATE_GPS_ACQUIRING);
+		  }
+		  break;
 	  case STATE_GPS_ACQUIRING:
 	  case STATE_GPS_LOCKING:
 		  // GPS is connected

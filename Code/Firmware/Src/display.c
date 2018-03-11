@@ -183,6 +183,8 @@ void Draw_Header_String()
 	static int state = -1;
 	static int currentClue = -1;
 
+	uint16_t color = YELLOW;
+
 	if (state != status.state)
 	{
 		state = status.state;
@@ -190,33 +192,41 @@ void Draw_Header_String()
 		ILI9340_SetBackgroundColor(BAR_COLOR);
 		ILI9340_FillRect(0, 0, LCD_WIDTH, LCD_BAR_HEIGHT, BAR_COLOR);
 
-		sprintf(sbuf, "This is the title");
+		switch (status.state)
+		{
+		case STATE_POWERON:
+			sprintf(sbuf, "Reverse Geocache");
+			color = WHITE;
+			break;
+		case STATE_GPS_ACQUIRING:
+		case STATE_GPS_LOCKING:
+		case STATE_GPS_LOCKED:
+			sprintf(sbuf, "Clue 2 of 10");
+			color = GREEN;
+			break;
+		case STATE_GPS_NO_DATA:
+		case STATE_GPS_NO_MSG:
+			sprintf(sbuf, "Error");
+			color = RED;
+			break;
+		case STATE_GPS_NO_LOCK:
+			sprintf(sbuf, "No GPS reception");
+			color = ORANGE;
+			break;
+		case STATE_TOO_FAR:
+			sprintf(sbuf, "Not close enough!");
+			color = YELLOW;
+			break;
+		default:
+			sprintf(sbuf, "Unknown state: %d", status.state);
+			color = WHITE;
+			break;
+		}
 
 		ILI9340_SetTextOptions(ALIGN_CENTRE);
 
-		ILI9340_DrawString(LCD_WIDTH/2,
-					   5,
-					   sbuf,
-					   YELLOW);
+		ILI9340_DrawString(LCD_WIDTH/2, 5, sbuf, color);
 	}
-
-	/*
-	switch (boxInfo.currentClue) {
-	case BOX_WELCOME_MSG:
-		sprintf(titleString, "Reverse Geocache");
-		break;
-	case BOX_COMPLETE_MSG:
-		sprintf(titleString, "Congratulations!");
-		break;
-	default:
-		sprintf(titleString, "Clue %u of %u",
-			boxInfo.currentClue,
-			boxInfo.totalClues);
-		break;
-	}
-	*/
-
-
 }
 
 void Draw_Bottom_Bar()
@@ -385,7 +395,7 @@ void Draw_Footer_String()
 		ILI9340_DrawString(x, y, sbuf, RED);
 		break;
 	case STATE_GPS_NO_LOCK:
-		ILI9340_DrawString(x, y, "Could not acquire GPS lock", ORANGE);
+		ILI9340_DrawString(x, y, "Ensure clear view of sky", ORANGE);
 		break;
 	case STATE_TOO_FAR:
 		Draw_Clue_Hint();
@@ -393,8 +403,6 @@ void Draw_Footer_String()
 	case STATE_CLUE_FOUND:
 		break;
 	default:
-		sprintf(sbuf, "Error state: %d", status.state);
-		ILI9340_DrawString(x, y, sbuf, RED);
 		break;
 	}
 }
@@ -425,6 +433,53 @@ void Draw_Clue_Hint()
 	case CLUE_SHOW_LOCATION:
 		sprintf(sbuf, "%.5f, %.5f", clue.waypoint.lat, clue.waypoint.lng);
 		break;
+	case CLUE_SHOW_HEADING:
+		sprintf(sbuf, "Heading: %d degrees",
+				(int) Waypoint_Heading(gps.lat, gps.lng, &clue.waypoint));
+		break;
+	case CLUE_SHOW_CARDINAL:
+	{
+		int a = (int) Waypoint_Heading(gps.lat, gps.lng, &clue.waypoint);
+
+		char c[4] = "N";
+
+		if (a < 20 || a > 340)
+		{
+			sprintf(c, "N");
+		}
+		else if (a < 70)
+		{
+			sprintf(c, "NE");
+		}
+		else if (a < 110)
+		{
+			sprintf(c, "E");
+		}
+		else if (a < 160)
+		{
+			sprintf(c, "SE");
+		}
+		else if (a < 200)
+		{
+			sprintf(c, "S");
+		}
+		else if (a < 250)
+		{
+			sprintf(c, "SW");
+		}
+		else if (a < 290)
+		{
+			sprintf(c, "W");
+		}
+		else
+		{
+			sprintf(c, "NW");
+		}
+
+		sprintf(sbuf, "Direction: %s", c);
+
+		break;
+	}
 	}
 
 	ILI9340_DrawString(LCD_WIDTH / 2, LCD_FOOTER_Y, sbuf, GREEN);
