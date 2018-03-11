@@ -177,13 +177,10 @@ int main(void)
 				  }
 			  }
 		  }
-		  else
+
+		  if (timers.gpsNoRx > TIMEOUT_NO_GPS_DATA)
 		  {
-			  // Ten seconds without any GPS comms
-			  if (timers.gpsNoRx > TIMEOUT_NO_GPS_DATA)
-			  {
-				  SetState(STATE_GPS_NO_DATA);
-			  }
+			  SetState(STATE_GPS_NO_DATA);
 		  }
 		  break;
 	  case STATE_GPS_LOCKED:

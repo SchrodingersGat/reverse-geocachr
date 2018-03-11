@@ -83,7 +83,7 @@ void SysTick_Handler(void)
 	  	  timers.gpsNoLock++;
 
 	    // Increment the no Rx timer if no GPS messages have been received
-	    if (!status.gpsConnection && timers.gpsNoRx < 0xF000)
+	    if (timers.gpsNoRx < 0xF000)
 	  	  timers.gpsNoRx++;
 
 	    // Keep track of how long box has been in current state
@@ -133,6 +133,9 @@ void USART1_IRQHandler(void)
 		{
 			HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 		}
+
+		// Reset UART reception timer
+		timers.gpsNoRx = 0;
 	}
 
 	if ( USART1->ISR & UART_FLAG_ORE )
