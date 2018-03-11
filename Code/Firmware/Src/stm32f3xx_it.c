@@ -55,6 +55,7 @@ extern UART_HandleTypeDef huart1;
 */
 void SysTick_Handler(void)
 {
+	static int secondTimer = 0;
 	static int servoTimer = 0;
   /* USER CODE BEGIN SysTick_IRQn 0 */
   /* USER CODE END SysTick_IRQn 0 */
@@ -68,13 +69,27 @@ void SysTick_Handler(void)
 	  systemTimer--;
   }
 
-  // Increment the no lock timer if GPS lock not yet achieved
-  if (status.gpsStatus < 2 && timers.gpsNoLock < 0xF00000)
-	  timers.gpsNoLock++;
+  if (secondTimer < 1000)
+  {
+	  secondTimer++;
+  }
+  else
+  {
+	  secondTimer = 0;
 
-  // Increment the no Rx timer if no GPS messages have been received
-  if (!status.gpsConnection && timers.gpsNoRx < 0xF000)
-	  timers.gpsNoRx++;
+	  // Increment once-per-second timers
+	  // Increment the no lock timer if GPS lock not yet achieved
+	    if (status.gpsStatus < 2 && timers.gpsNoLock < 0xF000)
+	  	  timers.gpsNoLock++;
+
+	    // Increment the no Rx timer if no GPS messages have been received
+	    if (!status.gpsConnection && timers.gpsNoRx < 0xF000)
+	  	  timers.gpsNoRx++;
+
+	    // Keep track of how long box has been in current state
+	    if (timers.stateTimer < 0xF000)
+	    	timers.stateTimer++;
+  }
 
   /*
   if (servoTimer == 0)

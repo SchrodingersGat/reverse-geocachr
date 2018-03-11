@@ -17,8 +17,10 @@
 
 typedef struct
 {
-	uint32_t gpsNoRx;	// No UART data received from GPS
-	uint32_t gpsNoLock;	// No GPS lock acquired
+	uint16_t gpsNoRx;	// No UART data received from GPS
+	uint16_t gpsNoLock;	// No GPS lock acquired
+
+	uint16_t stateTimer;// Keep track of how long box has been in particular state
 } Timers_t;
 
 extern Timers_t timers;
@@ -33,7 +35,9 @@ extern GPSData_t gps;
 #define VERSION_MINOR 0
 
 // Timeout values
-#define TIMEOUT_NO_GPS_DATA (10 * 1000) 	// 10 seconds
-#define TIMEOUT_NO_GPS_LOCK (5 * 60 * 1000) // 5 minutes
+#define TIMEOUT_NO_GPS_DATA 10 			// 10 seconds
+#define TIMEOUT_NO_GPS_LOCK (5 * 60) 	// 5 minutes
+
+void SetState(uint8_t state);
 
 #endif /* TYPES_H_ */

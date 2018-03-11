@@ -70,7 +70,14 @@ void Error_Handler(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+void SetState(uint8_t state)
+{
+	if (state == status.state)
+		return;
 
+	status.state = state;
+	timers.stateTimer = 0;
+}
 /* USER CODE END 0 */
 
 int main(void)
@@ -94,7 +101,7 @@ int main(void)
   MX_SPI3_Init();
   MX_USART1_UART_Init();
 
-  status.state = STATE_POWERON;
+  SetState(STATE_POWERON);
 
   ILI9340_Reset_Low();
   PauseMs(50);
@@ -137,31 +144,30 @@ int main(void)
 	  case STATE_POWERON:
 	  case STATE_GPS_ACQUIRING:
 	  case STATE_GPS_LOCKING:
-	  case STATE_GPS_LOCKED:
 		  // GPS is connected
 		  if (status.gpsConnection)
 		  {
 			  // No lock for 5 minutes
 			  if (timers.gpsNoLock > TIMEOUT_NO_GPS_LOCK)
 			  {
-				  status.state = STATE_GPS_NO_LOCK;
+				  SetState(STATE_GPS_NO_LOCK);
 			  }
 			  else
 			  {
 				  switch (status.gpsStatus)
 				  {
 				  case 0: // No lock yet
-					  status.state = STATE_GPS_ACQUIRING;
+					  SetState(STATE_GPS_ACQUIRING);
 					  break;
 				  case 1:
-					  status.state = STATE_GPS_LOCKING;
+					  SetState(STATE_GPS_LOCKING);
 					  break;
 				  case 2:
 				  case 3:
-					  status.state = STATE_GPS_LOCKED;
+					  SetState(STATE_GPS_LOCKED);
 					  break;
 				  default:
-					  status.state = STATE_GPS_ERROR;
+					  SetState(STATE_GPS_ERROR);
 					  break;
 				  }
 			  }
@@ -171,9 +177,16 @@ int main(void)
 			  // Ten seconds without any GPS comms
 			  if (timers.gpsNoRx > TIMEOUT_NO_GPS_DATA)
 			  {
-				  status.state = STATE_GPS_NO_DATA;
+				  SetState(STATE_GPS_NO_DATA);
 			  }
 		  }
+		  break;
+	  case STATE_GPS_LOCKED:
+		  if (timers.stateTimer > 1) // Two seconds
+		  {
+			  SetState(STATE_TOO_FAR);
+		  }
+		  break;
 	  }
 
 	  LCD_Update();

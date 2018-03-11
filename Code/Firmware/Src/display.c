@@ -2,9 +2,11 @@
 #include "display.h"
 #include "types.h"
 
-Clue_t clue;
-
 char sbuf[64];
+
+
+// Testing
+Clue_t clue;
 
 void LCD_Initialize()
 {
@@ -14,13 +16,19 @@ void LCD_Initialize()
 
 	// TODO - Hold backlight off until LCD ready
 
-	Clue_SetLine(&clue, 0, "Hello there");
+	Clue_SetLine(&clue, 0, "Hello world");
 	Clue_SetLine(&clue, 1, "abcdefghijklmnopqrstuvwxyz");
 	Clue_SetLine(&clue, 2, "Wahahaahhahaha");
 	Clue_SetLine(&clue, 3, "1234567890");
-	Clue_SetLine(&clue, 4, "!@#$%^&*()");
+	Clue_SetLine(&clue, 4, "--------------------------");
 	Clue_SetLine(&clue, 5, "dddd");
 	Clue_SetLine(&clue, 6, "ABCDEFGIJ");
+
+	clue.waypoint.lat = -42.82489;
+	clue.waypoint.lng = 147.286350;
+
+	clue.waypoint.threshold = 250;
+	clue.waypoint.type = CLUE_SHOW_LOCATION;
 
 	ILI9340_FillRect(
 				0,
@@ -68,8 +76,57 @@ void Draw_Clue()
 void Draw_Top_Bar()
 {
 	Draw_Header_String();
+	Draw_Signal_Strength();
 	Draw_Battery_Indicator();
 }
+
+
+void Draw_Signal_Strength()
+{
+	int x, y, w, h;
+	// Constants for signal strength indicators
+	#define SIG_W 5
+	#define SIG_H1 5
+	#define SIG_H2 10
+	#define SIG_H3 15
+
+	uint16_t sigColor = GREEN;
+
+	switch (status.gpsStatus)
+	{
+	default:
+		break;
+	case 1:
+		sigColor = YELLOW;
+		break;
+	case 2:
+	case 3:
+		sigColor = GREEN;
+		break;
+	}
+
+	// Draw the outlines
+	for (int i = 0; i < 3; i++)
+	{
+		x = 10 + 10 * i;
+		y = 3 + (3 - i) * 5;
+		w = 6;
+		h = (i + 1) * 5;
+
+		// Draw the outline of each bar
+		ILI9340_DrawRect(x, y, w, h, WHITE);
+
+		// Draw the interior of each bar
+		ILI9340_FillRect(x + 1,
+						 y + 1,
+						 w - 1,
+						 h - 1,
+						 status.gpsStatus == 0 ? RED : (i < status.gpsStatus ? sigColor : BAR_COLOR));
+	}
+
+
+}
+
 
 void Draw_Battery_Indicator()
 {
@@ -97,7 +154,7 @@ void Draw_Battery_Indicator()
 	else if (percent < 80) chargeColor = YELLOW;
 
 	//Draw the battery outline
-	ILI9340_DrawRect(BATT_X,BATT_Y,BATT_W,BATT_H,WHITE);
+	ILI9340_DrawRect(BATT_X, BATT_Y, BATT_W, BATT_H, WHITE);
 
 	//Draw the battery nipple (eww, nipple)
 	ILI9340_DrawRect(BATT_X + BATT_W,
@@ -324,14 +381,51 @@ void Draw_Footer_String()
 		break;
 	case STATE_GPS_NO_DATA:
 	case STATE_GPS_NO_MSG:
-		ILI9340_DrawString(x, y, "GPS disconnected", RED);
+		sprintf(sbuf, "GPS connection error %d", status.state);
+		ILI9340_DrawString(x, y, sbuf, RED);
 		break;
 	case STATE_GPS_NO_LOCK:
 		ILI9340_DrawString(x, y, "Could not acquire GPS lock", ORANGE);
+		break;
+	case STATE_TOO_FAR:
+		Draw_Clue_Hint();
+		break;
+	case STATE_CLUE_FOUND:
 		break;
 	default:
 		sprintf(sbuf, "Error state: %d", status.state);
 		ILI9340_DrawString(x, y, sbuf, RED);
 		break;
 	}
+}
+
+
+void Draw_Clue_Hint()
+{
+	switch (clue.waypoint.type)
+	{
+	default:
+	case CLUE_NO_HINT:
+		return;
+	case CLUE_SHOW_DISTANCE:
+	{
+		double d = Waypoint_Distance(gps.lat, gps.lng, &clue.waypoint);
+
+		if (d >= 1000)
+		{
+			sprintf(sbuf, "Distance: %.2fkm", (d / 1000));
+		}
+		else
+		{
+			sprintf(sbuf, "Distance: %dm", (int) d);
+		}
+
+		break;
+	}
+	case CLUE_SHOW_LOCATION:
+		sprintf(sbuf, "%.5f, %.5f", clue.waypoint.lat, clue.waypoint.lng);
+		break;
+	}
+
+	ILI9340_DrawString(LCD_WIDTH / 2, LCD_FOOTER_Y, sbuf, GREEN);
 }

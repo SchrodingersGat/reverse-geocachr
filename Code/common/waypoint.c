@@ -110,15 +110,18 @@ void Clue_SetLine(Clue_t *c, uint8_t line, char *text)
 
 	if (line >= NUM_CLUE_LINES) return;
 
-	for (i=0;i<CLUE_LINE_LEN_MAX-1;i++) {
-
-		if (text[i] == 0) {
+	for (i = 0; i < CLUE_LINE_LEN_MAX-1; i++)
+	{
+		if (text[i] == 0)
+		{
 			endFound = 1;
 		}
 
-		if (endFound == 1) {
+		if (endFound == 1)
+		{
 			c->lines[line][i] = 0;
-		} else {
+		} else
+		{
 			c->lines[line][i] = text[i];
 		}
 	}
