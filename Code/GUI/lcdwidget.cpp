@@ -47,7 +47,7 @@ void LCDWidget::DrawTopLine(QPainter *painter)
 
     painter->setPen(p);
 
-    painter->drawRect(300,5,5,15);
+    //painter->drawRect(300,5,5,15);
 }
 
 void LCDWidget::DrawBottomLine(QPainter *painter)

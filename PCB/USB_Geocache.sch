@@ -534,7 +534,7 @@ Text Label 13650 3600 2    60   ~ 0
 I_SERVO
 Connection ~ 14250 3600
 $Comp
-L Connector_Specialized:USB_B_Mini J1
+L USB_Geocache-rescue:USB_B_Mini-Connector_Specialized J1
 U 1 1 5A9D160C
 P 14800 5600
 F 0 "J1" H 14855 6067 50  0000 C CNN

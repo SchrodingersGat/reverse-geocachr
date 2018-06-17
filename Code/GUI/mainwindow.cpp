@@ -103,13 +103,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->clueTable->clear();
 
+    loadSettings();
+
+    if (clues.LoadFromFile("autosave.clue"))
+    {
+        updateClueList();
+        redrawMap();
+        jsFitMapToClues();
+        reloadClueTable();
+    }
+
     updateClues();
 }
 
-void MainWindow::incrementProgress() {
-    if (downloadProgress != NULL && downloadProgress->isVisible()) {
-
-        if (downloadProgress->value() < downloadProgress->maximum()) {
+void MainWindow::incrementProgress()
+{
+    if (downloadProgress != NULL && downloadProgress->isVisible())
+    {
+        if (downloadProgress->value() < downloadProgress->maximum())
+        {
             downloadProgress->setValue(downloadProgress->value() + 1);
         }
 
@@ -122,13 +134,15 @@ void MainWindow::cancelUploadDownload()
     downloading = false;
     uploading = false;
 
-    if (downloadProgress != NULL && downloadProgress->isVisible()) {
+    if (downloadProgress != NULL && downloadProgress->isVisible())
+    {
         downloadProgress->cancel();
         downloadProgress->close();
     }
 }
 
-void MainWindow::downloadClues() {
+void MainWindow::downloadClues()
+{
     if (downloading || uploading) return;
 
     if (!box.connected) return;
@@ -536,6 +550,8 @@ void MainWindow::clueOptionsChanged()
 //Periodically update the box information
 void MainWindow::refreshDisplay()
 {
+    //getMapCenter();
+
     ui->boxConnectionIndicator->setEnabled(false);
     ui->boxConnectionIndicator->setChecked(box.connected);
 
@@ -603,7 +619,8 @@ void MainWindow::jsCleared()
 }
 
 //Redraw all clue info
-void MainWindow::updateClues() {
+void MainWindow::updateClues()
+{
     updateClueList();
     reloadClueTable();
 
@@ -749,14 +766,35 @@ void MainWindow::closeEvent(QCloseEvent *event)
     //Save clue list to temp file
     clues.SaveToFile("autosave.clue");
 
+    saveSettings();
+
 //    qDebug() << "thread finished";
 }
 
-void MainWindow::getMapCenter()
+bool MainWindow::getMapCenter(float &lat, float &lng)
 {
     QString result = jsExecute("getMapCenter();").toString();
 
-//    qDebug() << "Map Center:" << result;
+    QStringList s = result.split(',');
+
+    if (s.count() != 2)
+        return false;
+
+    bool latOk = false;
+    bool lngOk = false;
+
+    float lt = s.at(0).toFloat(&latOk);
+    float ln = s.at(1).toFloat(&lngOk);
+
+    if (latOk && lngOk)
+    {
+        lat = lt;
+        lng = ln;
+
+        return true;
+    }
+
+    return false;
 }
 
 //Callback from the map window when a particular clue is moved
@@ -908,4 +946,20 @@ void MainWindow::saveClues()
         clues.SaveToFile(filename);
         Debug("Saving clues to " + filename);
     }
+}
+
+
+void MainWindow::loadSettings()
+{
+    QSettings settings("reverse.ini", QSettings::IniFormat);
+
+    //TODO
+}
+
+
+void MainWindow::saveSettings()
+{
+    QSettings settings("reverse.ini", QSettings::IniFormat);
+
+    //TODO
 }

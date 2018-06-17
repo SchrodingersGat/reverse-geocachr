@@ -85,7 +85,7 @@ public slots:
 
     void clueOptionsChanged();
 
-    void getMapCenter();
+    bool getMapCenter(float &lat, float &lng);
 
     void downloadClues();
     bool downloadAllClues();
@@ -101,6 +101,9 @@ public slots:
 
 protected:
     void closeEvent(QCloseEvent *event);
+
+    void saveSettings();
+    void loadSettings();
 };
 
 #endif // MAINWINDOW_H
