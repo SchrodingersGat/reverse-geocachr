@@ -47,7 +47,7 @@ extern PCD_HandleTypeDef hpcd_USB_FS;
 extern UART_HandleTypeDef huart1;
 
 /******************************************************************************/
-/*            Cortex-M0 Processor Interruption and Exception Handlers         */
+/*            Cortex-M0 Processor Interruption and Exception Handlers         */ 
 /******************************************************************************/
 
 /**
