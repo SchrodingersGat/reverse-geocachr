@@ -1,7 +1,6 @@
 *.autosave
 *.zip
 *.csv
-*.html
 *.clue
 *.o
 *.cpp.*

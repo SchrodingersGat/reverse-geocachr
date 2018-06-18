@@ -1,0 +1,399 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+      .controls {
+        margin-top: 16px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #pac-input {
+        background-color: #fff;
+        padding: 0 11px 0 13px;
+        width: 400px;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        text-overflow: ellipsis;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+        margin-left: -1px;
+        padding-left: 14px;  /* Regular padding-left + 1. */
+        width: 401px;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+}
+
+    </style>
+    <title>Places search box</title>
+
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places,drawing"></script>
+<script>
+var map;
+var options;
+var markers = []; 	//the clues
+var circles = []; //distance thresholds around the clues
+var path;			//Line joining all the clues
+var selectedClue = -1;
+var myPosition;
+
+function mapClicked(event)
+{
+	var latitude = event.latLng.lat();
+	var longitude = event.latLng.lng();
+	
+	requestAddMarker(latitude, longitude);
+}
+
+function getMapCenter()
+{
+	var latLng = map.getCenter();
+	
+	return "" + latLng.lat() + "," + latLng.lng();
+}
+
+function getMarkerPosition(i)
+{
+	if (i >= markers.length)
+	{
+		return "0,0";
+	}
+	else if (i < 0)
+	{
+		return "0,0";
+	}
+	else
+	{
+		return "" + markers[i].getPosition().lat() + "," + markers[i].getPosition().lng();
+	}
+}
+
+function requestAddMarker(lat, lng)
+{
+	qt.newMarkerRequested(lat,lng);
+}
+
+function getMarkerID(marker)
+{
+	var title = marker.getTitle();
+	var data = title.split(" ");
+	if (data.length == 4)
+	{
+		var id = parseInt(data[1]);
+		
+		return (id - 1);
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+function addMarker(lat, lng, distance)
+{
+
+	var pos = new google.maps.LatLng(lat,lng);
+
+	var marker = new google.maps.Marker({
+		position: pos,
+		map: null,
+		draggable: true,
+		opacity: 0.9,
+		icon: {
+			path: google.maps.SymbolPath.CIRCLE,
+			scale: 8,
+			fillOpacity: 0.75,
+			strokeWeight: 1
+			}
+	});
+	
+	markers.push(marker);
+	
+	google.maps.event.addListener(marker, "click", function(event) {
+		qt.clueSelectionChanged(getMarkerID(marker));
+		});
+	
+	google.maps.event.addListener(marker, "dragend", function(event) {
+		qt.clueMoved(getMarkerID(marker));
+		redrawClues();
+		});
+		
+	google.maps.event.addListener(marker, "rightclick", function() {
+		qt.clueDeleted(getMarkerID(marker));
+		});
+		
+	//Add a new circle
+	var circle = new google.maps.Circle({
+		center: pos,
+		map: null,
+		//draggable: false,
+		fillOpacity: 0.3,
+		fillColor: "#55AA55",
+		strokeColor: "#228822",
+		strokeWeight: 1,
+		strokeOpacity: 0.9,
+		radius: distance
+	});
+	
+	circles.push(circle);
+
+	redrawClues();
+	}
+
+//Re-zoom the map to auto-fit all the markers
+function reframe()
+{
+	var bounds = new google.maps.LatLngBounds();
+	
+	for (var i=0;i<markers.length;i++)
+	{	
+		bounds.extend(markers[i].getPosition());	
+	}
+	
+	map.fitBounds(bounds);
+}
+
+function redrawClues()
+{
+	clearMarkers();
+	
+	var color = '#0000FF';		
+	
+	//draw all the cirles
+	for (var j=0;j<circles.length;j++)
+	{
+		circles[j].setMap(map);
+	}
+	
+	//Draw all the clues in order
+	for (var i=0;i<markers.length;i++)
+	{
+		if (i == 0)
+		{
+			color = '#00FF00';
+		}
+		else if (i == (markers.length -1))
+		{
+			color = '#FF0000';
+		}
+		else
+		{
+			color = '#0000FF';
+		}
+		
+		markers[i].setMap(map);
+		markers[i].setTitle("Clue " + (i+1) + " of " + markers.length);
+		markers[i].getIcon().fillColor = color;
+		
+		if (i == selectedClue)
+		{
+			markers[i].getIcon().strokeColor = '#FF66CC';
+			markers[i].getIcon().strokeWeight = 10;
+		}
+		else
+		{
+			markers[i].getIcon().strokeColor = '#000000';
+			markers[i].getIcon().strokeWeight = 0.5;
+		}
+	}
+	
+	var coords = [];
+		
+
+	//Draw lines between the clues
+	if (markers.length > 1)
+	{
+		for (var j=0;j<markers.length;j++)
+		{
+			//draw line
+			coords.push(markers[j].getPosition());
+		}
+	}
+	
+	path.setPath(coords);
+	
+	if (markers.length > 1)
+	{
+		path.setMap(map);
+	}
+	else
+	{
+		path.setMap(null);
+	}
+}
+
+function getNumberOfClues()
+{
+	return markers.length;
+}
+
+function selectClue(clue)
+{
+	if (clue >= 0 && clue < markers.length)
+	{
+		
+        if (clue != selectedClue) {
+            map.setCenter(markers[clue].getPosition());
+        }
+        
+        selectedClue = clue;
+		
+	}
+	else
+	{
+		selectedClue = -1;
+	}
+	
+	redrawClues();
+}
+
+
+function clearMarkers()
+{
+	for (var i=0;i<markers.length;i++)
+	{
+		markers[i].setMap(null);
+	}
+	
+	for (var j=0;j<circles.length;j++)
+	{
+		circles[j].setMap(null);
+	}
+}
+
+function deleteMarkers()
+{
+	clearMarkers();
+	markers = [];
+	circles = [];
+}
+
+function initialize()
+{
+
+	
+	options =
+	{
+		streetViewControl: false,
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		zoomControl: true,
+		disableDoubleClickZoom: true		
+	};
+	
+	var lineArrow = {
+		path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW
+	};
+	
+	//Configure the clue path (initially empty)
+	path = new google.maps.Polyline({
+		geodesic: true,
+		strokeColor: '#FF0000',
+		strokeOpacity: 0.8,
+		strokeWeight: 2.5,
+		icons: [{
+            icon: lineArrow,
+			repeat: '10%',
+			offset: '10%'
+		}]
+	});
+
+	
+	path.setMap(null);
+	
+	map = new google.maps.Map(document.getElementById('map-canvas'), options);
+
+	var defaultBounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(-33.8902, 151.1759),
+		new google.maps.LatLng(-33.8474, 151.2631));
+		map.fitBounds(defaultBounds);
+  
+	//Add a listener for 'click'
+	google.maps.event.addListener(map, 'dblclick', mapClicked);
+
+	// Create the search box and link it to the UI element.
+	var input = /** @type {HTMLInputElement} */(document.getElementById('pac-input'));
+	map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+	var searchBox = new google.maps.places.SearchBox((input));
+	
+	google.maps.event.addListener(searchBox, 'places_changed', function()
+	{
+		var places = searchBox.getPlaces();
+
+		if (places.length == 0)
+		{
+			return;
+		}
+
+		var bounds = new google.maps.LatLngBounds();
+		
+		for (var i = 0, place; place = places[i]; i++)
+		{
+			var image = {
+				url: place.icon,
+				size: new google.maps.Size(71, 71),
+				origin: new google.maps.Point(0, 0),
+				anchor: new google.maps.Point(17, 34),
+				scaledSize: new google.maps.Size(25, 25)
+			};
+
+			bounds.extend(place.geometry.location);
+		}
+
+		map.fitBounds(bounds);
+	});
+  
+	google.maps.event.addListener(map, 'bounds_changed', function() {
+		var bounds = map.getBounds();
+		searchBox.setBounds(bounds);
+	});
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+    <style>
+      #target {
+        width: 345px;
+      }
+    </style>
+  </head>
+  <body>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <div id="map-canvas"></div>
+  </body>
+</html>
+
