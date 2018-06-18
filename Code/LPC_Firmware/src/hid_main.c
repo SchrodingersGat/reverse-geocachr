@@ -35,6 +35,9 @@
 #include "app_usbd_cfg.h"
 #include "hid_generic.h"
 
+#include "timer.h"
+#include "pins.h"
+
 /*****************************************************************************
  * Private types/enumerations/variables
  ****************************************************************************/
@@ -53,6 +56,13 @@ const  USBD_API_T *g_pUsbApi;
 /*****************************************************************************
  * Public functions
  ****************************************************************************/
+
+void SysTick_Handler()
+{
+	// Update system pause timer
+	DecrementPauseTimer();
+}
+
 
 /**
  * @brief	Handle interrupt from USB
@@ -101,8 +111,14 @@ int main(void)
 	USB_CORE_DESCS_T desc;
 	ErrorCode_t ret = LPC_OK;
 
+	SystemCoreClockUpdate();
+
 	/* Initialize board and chip */
 	Board_Init();
+
+	// Enable systick interrupt (1kHz)
+	Chip_Clock_SetSysTickClockDiv(1);
+	SysTick_Config(Chip_Clock_GetSysTickClockRate() / 1000);
 
 	/* enable clocks */
 	Chip_USB_Init();
@@ -154,7 +170,12 @@ int main(void)
 
 	}
 
-	while (1) {
-		__WFI();
+	while (1)
+	{
+		LED_Blue(true);
+		PauseMs(100);
+		LED_Blue(false);
+		PauseMs(150);
+		//__WFI();
 	}
 }
