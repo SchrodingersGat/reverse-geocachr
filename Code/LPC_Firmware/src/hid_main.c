@@ -37,10 +37,14 @@
 
 #include "timer.h"
 #include "pins.h"
+#include "types.h"
 
 /*****************************************************************************
  * Private types/enumerations/variables
  ****************************************************************************/
+
+// Globals
+BoxStatus_t status;
 
 /*****************************************************************************
  * Public types/enumerations/variables
@@ -172,10 +176,6 @@ int main(void)
 
 	while (1)
 	{
-		LED_Blue(true);
 		PauseMs(100);
-		LED_Blue(false);
-		PauseMs(150);
-		//__WFI();
 	}
 }

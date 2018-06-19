@@ -39,9 +39,9 @@
  * Public types/enumerations/variables
  ****************************************************************************/
 
-#define HID_INPUT_REPORT_BYTES       1				/* size of report in Bytes */
-#define HID_OUTPUT_REPORT_BYTES      1				/* size of report in Bytes */
-#define HID_FEATURE_REPORT_BYTES     1				/* size of report in Bytes */
+#define HID_INPUT_REPORT_BYTES       64				/* size of report in Bytes */
+#define HID_OUTPUT_REPORT_BYTES      64				/* size of report in Bytes */
+#define HID_FEATURE_REPORT_BYTES     64				/* size of report in Bytes */
 
 /**
  * HID Report Descriptor
@@ -78,7 +78,7 @@ ALIGNED(4) const uint8_t USB_DeviceDescriptor[] = {
 	0x00,							/* bDeviceProtocol */
 	USB_MAX_PACKET0,				/* bMaxPacketSize0 */
 	WBVAL(0x1FC9),					/* idVendor */
-	WBVAL(0x0081),					/* idProduct */
+	WBVAL(0x1234),					/* idProduct */
 	WBVAL(0x0100),					/* bcdDevice */
 	0x01,							/* iManufacturer */
 	0x02,							/* iProduct */

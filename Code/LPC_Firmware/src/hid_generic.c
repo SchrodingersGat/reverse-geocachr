@@ -31,14 +31,22 @@
 
 #include "board.h"
 #include <stdint.h>
+#include <stdbool.h>
 #include <string.h>
 #include "usbd_rom_api.h"
+
+#include "boxpackets.h"
+#include "types.h"
+#include "box_usb.h"
 
 /*****************************************************************************
  * Private types/enumerations/variables
  ****************************************************************************/
 
 static uint8_t *loopback_report;
+
+uint8_t rxBuf[BUF_SIZE];
+uint8_t txBuf[BUF_SIZE];
 
 /*****************************************************************************
  * Public types/enumerations/variables
@@ -55,7 +63,8 @@ extern const uint16_t HID_ReportDescSize;
 static ErrorCode_t HID_GetReport(USBD_HANDLE_T hHid, USB_SETUP_PACKET *pSetup, uint8_t * *pBuffer, uint16_t *plength)
 {
 	/* ReportID = SetupPacket.wValue.WB.L; */
-	switch (pSetup->wValue.WB.H) {
+	switch (pSetup->wValue.WB.H)
+	{
 	case HID_REPORT_INPUT:
 		*pBuffer[0] = *loopback_report;
 		*plength = 1;
@@ -98,16 +107,26 @@ static ErrorCode_t HID_Ep_Hdlr(USBD_HANDLE_T hUsb, void *data, uint32_t event)
 {
 	USB_HID_CTRL_T *pHidCtrl = (USB_HID_CTRL_T *) data;
 
-	switch (event) {
+	switch (event)
+	{
 	case USB_EVT_IN:
 		/* last report is successfully sent. Do something... */
 		break;
 
 	case USB_EVT_OUT:
-		/* Read the new report received. */
-		USBD_API->hw->ReadEP(hUsb, pHidCtrl->epout_adr, loopback_report);
-		/* loopback the report received. */
-		USBD_API->hw->WriteEP(hUsb, pHidCtrl->epin_adr, loopback_report, 1);
+		Board_LED_Toggle(2);
+
+		// Extract data payload bytes
+		if (USBD_API->hw->ReadEP(hUsb, pHidCtrl->epout_adr, rxBuf) > 0)
+		{
+			// Decode the message. Returns true if a response is required.
+			// Response is automatically stored in txBuf
+			if (Box_DecodeMessage())
+			{
+				USBD_API->hw->WriteEP(hUsb, pHidCtrl->epin_adr, txBuf, BUF_SIZE);
+			}
+		}
+
 		break;
 	}
 	return LPC_OK;

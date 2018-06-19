@@ -25,4 +25,41 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/boxdefines.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/boxdefines.c</locationURI>
+		</link>
+		<link>
+			<name>src/boxpackets.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/boxpackets.c</locationURI>
+		</link>
+		<link>
+			<name>src/fielddecode.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/fielddecode.c</locationURI>
+		</link>
+		<link>
+			<name>src/fieldencode.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/fieldencode.c</locationURI>
+		</link>
+		<link>
+			<name>src/protogenglue.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/protogenglue.c</locationURI>
+		</link>
+		<link>
+			<name>src/scaleddecode.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/scaleddecode.c</locationURI>
+		</link>
+		<link>
+			<name>src/scaledencode.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/protocol/scaledencode.c</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
