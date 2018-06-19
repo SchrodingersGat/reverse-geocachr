@@ -38,6 +38,7 @@
 #include "timer.h"
 #include "pins.h"
 #include "types.h"
+#include "eemem.h"
 
 /*****************************************************************************
  * Private types/enumerations/variables
@@ -172,7 +173,25 @@ int main(void)
 			/* now connect */
 			USBD_API->hw->Connect(g_hUsb, 1);
 		}
+	}
 
+	// Enable EEPROM access
+	Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_EEPROM);
+	Chip_SYSCTL_PeriphReset(RESET_EEPROM);
+
+	// Read device settings out of memory (and handle failure)
+	if (!EE_ReadSettings())
+	{
+		status.settingsError = 1;
+
+		// Initialize default settings and write back to EEPROM
+		settings.pwmLocked = 1000;
+		settings.pwmUnlocked = 2000;
+
+		settings.currentClue = 0;
+		settings.totalClues = 0;
+
+		EE_WriteSettings();
 	}
 
 	while (1)

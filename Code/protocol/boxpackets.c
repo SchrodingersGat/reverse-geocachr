@@ -452,30 +452,28 @@ void encodeBoxStatusPacketStructure(void* pkt, const BoxStatus_t* user)
     uint8ToBytes((uint8_t)user->state, data, &byteindex);
 
     data[byteindex] = (uint8_t)user->locked << 7;
-
-    // Box is protected with password
-    data[byteindex] |= (uint8_t)user->passwordProtected << 6;
-
-    // 1 = GPS unit detected
-    data[byteindex] |= (uint8_t)user->gpsConnection << 5;
-
-    // GPS Status
-    data[byteindex] |= (uint8_t)user->gpsStatus << 3;
-
-    // Battery charging status
-    data[byteindex] |= (uint8_t)user->charging << 2;
-
-    data[byteindex] |= (uint8_t)user->debug << 1;
     byteindex += 1; // close bit field
 
     // Battery charge estimate, 0% to 100%
     uint8ToBytes((uint8_t)user->charge, data, &byteindex);
 
-    // Index of current clue
-    uint8ToBytes((uint8_t)user->currentClue, data, &byteindex);
+    // Box is protected with password
+    data[byteindex] = (uint8_t)user->passwordProtected << 7;
 
-    // Total clue count
-    uint8ToBytes((uint8_t)user->totalClues, data, &byteindex);
+    // 1 = GPS unit detected
+    data[byteindex] |= (uint8_t)user->gpsConnection << 6;
+
+    // GPS Status
+    data[byteindex] |= (uint8_t)user->gpsStatus << 4;
+
+    // Battery charging status
+    data[byteindex] |= (uint8_t)user->charging << 3;
+
+    data[byteindex] |= (uint8_t)user->debug << 2;
+
+    // Settings could not be loaded from EEPROM
+    data[byteindex] |= (uint8_t)user->settingsError << 1;
+    byteindex += 1; // close bit field
 
     // complete the process of creating the packet
     finishReverseGeocachePacket(pkt, byteindex, getBoxStatusPacketID());
@@ -511,30 +509,28 @@ int decodeBoxStatusPacketStructure(const void* pkt, BoxStatus_t* user)
     user->state = (uint8_t)uint8FromBytes(data, &byteindex);
 
     user->locked = (data[byteindex] >> 7);
-
-    // Box is protected with password
-    user->passwordProtected = ((data[byteindex] >> 6) & 0x1);
-
-    // 1 = GPS unit detected
-    user->gpsConnection = ((data[byteindex] >> 5) & 0x1);
-
-    // GPS Status
-    user->gpsStatus = ((data[byteindex] >> 3) & 0x3);
-
-    // Battery charging status
-    user->charging = ((data[byteindex] >> 2) & 0x1);
-
-    user->debug = ((data[byteindex] >> 1) & 0x1);
     byteindex += 1; // close bit field
 
     // Battery charge estimate, 0% to 100%
     user->charge = (uint8_t)uint8FromBytes(data, &byteindex);
 
-    // Index of current clue
-    user->currentClue = (uint8_t)uint8FromBytes(data, &byteindex);
+    // Box is protected with password
+    user->passwordProtected = (data[byteindex] >> 7);
 
-    // Total clue count
-    user->totalClues = (uint8_t)uint8FromBytes(data, &byteindex);
+    // 1 = GPS unit detected
+    user->gpsConnection = ((data[byteindex] >> 6) & 0x1);
+
+    // GPS Status
+    user->gpsStatus = ((data[byteindex] >> 4) & 0x3);
+
+    // Battery charging status
+    user->charging = ((data[byteindex] >> 3) & 0x1);
+
+    user->debug = ((data[byteindex] >> 2) & 0x1);
+
+    // Settings could not be loaded from EEPROM
+    user->settingsError = ((data[byteindex] >> 1) & 0x1);
+    byteindex += 1; // close bit field
 
     return 1;
 }
@@ -546,16 +542,15 @@ int decodeBoxStatusPacketStructure(const void* pkt, BoxStatus_t* user)
  * \param pkt points to the packet which will be created by this function
  * \param state is State machine status
  * \param locked is 
+ * \param charge is Battery charge estimate, 0% to 100%
  * \param passwordProtected is Box is protected with password
  * \param gpsConnection is 1 = GPS unit detected
  * \param gpsStatus is GPS Status
  * \param charging is Battery charging status
  * \param debug is 
- * \param charge is Battery charge estimate, 0% to 100%
- * \param currentClue is Index of current clue
- * \param totalClues is Total clue count
+ * \param settingsError is Settings could not be loaded from EEPROM
  */
-void encodeBoxStatusPacket(void* pkt, uint8_t state, unsigned locked, unsigned passwordProtected, unsigned gpsConnection, unsigned gpsStatus, unsigned charging, unsigned debug, uint8_t charge, uint8_t currentClue, uint8_t totalClues)
+void encodeBoxStatusPacket(void* pkt, uint8_t state, unsigned locked, uint8_t charge, unsigned passwordProtected, unsigned gpsConnection, unsigned gpsStatus, unsigned charging, unsigned debug, unsigned settingsError)
 {
     uint8_t* data = getReverseGeocachePacketData(pkt);
     int byteindex = 0;
@@ -564,30 +559,28 @@ void encodeBoxStatusPacket(void* pkt, uint8_t state, unsigned locked, unsigned p
     uint8ToBytes((uint8_t)state, data, &byteindex);
 
     data[byteindex] = (uint8_t)locked << 7;
-
-    // Box is protected with password
-    data[byteindex] |= (uint8_t)passwordProtected << 6;
-
-    // 1 = GPS unit detected
-    data[byteindex] |= (uint8_t)gpsConnection << 5;
-
-    // GPS Status
-    data[byteindex] |= (uint8_t)gpsStatus << 3;
-
-    // Battery charging status
-    data[byteindex] |= (uint8_t)charging << 2;
-
-    data[byteindex] |= (uint8_t)debug << 1;
     byteindex += 1; // close bit field
 
     // Battery charge estimate, 0% to 100%
     uint8ToBytes((uint8_t)charge, data, &byteindex);
 
-    // Index of current clue
-    uint8ToBytes((uint8_t)currentClue, data, &byteindex);
+    // Box is protected with password
+    data[byteindex] = (uint8_t)passwordProtected << 7;
 
-    // Total clue count
-    uint8ToBytes((uint8_t)totalClues, data, &byteindex);
+    // 1 = GPS unit detected
+    data[byteindex] |= (uint8_t)gpsConnection << 6;
+
+    // GPS Status
+    data[byteindex] |= (uint8_t)gpsStatus << 4;
+
+    // Battery charging status
+    data[byteindex] |= (uint8_t)charging << 3;
+
+    data[byteindex] |= (uint8_t)debug << 2;
+
+    // Settings could not be loaded from EEPROM
+    data[byteindex] |= (uint8_t)settingsError << 1;
+    byteindex += 1; // close bit field
 
     // complete the process of creating the packet
     finishReverseGeocachePacket(pkt, byteindex, getBoxStatusPacketID());
@@ -600,17 +593,16 @@ void encodeBoxStatusPacket(void* pkt, uint8_t state, unsigned locked, unsigned p
  * \param pkt points to the packet being decoded by this function
  * \param state receives State machine status
  * \param locked receives 
+ * \param charge receives Battery charge estimate, 0% to 100%
  * \param passwordProtected receives Box is protected with password
  * \param gpsConnection receives 1 = GPS unit detected
  * \param gpsStatus receives GPS Status
  * \param charging receives Battery charging status
  * \param debug receives 
- * \param charge receives Battery charge estimate, 0% to 100%
- * \param currentClue receives Index of current clue
- * \param totalClues receives Total clue count
+ * \param settingsError receives Settings could not be loaded from EEPROM
  * \return 0 is returned if the packet ID or size is wrong, else 1
  */
-int decodeBoxStatusPacket(const void* pkt, uint8_t* state, unsigned* locked, unsigned* passwordProtected, unsigned* gpsConnection, unsigned* gpsStatus, unsigned* charging, unsigned* debug, uint8_t* charge, uint8_t* currentClue, uint8_t* totalClues)
+int decodeBoxStatusPacket(const void* pkt, uint8_t* state, unsigned* locked, uint8_t* charge, unsigned* passwordProtected, unsigned* gpsConnection, unsigned* gpsStatus, unsigned* charging, unsigned* debug, unsigned* settingsError)
 {
     int byteindex = 0;
     const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
@@ -627,30 +619,28 @@ int decodeBoxStatusPacket(const void* pkt, uint8_t* state, unsigned* locked, uns
     *state = (uint8_t)uint8FromBytes(data, &byteindex);
 
     (*locked) = (data[byteindex] >> 7);
-
-    // Box is protected with password
-    (*passwordProtected) = ((data[byteindex] >> 6) & 0x1);
-
-    // 1 = GPS unit detected
-    (*gpsConnection) = ((data[byteindex] >> 5) & 0x1);
-
-    // GPS Status
-    (*gpsStatus) = ((data[byteindex] >> 3) & 0x3);
-
-    // Battery charging status
-    (*charging) = ((data[byteindex] >> 2) & 0x1);
-
-    (*debug) = ((data[byteindex] >> 1) & 0x1);
     byteindex += 1; // close bit field
 
     // Battery charge estimate, 0% to 100%
     *charge = (uint8_t)uint8FromBytes(data, &byteindex);
 
-    // Index of current clue
-    *currentClue = (uint8_t)uint8FromBytes(data, &byteindex);
+    // Box is protected with password
+    (*passwordProtected) = (data[byteindex] >> 7);
 
-    // Total clue count
-    *totalClues = (uint8_t)uint8FromBytes(data, &byteindex);
+    // 1 = GPS unit detected
+    (*gpsConnection) = ((data[byteindex] >> 6) & 0x1);
+
+    // GPS Status
+    (*gpsStatus) = ((data[byteindex] >> 4) & 0x3);
+
+    // Battery charging status
+    (*charging) = ((data[byteindex] >> 3) & 0x1);
+
+    (*debug) = ((data[byteindex] >> 2) & 0x1);
+
+    // Settings could not be loaded from EEPROM
+    (*settingsError) = ((data[byteindex] >> 1) & 0x1);
+    byteindex += 1; // close bit field
 
     return 1;
 }
@@ -692,6 +682,12 @@ int decodeRequestBoxStatusPacket(const void* pkt)
  */
 void initBoxSettings_t(BoxSettings_t* user)
 {
+
+    // Total number of clues
+    user->totalClues = 0;
+
+    // Current clue index
+    user->currentClue = 0;
 
     // PWM value for locked position
     user->pwmLocked = 1000;
@@ -754,11 +750,20 @@ void encodeBoxSettingsPacketStructure(void* pkt, const BoxSettings_t* user)
     uint8_t* data = getReverseGeocachePacketData(pkt);
     int byteindex = 0;
 
+    // Total number of clues
+    uint8ToBytes((uint8_t)user->totalClues, data, &byteindex);
+
+    // Current clue index
+    uint8ToBytes((uint8_t)user->currentClue, data, &byteindex);
+
     // PWM value for locked position
     uint16ToBeBytes((uint16_t)user->pwmLocked, data, &byteindex);
 
     // PWM value for unlocked position
     uint16ToBeBytes((uint16_t)user->pwmUnlocked, data, &byteindex);
+
+    // Password
+    stringToBytes(user->password, data, &byteindex, 32, 0);
 
     // complete the process of creating the packet
     finishReverseGeocachePacket(pkt, byteindex, getBoxSettingsPacketID());
@@ -790,11 +795,20 @@ int decodeBoxSettingsPacketStructure(const void* pkt, BoxSettings_t* user)
     // The raw data from the packet
     data = getReverseGeocachePacketDataConst(pkt);
 
+    // Total number of clues
+    user->totalClues = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    // Current clue index
+    user->currentClue = (uint8_t)uint8FromBytes(data, &byteindex);
+
     // PWM value for locked position
     user->pwmLocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
 
     // PWM value for unlocked position
     user->pwmUnlocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
+
+    // Password
+    stringFromBytes(user->password, data, &byteindex, 32, 0);
 
     return 1;
 }
@@ -804,19 +818,31 @@ int decodeBoxSettingsPacketStructure(const void* pkt, BoxSettings_t* user)
  *
 
  * \param pkt points to the packet which will be created by this function
+ * \param totalClues is Total number of clues
+ * \param currentClue is Current clue index
  * \param pwmLocked is PWM value for locked position
  * \param pwmUnlocked is PWM value for unlocked position
+ * \param password is Password
  */
-void encodeBoxSettingsPacket(void* pkt, uint16_t pwmLocked, uint16_t pwmUnlocked)
+void encodeBoxSettingsPacket(void* pkt, uint8_t totalClues, uint8_t currentClue, uint16_t pwmLocked, uint16_t pwmUnlocked, const char password[32])
 {
     uint8_t* data = getReverseGeocachePacketData(pkt);
     int byteindex = 0;
+
+    // Total number of clues
+    uint8ToBytes((uint8_t)totalClues, data, &byteindex);
+
+    // Current clue index
+    uint8ToBytes((uint8_t)currentClue, data, &byteindex);
 
     // PWM value for locked position
     uint16ToBeBytes((uint16_t)pwmLocked, data, &byteindex);
 
     // PWM value for unlocked position
     uint16ToBeBytes((uint16_t)pwmUnlocked, data, &byteindex);
+
+    // Password
+    stringToBytes(password, data, &byteindex, 32, 0);
 
     // complete the process of creating the packet
     finishReverseGeocachePacket(pkt, byteindex, getBoxSettingsPacketID());
@@ -827,11 +853,14 @@ void encodeBoxSettingsPacket(void* pkt, uint16_t pwmLocked, uint16_t pwmUnlocked
  *
 
  * \param pkt points to the packet being decoded by this function
+ * \param totalClues receives Total number of clues
+ * \param currentClue receives Current clue index
  * \param pwmLocked receives PWM value for locked position
  * \param pwmUnlocked receives PWM value for unlocked position
+ * \param password receives Password
  * \return 0 is returned if the packet ID or size is wrong, else 1
  */
-int decodeBoxSettingsPacket(const void* pkt, uint16_t* pwmLocked, uint16_t* pwmUnlocked)
+int decodeBoxSettingsPacket(const void* pkt, uint8_t* totalClues, uint8_t* currentClue, uint16_t* pwmLocked, uint16_t* pwmUnlocked, char password[32])
 {
     int byteindex = 0;
     const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
@@ -844,11 +873,20 @@ int decodeBoxSettingsPacket(const void* pkt, uint16_t* pwmLocked, uint16_t* pwmU
     if(numBytes < getBoxSettingsMinDataLength())
         return 0;
 
+    // Total number of clues
+    *totalClues = (uint8_t)uint8FromBytes(data, &byteindex);
+
+    // Current clue index
+    *currentClue = (uint8_t)uint8FromBytes(data, &byteindex);
+
     // PWM value for locked position
     *pwmLocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
 
     // PWM value for unlocked position
     *pwmUnlocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
+
+    // Password
+    stringFromBytes(password, data, &byteindex, 32, 0);
 
     return 1;
 }

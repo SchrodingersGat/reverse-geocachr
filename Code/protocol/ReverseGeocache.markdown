@@ -241,22 +241,21 @@ USB Packet types
 ## <a name="MSG_SYSTEM_STATUS"></a>BoxStatus packet
 
 - packet identifier: `MSG_SYSTEM_STATUS` : 160
-- data length: 5
+- data length: 4
 
 
 [BoxStatus packet bytes]
-| Bytes     | Name                | [Enc](#Enc) | Repeat | Description                          |
-| --------- | ------------------- | :---------: | :----: | ------------------------------------ |
-| 0         | 1)state             | U8          | 1      | State machine status.                |
-| 1:7       | 2)locked            | B1          | 1      |                                      |
-| 1:6       | 3)passwordProtected | B1          | 1      | Box is protected with password.      |
-| 1:5       | 4)gpsConnection     | B1          | 1      | 1 = GPS unit detected.               |
-| 1:4...1:3 | 5)gpsStatus         | B2          | 1      | GPS Status.                          |
-| 1:2       | 6)charging          | B1          | 1      | Battery charging status.             |
-| 1:1       | 7)debug             | B1          | 1      |                                      |
-| 2         | 8)charge            | U8          | 1      | Battery charge estimate, 0% to 100%. |
-| 3         | 9)currentClue       | U8          | 1      | Index of current clue.               |
-| 4         | 10)totalClues       | U8          | 1      | Total clue count.                    |
+| Bytes     | Name                | [Enc](#Enc) | Repeat | Description                               |
+| --------- | ------------------- | :---------: | :----: | ----------------------------------------- |
+| 0         | 1)state             | U8          | 1      | State machine status.                     |
+| 1:7       | 2)locked            | B1          | 1      |                                           |
+| 2         | 3)charge            | U8          | 1      | Battery charge estimate, 0% to 100%.      |
+| 3:7       | 4)passwordProtected | B1          | 1      | Box is protected with password.           |
+| 3:6       | 5)gpsConnection     | B1          | 1      | 1 = GPS unit detected.                    |
+| 3:5...3:4 | 6)gpsStatus         | B2          | 1      | GPS Status.                               |
+| 3:3       | 7)charging          | B1          | 1      | Battery charging status.                  |
+| 3:2       | 8)debug             | B1          | 1      |                                           |
+| 3:1       | 9)settingsError     | B1          | 1      | Settings could not be loaded from EEPROM. |
 
 
 ## <a name="MSG_SYSTEM_STATUS"></a>RequestBoxStatus packet
@@ -268,14 +267,18 @@ USB Packet types
 ## <a name="MSG_SYSTEM_SETTINGS"></a>BoxSettings packet
 
 - packet identifier: `MSG_SYSTEM_SETTINGS` : 161
-- data length: 4
+- minimum data length: 7
+- maximum data length: 38
 
 
 [BoxSettings packet bytes]
-| Bytes | Name          | [Enc](#Enc) | Repeat | Description                      |
-| ----- | ------------- | :---------: | :----: | -------------------------------- |
-| 0...1 | 1)pwmLocked   | U16         | 1      | PWM value for locked position.   |
-| 2...3 | 2)pwmUnlocked | U16         | 1      | PWM value for unlocked position. |
+| Bytes  | Name          | [Enc](#Enc)                           | Repeat | Description                      |
+| ------ | ------------- | :-----------------------------------: | :----: | -------------------------------- |
+| 0      | 1)totalClues  | U8                                    | 1      | Total number of clues.           |
+| 1      | 2)currentClue | U8                                    | 1      | Current clue index.              |
+| 2...3  | 3)pwmLocked   | U16                                   | 1      | PWM value for locked position.   |
+| 4...5  | 4)pwmUnlocked | U16                                   | 1      | PWM value for unlocked position. |
+| 6...37 | 5)password    | Zero-terminated string up to 32 bytes         || Password.                        |
 
 
 ## <a name="MSG_SYSTEM_SETTINGS"></a>RequestBoxSettings packet

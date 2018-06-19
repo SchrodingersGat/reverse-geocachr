@@ -1,0 +1,1076 @@
+<style>
+    body {
+        text-align:justify;
+        width: 1000px;
+        background-color:#eee;
+        margin-left: auto;
+        margin-right: auto;
+        font-family:Verdana;
+        counter-reset: h1counter;    }
+
+    table {
+       border: 2px solid darkred;
+       border-collapse: collapse;
+       margin-bottom: 25px;
+    }
+
+    th, td {
+       border: 1px solid green;
+       font-family: Courier New, monospace;
+    }
+
+    td{ padding: 2px; }
+    h1, h2, h3, h4, h5 { font-family: Arial; }
+    h1 { font-size:120%; margin-bottom: 25px;}
+    h2 { font-size:110%; margin-bottom: 15px; }
+    h3 { font-size:100%; margin-bottom: 10px;}
+    h4, li { font-size:100%; }
+    caption{ font-family:Verdana; }
+
+    hr{
+        color: black;
+        background-color: dimgray;
+        height: 1px;
+        margin-bottom:25px;
+        margin-top:25px;
+    }
+
+    code, pre, .codelike {
+        font-family: Courier New, monospace;
+        font-size: 100%;
+        color: darkblue;
+    }
+    h1:before {
+      content: counter(h1counter) "\00a0 ";
+      counter-increment: h1counter;
+      counter-reset: h2counter;
+    }
+    h1 {
+      counter-reset: h2counter;
+    }
+    h2:before {
+      content: counter(h1counter) "." counter(h2counter) "\00a0 ";
+      counter-increment: h2counter;
+      counter-reset: h3counter;
+    }
+    h3:before {
+      content: counter(h1counter) "." counter(h2counter) "." counter(h3counter) "\00a0 ";
+      counter-increment: h3counter;
+    }</style>
+
+<h1 id="reversegeocacheprotocol">ReverseGeocache Protocol</h1>
+
+<p>Reverse Geocache USB message protocol</p>
+
+<p>Protocol version is 1.0.0.a.</p>
+
+<p>Protocol API is 1.</p>
+
+<hr />
+
+<h2 id="boxstatesenumeration">BoxStates enumeration</h2>
+
+<p>Box state machine enumeration</p>
+
+<table>
+<caption id="anameboxstatesaboxstatesenumeration"><a name="BoxStates"></a>BoxStates enumeration</caption>
+<colgroup>
+<col/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Name</th>
+	<th style="text-align:center;">Value</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>STATE_POWERON</code></td>
+	<td style="text-align:center;">1</td>
+	<td>Initial system power-up</td>
+</tr>
+<tr>
+	<td><code>STATE_GPS_ACQUIRING</code></td>
+	<td style="text-align:center;">16</td>
+	<td>Acquiring GPS lock</td>
+</tr>
+<tr>
+	<td><code>STATE_GPS_LOCKING</code></td>
+	<td style="text-align:center;">17</td>
+	<td>GPS locking</td>
+</tr>
+<tr>
+	<td><code>STATE_GPS_LOCKED</code></td>
+	<td style="text-align:center;">18</td>
+	<td>GPS lock acquired</td>
+</tr>
+<tr>
+	<td><code>STATE_GPS_NO_DATA</code></td>
+	<td style="text-align:center;">26</td>
+	<td>No GPS UART data after ten seconds</td>
+</tr>
+<tr>
+	<td><code>STATE_GPS_NO_MSG</code></td>
+	<td style="text-align:center;">27</td>
+	<td>No valid GPS messages</td>
+</tr>
+<tr>
+	<td><code>STATE_GPS_NO_LOCK</code></td>
+	<td style="text-align:center;">28</td>
+	<td>Could not get GPS lock</td>
+</tr>
+<tr>
+	<td><code>STATE_GPS_ERROR</code></td>
+	<td style="text-align:center;">29</td>
+	<td>GPS error (other)</td>
+</tr>
+<tr>
+	<td><code>STATE_TOO_FAR</code></td>
+	<td style="text-align:center;">32</td>
+	<td>Too far from clue</td>
+</tr>
+<tr>
+	<td><code>STATE_CLUE_FOUND</code></td>
+	<td style="text-align:center;">33</td>
+	<td>Found clue!</td>
+</tr>
+<tr>
+	<td><code>STATE_NEXT_CLUE</code></td>
+	<td style="text-align:center;">34</td>
+	<td>Progress to next clue</td>
+</tr>
+<tr>
+	<td><code>STATE_COMPLETE</code></td>
+	<td style="text-align:center;">42</td>
+	<td>Puzzle complete</td>
+</tr>
+<tr>
+	<td><code>STATE_DEBUG</code></td>
+	<td style="text-align:center;">48</td>
+	<td>Debug mode</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="packetenumeration">Packet enumeration</h2>
+
+<p>USB Packet types</p>
+
+<table>
+<caption id="anamepacketapacketenumeration"><a name="Packet"></a>Packet enumeration</caption>
+<colgroup>
+<col/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Name</th>
+	<th style="text-align:center;">Value</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><a href="#MSG_RESET_INTO_BOOTLOADER"><code>MSG_RESET_INTO_BOOTLOADER</code></a></td>
+	<td style="text-align:center;">10</td>
+	<td>Enter USB bootloader mode</td>
+</tr>
+<tr>
+	<td><a href="#MSG_ENABLE_DEBUG_MODE"><code>MSG_ENABLE_DEBUG_MODE</code></a></td>
+	<td style="text-align:center;">11</td>
+	<td>Enable extra debugging information</td>
+</tr>
+<tr>
+	<td><a href="#MSG_SYSTEM_STATUS"><code>MSG_SYSTEM_STATUS</code></a></td>
+	<td style="text-align:center;">160</td>
+	<td>System status information</td>
+</tr>
+<tr>
+	<td><a href="#MSG_SYSTEM_SETTINGS"><code>MSG_SYSTEM_SETTINGS</code></a></td>
+	<td style="text-align:center;">161</td>
+	<td>System configuration information</td>
+</tr>
+<tr>
+	<td><a href="#MSG_SYSTEM_VERSION"><code>MSG_SYSTEM_VERSION</code></a></td>
+	<td style="text-align:center;">162</td>
+	<td>System version information</td>
+</tr>
+<tr>
+	<td><a href="#MSG_CLUE_INFO"><code>MSG_CLUE_INFO</code></a></td>
+	<td style="text-align:center;">176</td>
+	<td>Clue information</td>
+</tr>
+<tr>
+	<td><a href="#MSG_CLUE_LINE"><code>MSG_CLUE_LINE</code></a></td>
+	<td style="text-align:center;">192</td>
+	<td>Single line of text for a given clue</td>
+</tr>
+<tr>
+	<td><a href="#MSG_UNLOCK"><code>MSG_UNLOCK</code></a></td>
+	<td style="text-align:center;">208</td>
+	<td>Unlock the box</td>
+</tr>
+<tr>
+	<td><a href="#MSG_LOCK"><code>MSG_LOCK</code></a></td>
+	<td style="text-align:center;">209</td>
+	<td>Lock the box</td>
+</tr>
+<tr>
+	<td><a href="#MSG_UNLOCK_SETTINGS"><code>MSG_UNLOCK_SETTINGS</code></a></td>
+	<td style="text-align:center;">213</td>
+	<td>Unlock settings with password</td>
+</tr>
+<tr>
+	<td><a href="#MSG_LOCK_SETTINGS"><code>MSG_LOCK_SETTINGS</code></a></td>
+	<td style="text-align:center;">214</td>
+	<td>Lock settings with password</td>
+</tr>
+<tr>
+	<td><a href="#MSG_NEXT_CLUE"><code>MSG_NEXT_CLUE</code></a></td>
+	<td style="text-align:center;">224</td>
+	<td>Move to the next clue</td>
+</tr>
+<tr>
+	<td><a href="#MSG_PREV_CLUE"><code>MSG_PREV_CLUE</code></a></td>
+	<td style="text-align:center;">225</td>
+	<td>Move to the previous clue</td>
+</tr>
+<tr>
+	<td><a href="#MSG_FIRST_CLUE"><code>MSG_FIRST_CLUE</code></a></td>
+	<td style="text-align:center;">226</td>
+	<td>Move to the first clue</td>
+</tr>
+<tr>
+	<td><a href="#MSG_LAST_CLUE"><code>MSG_LAST_CLUE</code></a></td>
+	<td style="text-align:center;">227</td>
+	<td>Move to the last clue</td>
+</tr>
+<tr>
+	<td><a href="#MSG_SET_CLUE_COUNT"><code>MSG_SET_CLUE_COUNT</code></a></td>
+	<td style="text-align:center;">240</td>
+	<td>Set the total number of clues</td>
+</tr>
+<tr>
+	<td><code>MSG_INVALIDATE_CLUES</code></td>
+	<td style="text-align:center;">241</td>
+	<td>Mark clues as invalid (before download)</td>
+</tr>
+<tr>
+	<td><a href="#MSG_VALIDATE_CLUES"><code>MSG_VALIDATE_CLUES</code></a></td>
+	<td style="text-align:center;">242</td>
+	<td>Mark clues as valid (after download)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="cluetypesenumeration">ClueTypes enumeration</h2>
+
+<table>
+<caption id="anamecluetypesacluetypesenumeration"><a name="ClueTypes"></a>ClueTypes enumeration</caption>
+<colgroup>
+<col/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Name</th>
+	<th style="text-align:center;">Value</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>CLUE_NO_HINT</code></td>
+	<td style="text-align:center;">0</td>
+	<td>No extra hint</td>
+</tr>
+<tr>
+	<td><code>CLUE_SHOW_DISTANCE</code></td>
+	<td style="text-align:center;">1</td>
+	<td>Show distance to location</td>
+</tr>
+<tr>
+	<td><code>CLUE_SHOW_LOCATION</code></td>
+	<td style="text-align:center;">2</td>
+	<td>Show coordinates of location</td>
+</tr>
+<tr>
+	<td><code>CLUE_WARMER_COOLER</code></td>
+	<td style="text-align:center;">3</td>
+	<td>Show warmer / cooler (than previous try)</td>
+</tr>
+<tr>
+	<td><code>CLUE_SHOW_HEADING</code></td>
+	<td style="text-align:center;">4</td>
+	<td>Show heading to location in degrees</td>
+</tr>
+<tr>
+	<td><code>CLUE_SHOW_CARDINAL</code></td>
+	<td style="text-align:center;">5</td>
+	<td>Show heading to location in cardinal directions</td>
+</tr>
+<tr>
+	<td><code>NUM_CLUE_TYPES</code></td>
+	<td style="text-align:center;">6</td>
+	<td>Number of clue types (not a clue type itself)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="anamemsg_reset_into_bootloaderaresetpacket"><a name="MSG_RESET_INTO_BOOTLOADER"></a>Reset packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_RESET_INTO_BOOTLOADER</code> : 10</li>
+<li>data length: 0</li>
+</ul>
+
+<h2 id="anamemsg_unlockaunlockpacket"><a name="MSG_UNLOCK"></a>Unlock packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_UNLOCK</code> : 208</li>
+<li>data length: 0</li>
+</ul>
+
+<h2 id="anamemsg_lockalockpacket"><a name="MSG_LOCK"></a>Lock packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_LOCK</code> : 209</li>
+<li>data length: 0</li>
+</ul>
+
+<h2 id="anamemsg_unlock_settingsaunlocksettingspacket"><a name="MSG_UNLOCK_SETTINGS"></a>UnlockSettings packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_UNLOCK_SETTINGS</code> : 213</li>
+<li>minimum data length: 1</li>
+<li>maximum data length: 32</li>
+</ul>
+
+<table>
+<caption id="unlocksettingspacketbytes">UnlockSettings packet bytes</caption>
+<colgroup>
+<col/>
+<col/>
+<col style="text-align:center;"/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Bytes</th>
+	<th>Name</th>
+	<th style="text-align:center;"><a href="#Enc">Enc</a></th>
+	<th style="text-align:center;">Repeat</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>0&#8230;31</td>
+	<td>1)password</td>
+	<td style="text-align:center;" colspan="2">Zero-terminated string up to 32 bytes</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="anamemsg_lock_settingsalocksettingspacket"><a name="MSG_LOCK_SETTINGS"></a>LockSettings packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_LOCK_SETTINGS</code> : 214</li>
+<li>minimum data length: 1</li>
+<li>maximum data length: 32</li>
+</ul>
+
+<table>
+<caption id="locksettingspacketbytes">LockSettings packet bytes</caption>
+<colgroup>
+<col/>
+<col/>
+<col style="text-align:center;"/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Bytes</th>
+	<th>Name</th>
+	<th style="text-align:center;"><a href="#Enc">Enc</a></th>
+	<th style="text-align:center;">Repeat</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>0&#8230;31</td>
+	<td>1)password</td>
+	<td style="text-align:center;" colspan="2">Zero-terminated string up to 32 bytes</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="anamemsg_next_clueanextcluepacket"><a name="MSG_NEXT_CLUE"></a>NextClue packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_NEXT_CLUE</code> : 224</li>
+<li>data length: 0</li>
+</ul>
+
+<h2 id="anamemsg_prev_clueaprevcluepacket"><a name="MSG_PREV_CLUE"></a>PrevClue packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_PREV_CLUE</code> : 225</li>
+<li>data length: 0</li>
+</ul>
+
+<h2 id="anamemsg_first_clueafirstcluepacket"><a name="MSG_FIRST_CLUE"></a>FirstClue packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_FIRST_CLUE</code> : 226</li>
+<li>data length: 0</li>
+</ul>
+
+<h2 id="anamemsg_last_cluealastcluepacket"><a name="MSG_LAST_CLUE"></a>LastClue packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_LAST_CLUE</code> : 227</li>
+<li>data length: 0</li>
+</ul>
+
+<h2 id="anamemsg_enable_debug_modeaenabledebugpacket"><a name="MSG_ENABLE_DEBUG_MODE"></a>EnableDebug packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_ENABLE_DEBUG_MODE</code> : 11</li>
+<li>data length: 1</li>
+</ul>
+
+<table>
+<caption id="enabledebugpacketbytes">EnableDebug packet bytes</caption>
+<colgroup>
+<col/>
+<col/>
+<col style="text-align:center;"/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Bytes</th>
+	<th>Name</th>
+	<th style="text-align:center;"><a href="#Enc">Enc</a></th>
+	<th style="text-align:center;">Repeat</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>0</td>
+	<td>1)debugOn</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td>Turn debug mode on (or off).</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="anamemsg_set_clue_countasetcluecountpacket"><a name="MSG_SET_CLUE_COUNT"></a>SetClueCount packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_SET_CLUE_COUNT</code> : 240</li>
+<li>data length: 1</li>
+</ul>
+
+<table>
+<caption id="setcluecountpacketbytes">SetClueCount packet bytes</caption>
+<colgroup>
+<col/>
+<col/>
+<col style="text-align:center;"/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Bytes</th>
+	<th>Name</th>
+	<th style="text-align:center;"><a href="#Enc">Enc</a></th>
+	<th style="text-align:center;">Repeat</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>0</td>
+	<td>1)clueCount</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="anamemsg_validate_cluesavalidatecluespacket"><a name="MSG_VALIDATE_CLUES"></a>ValidateClues packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_VALIDATE_CLUES</code> : 242</li>
+<li>data length: 0</li>
+</ul>
+
+<h2 id="anamemsg_validate_cluesainvalidatecluespacket"><a name="MSG_VALIDATE_CLUES"></a>InvalidateClues packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_VALIDATE_CLUES</code> : 242</li>
+<li>data length: 0</li>
+</ul>
+
+<h2 id="anamemsg_system_statusaboxstatuspacket"><a name="MSG_SYSTEM_STATUS"></a>BoxStatus packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_SYSTEM_STATUS</code> : 160</li>
+<li>data length: 4</li>
+</ul>
+
+<table>
+<caption id="boxstatuspacketbytes">BoxStatus packet bytes</caption>
+<colgroup>
+<col/>
+<col/>
+<col style="text-align:center;"/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Bytes</th>
+	<th>Name</th>
+	<th style="text-align:center;"><a href="#Enc">Enc</a></th>
+	<th style="text-align:center;">Repeat</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>0</td>
+	<td>1)state</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td>State machine status.</td>
+</tr>
+<tr>
+	<td>1:7</td>
+	<td>2)locked</td>
+	<td style="text-align:center;">B1</td>
+	<td style="text-align:center;">1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>2</td>
+	<td>3)charge</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td>Battery charge estimate, 0% to 100%.</td>
+</tr>
+<tr>
+	<td>3:7</td>
+	<td>4)passwordProtected</td>
+	<td style="text-align:center;">B1</td>
+	<td style="text-align:center;">1</td>
+	<td>Box is protected with password.</td>
+</tr>
+<tr>
+	<td>3:6</td>
+	<td>5)gpsConnection</td>
+	<td style="text-align:center;">B1</td>
+	<td style="text-align:center;">1</td>
+	<td>1 = GPS unit detected.</td>
+</tr>
+<tr>
+	<td>3:5&#8230;3:4</td>
+	<td>6)gpsStatus</td>
+	<td style="text-align:center;">B2</td>
+	<td style="text-align:center;">1</td>
+	<td>GPS Status.</td>
+</tr>
+<tr>
+	<td>3:3</td>
+	<td>7)charging</td>
+	<td style="text-align:center;">B1</td>
+	<td style="text-align:center;">1</td>
+	<td>Battery charging status.</td>
+</tr>
+<tr>
+	<td>3:2</td>
+	<td>8)debug</td>
+	<td style="text-align:center;">B1</td>
+	<td style="text-align:center;">1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>3:1</td>
+	<td>9)settingsError</td>
+	<td style="text-align:center;">B1</td>
+	<td style="text-align:center;">1</td>
+	<td>Settings could not be loaded from EEPROM.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="anamemsg_system_statusarequestboxstatuspacket"><a name="MSG_SYSTEM_STATUS"></a>RequestBoxStatus packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_SYSTEM_STATUS</code> : 160</li>
+<li>data length: 0</li>
+</ul>
+
+<h2 id="anamemsg_system_settingsaboxsettingspacket"><a name="MSG_SYSTEM_SETTINGS"></a>BoxSettings packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_SYSTEM_SETTINGS</code> : 161</li>
+<li>minimum data length: 7</li>
+<li>maximum data length: 38</li>
+</ul>
+
+<table>
+<caption id="boxsettingspacketbytes">BoxSettings packet bytes</caption>
+<colgroup>
+<col/>
+<col/>
+<col style="text-align:center;"/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Bytes</th>
+	<th>Name</th>
+	<th style="text-align:center;"><a href="#Enc">Enc</a></th>
+	<th style="text-align:center;">Repeat</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>0</td>
+	<td>1)totalClues</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td>Total number of clues.</td>
+</tr>
+<tr>
+	<td>1</td>
+	<td>2)currentClue</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td>Current clue index.</td>
+</tr>
+<tr>
+	<td>2&#8230;3</td>
+	<td>3)pwmLocked</td>
+	<td style="text-align:center;">U16</td>
+	<td style="text-align:center;">1</td>
+	<td>PWM value for locked position.</td>
+</tr>
+<tr>
+	<td>4&#8230;5</td>
+	<td>4)pwmUnlocked</td>
+	<td style="text-align:center;">U16</td>
+	<td style="text-align:center;">1</td>
+	<td>PWM value for unlocked position.</td>
+</tr>
+<tr>
+	<td>6&#8230;37</td>
+	<td>5)password</td>
+	<td style="text-align:center;" colspan="2">Zero-terminated string up to 32 bytes</td>
+	<td>Password.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="anamemsg_system_settingsarequestboxsettingspacket"><a name="MSG_SYSTEM_SETTINGS"></a>RequestBoxSettings packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_SYSTEM_SETTINGS</code> : 161</li>
+<li>data length: 0</li>
+</ul>
+
+<h2 id="anamemsg_system_versionaboxversionpacket"><a name="MSG_SYSTEM_VERSION"></a>BoxVersion packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_SYSTEM_VERSION</code> : 162</li>
+<li>data length: 5</li>
+</ul>
+
+<table>
+<caption id="boxversionpacketbytes">BoxVersion packet bytes</caption>
+<colgroup>
+<col/>
+<col/>
+<col style="text-align:center;"/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Bytes</th>
+	<th>Name</th>
+	<th style="text-align:center;"><a href="#Enc">Enc</a></th>
+	<th style="text-align:center;">Repeat</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>0&#8230;1</td>
+	<td>1)serialNumber</td>
+	<td style="text-align:center;">U16</td>
+	<td style="text-align:center;">1</td>
+	<td>Box serial number.</td>
+</tr>
+<tr>
+	<td>2</td>
+	<td>2)versionMajor</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td>Firmware version, major.</td>
+</tr>
+<tr>
+	<td>3</td>
+	<td>3)versionMinor</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td>Firmware version, minor.</td>
+</tr>
+<tr>
+	<td>4</td>
+	<td>4)pcbRevision</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td>PCB revision.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="anamemsg_system_versionarequestboxversionpacket"><a name="MSG_SYSTEM_VERSION"></a>RequestBoxVersion packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_SYSTEM_VERSION</code> : 162</li>
+<li>data length: 0</li>
+</ul>
+
+<h2 id="anamemsg_clue_infoaclueinfopacket"><a name="MSG_CLUE_INFO"></a>ClueInfo packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_CLUE_INFO</code> : 176</li>
+<li>data length: 13</li>
+</ul>
+
+<table>
+<caption id="clueinfopacketbytes">ClueInfo packet bytes</caption>
+<colgroup>
+<col/>
+<col/>
+<col style="text-align:center;"/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Bytes</th>
+	<th>Name</th>
+	<th style="text-align:center;"><a href="#Enc">Enc</a></th>
+	<th style="text-align:center;">Repeat</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>0</td>
+	<td>1)clueNumber</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>1&#8230;12</td>
+	<td colspan="2">2)clueInfo</td>
+	<td style="text-align:center;">1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>1&#8230;4</td>
+	<td>2.1)lat</td>
+	<td style="text-align:center;">F32</td>
+	<td style="text-align:center;">1</td>
+	<td>Location latitude.</td>
+</tr>
+<tr>
+	<td>5&#8230;8</td>
+	<td>2.2)lng</td>
+	<td style="text-align:center;">F32</td>
+	<td style="text-align:center;">1</td>
+	<td>Location longitude.</td>
+</tr>
+<tr>
+	<td>9&#8230;10</td>
+	<td>2.3)threshold</td>
+	<td style="text-align:center;">U16</td>
+	<td style="text-align:center;">1</td>
+	<td>Distance threshold (m).</td>
+</tr>
+<tr>
+	<td>11</td>
+	<td>2.4)type</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td>Clue type.</td>
+</tr>
+<tr>
+	<td>12</td>
+	<td colspan="2">2.5)options</td>
+	<td style="text-align:center;">1</td>
+	<td>Extra clue options</td>
+</tr>
+<tr>
+	<td>12:7</td>
+	<td>2.5.1)centerText</td>
+	<td style="text-align:center;">B1</td>
+	<td style="text-align:center;">1</td>
+	<td>Text is centered on the screen.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="anamemsg_clue_infoarequestclueinfopacket"><a name="MSG_CLUE_INFO"></a>RequestClueInfo packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_CLUE_INFO</code> : 176</li>
+<li>data length: 1</li>
+</ul>
+
+<table>
+<caption id="requestclueinfopacketbytes">RequestClueInfo packet bytes</caption>
+<colgroup>
+<col/>
+<col/>
+<col style="text-align:center;"/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Bytes</th>
+	<th>Name</th>
+	<th style="text-align:center;"><a href="#Enc">Enc</a></th>
+	<th style="text-align:center;">Repeat</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>0</td>
+	<td>1)clueNumber</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="anamemsg_clue_lineacluelinepacket"><a name="MSG_CLUE_LINE"></a>ClueLine packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_CLUE_LINE</code> : 192</li>
+<li>minimum data length: 3</li>
+<li>maximum data length: 42</li>
+</ul>
+
+<table>
+<caption id="cluelinepacketbytes">ClueLine packet bytes</caption>
+<colgroup>
+<col/>
+<col/>
+<col style="text-align:center;"/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Bytes</th>
+	<th>Name</th>
+	<th style="text-align:center;"><a href="#Enc">Enc</a></th>
+	<th style="text-align:center;">Repeat</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>0</td>
+	<td>1)clueNumber</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td>Index of clue.</td>
+</tr>
+<tr>
+	<td>1</td>
+	<td>2)lineNumber</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td>Line number.</td>
+</tr>
+<tr>
+	<td>2&#8230;41</td>
+	<td>3)lineText</td>
+	<td style="text-align:center;" colspan="2">Zero-terminated string up to 40 bytes</td>
+	<td>Line data.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="anamemsg_clue_linearequestcluelinepacket"><a name="MSG_CLUE_LINE"></a>RequestClueLine packet</h2>
+
+<ul>
+<li>packet identifier: <code>MSG_CLUE_LINE</code> : 192</li>
+<li>data length: 2</li>
+</ul>
+
+<table>
+<caption id="requestcluelinepacketbytes">RequestClueLine packet bytes</caption>
+<colgroup>
+<col/>
+<col/>
+<col style="text-align:center;"/>
+<col style="text-align:center;"/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th>Bytes</th>
+	<th>Name</th>
+	<th style="text-align:center;"><a href="#Enc">Enc</a></th>
+	<th style="text-align:center;">Repeat</th>
+	<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>0</td>
+	<td>1)clueNumber</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>1</td>
+	<td>2)lineNumber</td>
+	<td style="text-align:center;">U8</td>
+	<td style="text-align:center;">1</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h1 id="aboutthisicd">About this ICD</h1>
+
+<p>This is the interface control document for data <em>on the wire</em>, not data in memory. This document was automatically generated by the <a href="https://github.com/billvaglienti/ProtoGen">ProtoGen software</a>, version 2.4.b. ProtoGen also generates C source code for doing most of the work of encoding data from memory to the wire, and vice versa.</p>
+
+<h2 id="encodings">Encodings</h2>
+
+<p>Data for this protocol are sent in BIG endian format. Any field larger than one byte is sent with the most signficant byte first, and the least significant byte last.</p>
+
+<p>Data can be encoded as unsigned integers, signed integers (two&#8217;s complement), bitfields, and floating point.</p>
+
+<table>
+<colgroup>
+<col style="text-align:center;"/>
+<col/>
+<col/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:center;"><a name="Enc"></a>Encoding</th>
+	<th>Interpretation</th>
+	<th>Notes</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:center;">UX</td>
+	<td>Unsigned integer X bits long</td>
+	<td>X must be: 8, 16, 24, 32, 40, 48, 56, or 64</td>
+</tr>
+<tr>
+	<td style="text-align:center;">IX</td>
+	<td>Signed integer X bits long</td>
+	<td>X must be: 8, 16, 24, 32, 40, 48, 56, or 64</td>
+</tr>
+<tr>
+	<td style="text-align:center;">BX</td>
+	<td>Unsigned integer bitfield X bits long</td>
+	<td>X must be greater than 0 and less than 32</td>
+</tr>
+<tr>
+	<td style="text-align:center;">F16:X</td>
+	<td>16 bit float with X significand bits</td>
+	<td>1 sign bit : 15-X exponent bits : X significant bits with implied leading 1</td>
+</tr>
+<tr>
+	<td style="text-align:center;">F24:X</td>
+	<td>24 bit float with X significand bits</td>
+	<td>1 sign bit : 23-X exponent bits : X significant bits with implied leading 1</td>
+</tr>
+<tr>
+	<td style="text-align:center;">F32</td>
+	<td>32 bit float (IEEE&#8211;754)</td>
+	<td>1 sign bit : 8 exponent bits : 23 significant bits with implied leading 1</td>
+</tr>
+<tr>
+	<td style="text-align:center;">F64</td>
+	<td>64 bit float (IEEE&#8211;754)</td>
+	<td>1 sign bit : 11 exponent bits : 52 significant bits with implied leading 1</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="sizeoffields">Size of fields</h2>
+
+<p>The encoding tables give the bytes for each field as X&#8230;Y; where X is the first byte (counting from 0) and Y is the last byte. For example a 4 byte field at the beginning of a packet will give 0&#8230;3. If the field is 1 byte long then only the starting byte is given. Bitfields are more complex, they are displayed as Byte:Bit. A 3-bit bitfield at the beginning of a packet will give 0:7&#8230;0:5, indicating that the bitfield uses bits 7, 6, and 5 of byte 0. Note that the most signficant bit of a byte is 7, and the least signficant bit is 0. If the bitfield is 1 bit long then only the starting bit is given.</p>
+
+<p>The byte count in the encoding tables are based on the maximum length of the field(s). If a field is variable length then the actual byte location of the data may be different depending on the value of the variable field. If the field is a variable length character string this will be indicated in the encoding column of the table. If the field is a variable length array this will be indicated in the repeat column of the encoding table. If the field depends on the non-zero value of another field this will be indicated in the description column of the table.</p>

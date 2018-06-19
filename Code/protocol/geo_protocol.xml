@@ -135,22 +135,24 @@
 	<Packet name="BoxStatus" ID="MSG_SYSTEM_STATUS" file="boxpackets" parameterInterface="true" structureInterface="true">
 		<Data name="state" inMemoryType="unsigned8" comment="State machine status"/>
 		<Data name="locked" inMemoryType="bitfield1"/>
+		<Data name="charge" inMemoryType="unsigned8" comment="Battery charge estimate, 0% to 100%"/>
 		<Data name="passwordProtected" inMemoryType="bitfield1" comment="Box is protected with password"/>
 		<Data name="gpsConnection" inMemoryType="bitfield1" comment="1 = GPS unit detected"/>
 		<Data name="gpsStatus" inMemoryType="bitfield2" comment="GPS Status"/>
 		<Data name="charging" inMemoryType="bitfield1" comment="Battery charging status"/>
 		<Data name="debug" inMemoryType="bitfield1"/>
-		<Data name="charge" inMemoryType="unsigned8" comment="Battery charge estimate, 0% to 100%"/>
-		<Data name="currentClue" inMemoryType="unsigned8" comment="Index of current clue"/>
-		<Data name="totalClues" inMemoryType="unsigned8" comment="Total clue count"/>
+        <Data name="settingsError" inMemoryType="bitfield1" comment="Settings could not be loaded from EEPROM"/>
 	</Packet>
 	
 	<Packet name="RequestBoxStatus" ID="MSG_SYSTEM_STATUS" file="boxpackets">
 	</Packet>
 	
 	<Packet name="BoxSettings" ID="MSG_SYSTEM_SETTINGS" file="boxpackets" parameterInterface="true" structureInterface="true">
+        <Data name="totalClues" inMemoryType="unsigned8" comment="Total number of clues" initialValue="0"/>
+        <Data name="currentClue" inMemoryType="unsigned8" comment="Current clue index" initialValue="0"/>
         <Data name="pwmLocked" inMemoryType="unsigned16" initialValue="1000" verifyMinValue="500" verifyMaxValue="2500" comment="PWM value for locked position"/>
         <Data name="pwmUnlocked" inMemoryType="unsigned16" initialValue="2000" verifyMinValue="500" verifyMaxValue="2500" comment="PWM value for unlocked position"/>
+        <Data name="password" inMemoryType="string" array="32" comment="Password"/>
 	</Packet>
 	
 	<Packet name="RequestBoxSettings" ID="MSG_SYSTEM_SETTINGS" file="boxpackets">

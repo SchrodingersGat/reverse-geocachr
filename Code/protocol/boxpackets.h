@@ -214,14 +214,13 @@ typedef struct
 {
     uint8_t  state;                 //!< State machine status
     unsigned locked : 1;           
+    uint8_t  charge;                //!< Battery charge estimate, 0% to 100%
     unsigned passwordProtected : 1; //!< Box is protected with password
     unsigned gpsConnection : 1;     //!< 1 = GPS unit detected
     unsigned gpsStatus : 2;         //!< GPS Status
     unsigned charging : 1;          //!< Battery charging status
     unsigned debug : 1;            
-    uint8_t  charge;                //!< Battery charge estimate, 0% to 100%
-    uint8_t  currentClue;           //!< Index of current clue
-    uint8_t  totalClues;            //!< Total clue count
+    unsigned settingsError : 1;     //!< Settings could not be loaded from EEPROM
 }BoxStatus_t;
 
 //! Create the BoxStatus packet
@@ -231,19 +230,19 @@ void encodeBoxStatusPacketStructure(void* pkt, const BoxStatus_t* user);
 int decodeBoxStatusPacketStructure(const void* pkt, BoxStatus_t* user);
 
 //! Create the BoxStatus packet
-void encodeBoxStatusPacket(void* pkt, uint8_t state, unsigned locked, unsigned passwordProtected, unsigned gpsConnection, unsigned gpsStatus, unsigned charging, unsigned debug, uint8_t charge, uint8_t currentClue, uint8_t totalClues);
+void encodeBoxStatusPacket(void* pkt, uint8_t state, unsigned locked, uint8_t charge, unsigned passwordProtected, unsigned gpsConnection, unsigned gpsStatus, unsigned charging, unsigned debug, unsigned settingsError);
 
 //! Decode the BoxStatus packet
-int decodeBoxStatusPacket(const void* pkt, uint8_t* state, unsigned* locked, unsigned* passwordProtected, unsigned* gpsConnection, unsigned* gpsStatus, unsigned* charging, unsigned* debug, uint8_t* charge, uint8_t* currentClue, uint8_t* totalClues);
+int decodeBoxStatusPacket(const void* pkt, uint8_t* state, unsigned* locked, uint8_t* charge, unsigned* passwordProtected, unsigned* gpsConnection, unsigned* gpsStatus, unsigned* charging, unsigned* debug, unsigned* settingsError);
 
 //! return the packet ID for the BoxStatus packet
 #define getBoxStatusPacketID() (MSG_SYSTEM_STATUS)
 
 //! return the minimum encoded length for the BoxStatus packet
-#define getBoxStatusMinDataLength() (5)
+#define getBoxStatusMinDataLength() (4)
 
 //! return the maximum encoded length for the BoxStatus packet
-#define getBoxStatusMaxDataLength() (5)
+#define getBoxStatusMaxDataLength() (4)
 
 //! Create the RequestBoxStatus packet
 void encodeRequestBoxStatusPacket(void* pkt);
@@ -262,11 +261,16 @@ int decodeRequestBoxStatusPacket(const void* pkt);
 
 typedef struct
 {
-    uint16_t pwmLocked;   //!< PWM value for locked position
-    uint16_t pwmUnlocked; //!< PWM value for unlocked position
+    uint8_t  totalClues;   //!< Total number of clues
+    uint8_t  currentClue;  //!< Current clue index
+    uint16_t pwmLocked;    //!< PWM value for locked position
+    uint16_t pwmUnlocked;  //!< PWM value for unlocked position
+    char     password[32]; //!< Password
 }BoxSettings_t;
 
 // Initial and verify values for BoxSettings
+#define ReverseGeocache_BoxSettings_totalClues_InitValue 0
+#define ReverseGeocache_BoxSettings_currentClue_InitValue 0
 #define ReverseGeocache_BoxSettings_pwmLocked_InitValue 1000
 #define ReverseGeocache_BoxSettings_pwmLocked_VerifyMin 500
 #define ReverseGeocache_BoxSettings_pwmLocked_VerifyMax 2500
@@ -287,19 +291,19 @@ void encodeBoxSettingsPacketStructure(void* pkt, const BoxSettings_t* user);
 int decodeBoxSettingsPacketStructure(const void* pkt, BoxSettings_t* user);
 
 //! Create the BoxSettings packet
-void encodeBoxSettingsPacket(void* pkt, uint16_t pwmLocked, uint16_t pwmUnlocked);
+void encodeBoxSettingsPacket(void* pkt, uint8_t totalClues, uint8_t currentClue, uint16_t pwmLocked, uint16_t pwmUnlocked, const char password[32]);
 
 //! Decode the BoxSettings packet
-int decodeBoxSettingsPacket(const void* pkt, uint16_t* pwmLocked, uint16_t* pwmUnlocked);
+int decodeBoxSettingsPacket(const void* pkt, uint8_t* totalClues, uint8_t* currentClue, uint16_t* pwmLocked, uint16_t* pwmUnlocked, char password[32]);
 
 //! return the packet ID for the BoxSettings packet
 #define getBoxSettingsPacketID() (MSG_SYSTEM_SETTINGS)
 
 //! return the minimum encoded length for the BoxSettings packet
-#define getBoxSettingsMinDataLength() (4)
+#define getBoxSettingsMinDataLength() (7)
 
 //! return the maximum encoded length for the BoxSettings packet
-#define getBoxSettingsMaxDataLength() (4)
+#define getBoxSettingsMaxDataLength() (38)
 
 //! Create the RequestBoxSettings packet
 void encodeRequestBoxSettingsPacket(void* pkt);
