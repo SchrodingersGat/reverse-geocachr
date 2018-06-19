@@ -11,11 +11,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "box_defines.h"
+
 #define BUF_SIZE 64
 
 // Data buffers
-extern uint8_t rxBuf[BUF_SIZE];
-extern uint8_t txBuf[BUF_SIZE];
+extern HIDBuffer txBuf;
+extern HIDBuffer rxBuf;
 
 bool Box_DecodeMessage();
 

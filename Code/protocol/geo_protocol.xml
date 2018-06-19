@@ -54,7 +54,7 @@
 
         <Value name="UNLOCK_SETTINGS" value="0xD5" comment="Unlock settings with password"/>
         <Value name="LOCK_SETTINGS" comment="Lock settings with password"/>
-
+        
         <Value name="NEXT_CLUE" value="0xE0" comment="Move to the next clue"/>
         <Value name="PREV_CLUE" comment="Move to the previous clue"/>
         <Value name="FIRST_CLUE" comment="Move to the first clue"/>

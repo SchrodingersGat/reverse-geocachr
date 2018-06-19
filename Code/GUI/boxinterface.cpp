@@ -152,6 +152,7 @@ bool Box::RequestBoxStatus()
     //read was successful, decode the data
     if (decodeBoxStatusPacketStructure(rxBuf, &boxStatus))
     {
+        Debug("Read box status");
         return true;
     }
     else
@@ -192,6 +193,7 @@ bool Box::RequestBoxSettings()
 
     if (decodeBoxSettingsPacketStructure(rxBuf, &boxSettings))
     {
+        Debug("Read box settings");
         return true;
     }
     else
@@ -230,6 +232,7 @@ bool Box::RequestBoxVersion()
 
     if (decodeBoxVersionPacketStructure(rxBuf, &boxVersion))
     {
+        Debug("Read box version");
         return true;
     }
     else

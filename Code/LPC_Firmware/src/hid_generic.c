@@ -45,8 +45,8 @@
 
 static uint8_t *loopback_report;
 
-uint8_t rxBuf[BUF_SIZE];
-uint8_t txBuf[BUF_SIZE];
+HIDBuffer rxBuf;
+HIDBuffer txBuf;
 
 /*****************************************************************************
  * Public types/enumerations/variables

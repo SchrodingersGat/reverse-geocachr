@@ -45,6 +45,7 @@
 
 // Globals
 BoxStatus_t status;
+BoxSettings_t settings;
 
 /*****************************************************************************
  * Public types/enumerations/variables
