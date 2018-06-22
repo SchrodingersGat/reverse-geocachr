@@ -3,6 +3,7 @@
 #define INC_TYPES_H_
 
 #include "boxpackets.h"
+#include "box_defines.h"
 
 extern BoxStatus_t status;
 extern BoxSettings_t settings;

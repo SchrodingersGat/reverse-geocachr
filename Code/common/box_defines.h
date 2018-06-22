@@ -17,7 +17,7 @@ extern "C" {
 #define BOX_COMPLETE_MSG (BOX_MAX_CLUES + 1)
 #define BOX_ARRAY_SIZE (BOX_MAX_CLUES + 2)
 
-#define MAX_CLUES 10
+#define MAX_CLUES 20
 
 #define CLUE_LINE_LEN_MAX 40 //!< Max number of chars allowed per clue
 #define NUM_CLUE_LINES 7    //!< Number of lines of clue data to display
@@ -36,6 +36,11 @@ typedef char clue_line[CLUE_LINE_LEN_MAX];
 
 typedef unsigned char HIDBuffer[HID_REPORT_SIZE];
 
+/* Structure definition for an entire clue
+ * - Waypoint information
+ * - Clue lines
+ * - Checksum
+ */
 typedef struct
 {
 	Waypoint_t waypoint;

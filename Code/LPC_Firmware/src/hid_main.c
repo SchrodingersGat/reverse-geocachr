@@ -39,6 +39,7 @@
 #include "pins.h"
 #include "types.h"
 #include "eemem.h"
+#include "waypoints.h"
 
 /*****************************************************************************
  * Private types/enumerations/variables
