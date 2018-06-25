@@ -906,16 +906,16 @@
 </tbody>
 </table>
 
-<h2 id="anamemsg_clue_lineacluelinepacket"><a name="MSG_CLUE_LINE"></a>ClueLine packet</h2>
+<h2 id="anamemsg_clue_lineacluelinetextpacket"><a name="MSG_CLUE_LINE"></a>ClueLineText packet</h2>
 
 <ul>
 <li>packet identifier: <code>MSG_CLUE_LINE</code> : 192</li>
 <li>minimum data length: 3</li>
-<li>maximum data length: 42</li>
+<li>maximum data length: CLUE_LINE_LEN_MAX+2</li>
 </ul>
 
 <table>
-<caption id="cluelinepacketbytes">ClueLine packet bytes</caption>
+<caption id="cluelinetextpacketbytes">ClueLineText packet bytes</caption>
 <colgroup>
 <col/>
 <col/>
@@ -950,10 +950,16 @@
 	<td>Line number.</td>
 </tr>
 <tr>
-	<td>2&#8230;41</td>
-	<td>3)lineText</td>
-	<td style="text-align:center;" colspan="2">Zero-terminated string up to 40 bytes</td>
-	<td>Line data.</td>
+	<td>2&#8230;CLUE_LINE_LEN_MAX+1</td>
+	<td colspan="2">3)lineText</td>
+	<td style="text-align:center;">1</td>
+	<td>Line data</td>
+</tr>
+<tr>
+	<td>2&#8230;CLUE_LINE_LEN_MAX+1</td>
+	<td>3.1)text</td>
+	<td style="text-align:center;" colspan="2">Zero-terminated string up to CLUE_LINE_LEN_MAX bytes</td>
+	<td></td>
 </tr>
 </tbody>
 </table>

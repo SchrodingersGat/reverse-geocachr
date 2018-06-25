@@ -339,19 +339,20 @@ USB Packet types
 | 0     | 1)clueNumber | U8          | 1      |             |
 
 
-## <a name="MSG_CLUE_LINE"></a>ClueLine packet
+## <a name="MSG_CLUE_LINE"></a>ClueLineText packet
 
 - packet identifier: `MSG_CLUE_LINE` : 192
 - minimum data length: 3
-- maximum data length: 42
+- maximum data length: CLUE_LINE_LEN_MAX+2
 
 
-[ClueLine packet bytes]
-| Bytes  | Name         | [Enc](#Enc)                           | Repeat | Description    |
-| ------ | ------------ | :-----------------------------------: | :----: | -------------- |
-| 0      | 1)clueNumber | U8                                    | 1      | Index of clue. |
-| 1      | 2)lineNumber | U8                                    | 1      | Line number.   |
-| 2...41 | 3)lineText   | Zero-terminated string up to 40 bytes         || Line data.     |
+[ClueLineText packet bytes]
+| Bytes                   | Name         | [Enc](#Enc)                                          | Repeat | Description    |
+| ----------------------- | ------------ | :--------------------------------------------------: | :----: | -------------- |
+| 0                       | 1)clueNumber | U8                                                   | 1      | Index of clue. |
+| 1                       | 2)lineNumber | U8                                                   | 1      | Line number.   |
+| 2...CLUE_LINE_LEN_MAX+1 | 3)lineText                                                         || 1      | Line data      |
+| 2...CLUE_LINE_LEN_MAX+1 | 3.1)text     | Zero-terminated string up to CLUE_LINE_LEN_MAX bytes         ||                |
 
 
 ## <a name="MSG_CLUE_LINE"></a>RequestClueLine packet

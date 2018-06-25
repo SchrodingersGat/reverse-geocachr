@@ -1182,7 +1182,7 @@ int decodeRequestClueInfoPacket(const void* pkt, uint8_t* clueNumber)
 }
 
 /*!
- * \brief Create the ClueLine packet
+ * \brief Create the ClueLineText packet
  *
 
  * \param pkt points to the packet which will be created by this function
@@ -1190,7 +1190,7 @@ int decodeRequestClueInfoPacket(const void* pkt, uint8_t* clueNumber)
  * \param lineNumber is Line number
  * \param lineText is Line data
  */
-void encodeClueLinePacket(void* pkt, uint8_t clueNumber, uint8_t lineNumber, const char lineText[40])
+void encodeClueLineTextPacket(void* pkt, uint8_t clueNumber, uint8_t lineNumber, const ClueLine_t* lineText)
 {
     uint8_t* data = getReverseGeocachePacketData(pkt);
     int byteindex = 0;
@@ -1202,14 +1202,14 @@ void encodeClueLinePacket(void* pkt, uint8_t clueNumber, uint8_t lineNumber, con
     uint8ToBytes((uint8_t)lineNumber, data, &byteindex);
 
     // Line data
-    stringToBytes(lineText, data, &byteindex, 40, 0);
+    encodeClueLine_t(data, &byteindex, lineText);
 
     // complete the process of creating the packet
-    finishReverseGeocachePacket(pkt, byteindex, getClueLinePacketID());
+    finishReverseGeocachePacket(pkt, byteindex, getClueLineTextPacketID());
 }
 
 /*!
- * \brief Decode the ClueLine packet
+ * \brief Decode the ClueLineText packet
  *
 
  * \param pkt points to the packet being decoded by this function
@@ -1218,17 +1218,17 @@ void encodeClueLinePacket(void* pkt, uint8_t clueNumber, uint8_t lineNumber, con
  * \param lineText receives Line data
  * \return 0 is returned if the packet ID or size is wrong, else 1
  */
-int decodeClueLinePacket(const void* pkt, uint8_t* clueNumber, uint8_t* lineNumber, char lineText[40])
+int decodeClueLineTextPacket(const void* pkt, uint8_t* clueNumber, uint8_t* lineNumber, ClueLine_t* lineText)
 {
     int byteindex = 0;
     const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
     int numBytes = getReverseGeocachePacketSize(pkt);
 
     // Verify the packet identifier
-    if(getReverseGeocachePacketID(pkt) != getClueLinePacketID())
+    if(getReverseGeocachePacketID(pkt) != getClueLineTextPacketID())
         return 0;
 
-    if(numBytes < getClueLineMinDataLength())
+    if(numBytes < getClueLineTextMinDataLength())
         return 0;
 
     // Index of clue
@@ -1238,7 +1238,8 @@ int decodeClueLinePacket(const void* pkt, uint8_t* clueNumber, uint8_t* lineNumb
     *lineNumber = (uint8_t)uint8FromBytes(data, &byteindex);
 
     // Line data
-    stringFromBytes(lineText, data, &byteindex, 40, 0);
+    if(decodeClueLine_t(data, &byteindex, lineText) == 0)
+        return 0;
 
     return 1;
 }

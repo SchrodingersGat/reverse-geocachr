@@ -115,4 +115,104 @@ int decodeWaypoint_t(const uint8_t* data, int* bytecount, Waypoint_t* user)
 
 }// decodeWaypoint_t
 
+/*!
+ * \brief Encode a ClueLine_t structure into a byte array
+ *
+
+ * \param data points to the byte array to add encoded data to
+ * \param bytecount points to the starting location in the byte array, and will be incremented by the number of encoded bytes.
+ * \param user is the data to encode in the byte array
+ */
+void encodeClueLine_t(uint8_t* data, int* bytecount, const ClueLine_t* user)
+{
+    int byteindex = *bytecount;
+
+    stringToBytes(user->text, data, &byteindex, CLUE_LINE_LEN_MAX, 0);
+
+    *bytecount = byteindex;
+
+}// encodeClueLine_t
+
+/*!
+ * \brief Decode a ClueLine_t structure from a byte array
+ *
+
+ * \param data points to the byte array to decoded data from
+ * \param bytecount points to the starting location in the byte array, and will be incremented by the number of bytes decoded
+ * \param user is the data to decode from the byte array
+ * \return 1 if the data are decoded, else 0. If 0 is returned bytecount will not be updated.
+ */
+int decodeClueLine_t(const uint8_t* data, int* bytecount, ClueLine_t* user)
+{
+    int byteindex = *bytecount;
+
+    stringFromBytes(user->text, data, &byteindex, CLUE_LINE_LEN_MAX, 0);
+
+    *bytecount = byteindex;
+
+    return 1;
+
+}// decodeClueLine_t
+
+/*!
+ * \brief Encode a Clue_t structure into a byte array
+ *
+
+ * \param data points to the byte array to add encoded data to
+ * \param bytecount points to the starting location in the byte array, and will be incremented by the number of encoded bytes.
+ * \param user is the data to encode in the byte array
+ */
+void encodeClue_t(uint8_t* data, int* bytecount, const Clue_t* user)
+{
+    int byteindex = *bytecount;
+    int i = 0;
+
+    // Waypoint data
+    encodeWaypoint_t(data, &byteindex, &user->waypoint);
+
+    // Text data
+    for(i = 0; i < NUM_CLUE_LINES; i++)
+        encodeClueLine_t(data, &byteindex, &user->lines[i]);
+
+    // Clue checksum
+    uint32ToBeBytes((uint32_t)user->checksum, data, &byteindex);
+
+    *bytecount = byteindex;
+
+}// encodeClue_t
+
+/*!
+ * \brief Decode a Clue_t structure from a byte array
+ *
+
+ * \param data points to the byte array to decoded data from
+ * \param bytecount points to the starting location in the byte array, and will be incremented by the number of bytes decoded
+ * \param user is the data to decode from the byte array
+ * \return 1 if the data are decoded, else 0. If 0 is returned bytecount will not be updated.
+ */
+int decodeClue_t(const uint8_t* data, int* bytecount, Clue_t* user)
+{
+    int byteindex = *bytecount;
+    int i = 0;
+
+    // Waypoint data
+    if(decodeWaypoint_t(data, &byteindex, &user->waypoint) == 0)
+        return 0;
+
+    // Text data
+    for(i = 0; i < NUM_CLUE_LINES; i++)
+    {
+        if(decodeClueLine_t(data, &byteindex, &user->lines[i]) == 0)
+            return 0;
+    }
+
+    // Clue checksum
+    user->checksum = (uint32_t)uint32FromBeBytes(data, &byteindex);
+
+    *bytecount = byteindex;
+
+    return 1;
+
+}// decodeClue_t
+
 // end of boxdefines.c

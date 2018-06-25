@@ -12,6 +12,7 @@
           >
 
     <Include name="string.h" comment="C string manipulation function header" global="true"/>
+    <Include name='box_defines.h' comment='Pre-processor includes'/>
 
 	<Enum name="BoxStates" prefix="STATE_" comment="Box state machine enumeration">
 		<Value name="POWERON" value="0x01" comment="Initial system power-up"/>
@@ -86,6 +87,16 @@
         <Data name="threshold" inMemoryType="unsigned16" comment="Distance threshold (m)"/>
         <Data name="type" inMemoryType="unsigned8" comment="Clue type"/>
         <Data name="options" struct="ClueOptionBits" comment="Extra clue options"/>
+    </Structure>
+    
+    <Structure name="ClueLine" file="boxdefines">
+        <Data name="text" inMemoryType="string" array="CLUE_LINE_LEN_MAX"/>
+    </Structure>
+    
+    <Structure name="Clue" file="boxdefines">
+        <Data name="waypoint" struct="Waypoint" comment="Waypoint data"/>
+        <Data name="lines" struct="ClueLine" array="NUM_CLUE_LINES" comment="Text data"/>
+        <Data name="checksum" inMemoryType="unsigned32" comment="Clue checksum"/>
     </Structure>
 
     <!-- Commands -->
@@ -177,10 +188,10 @@
         <Data name="clueNumber" inMemoryType="unsigned8"/>
     </Packet>
 
-    <Packet name="ClueLine" ID="MSG_CLUE_LINE" file="boxpackets" parameterInterface="true">
+    <Packet name="ClueLineText" ID="MSG_CLUE_LINE" file="boxpackets" parameterInterface="true">
         <Data name="clueNumber" inMemoryType="unsigned8" comment="Index of clue"/>
         <Data name="lineNumber" inMemoryType="unsigned8" comment="Line number"/>
-        <Data name="lineText" inMemoryType="string" array="40" comment="Line data"/>
+        <Data name="lineText" struct="ClueLine" comment="Line data"/>
     </Packet>
 
     <Packet name="RequestClueLine" ID="MSG_CLUE_LINE" file="boxpackets" parameterInterface="true">

@@ -12,7 +12,7 @@ bool Box_DecodeMessage()
 	uint8_t clueNum;
 	uint8_t lineNum;
 
-	clue_line clueLine;
+	ClueLine_t clueLine;
 
 	if (decodeUnlockPacket(rxBuf))
 	{
@@ -73,7 +73,7 @@ bool Box_DecodeMessage()
 		// Request text for a particular line of a particular clue
 		//TODO
 	}
-	else if (decodeClueLinePacket(rxBuf, &clueNum, &clueNum, clueLine))
+	else if (decodeClueLineTextPacket(rxBuf, &clueNum, &clueNum, &clueLine))
 	{
 		// Set text for a particular line of a particular clue
 		//TODO

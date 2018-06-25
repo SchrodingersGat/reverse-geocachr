@@ -23,6 +23,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <string.h>	// C string manipulation function header
+#include "box_defines.h"	// Pre-processor includes
 
 //! \return the protocol API enumeration
 #define getReverseGeocacheApi() 1

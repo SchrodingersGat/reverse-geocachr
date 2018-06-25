@@ -402,25 +402,25 @@ int decodeRequestClueInfoPacket(const void* pkt, uint8_t* clueNumber);
 
 typedef struct
 {
-    uint8_t clueNumber;   //!< Index of clue
-    uint8_t lineNumber;   //!< Line number
-    char    lineText[40]; //!< Line data
-}ClueLine_t;
+    uint8_t    clueNumber; //!< Index of clue
+    uint8_t    lineNumber; //!< Line number
+    ClueLine_t lineText;   //!< Line data
+}ClueLineText_t;
 
-//! Create the ClueLine packet
-void encodeClueLinePacket(void* pkt, uint8_t clueNumber, uint8_t lineNumber, const char lineText[40]);
+//! Create the ClueLineText packet
+void encodeClueLineTextPacket(void* pkt, uint8_t clueNumber, uint8_t lineNumber, const ClueLine_t* lineText);
 
-//! Decode the ClueLine packet
-int decodeClueLinePacket(const void* pkt, uint8_t* clueNumber, uint8_t* lineNumber, char lineText[40]);
+//! Decode the ClueLineText packet
+int decodeClueLineTextPacket(const void* pkt, uint8_t* clueNumber, uint8_t* lineNumber, ClueLine_t* lineText);
 
-//! return the packet ID for the ClueLine packet
-#define getClueLinePacketID() (MSG_CLUE_LINE)
+//! return the packet ID for the ClueLineText packet
+#define getClueLineTextPacketID() (MSG_CLUE_LINE)
 
-//! return the minimum encoded length for the ClueLine packet
-#define getClueLineMinDataLength() (3)
+//! return the minimum encoded length for the ClueLineText packet
+#define getClueLineTextMinDataLength() (3)
 
-//! return the maximum encoded length for the ClueLine packet
-#define getClueLineMaxDataLength() (42)
+//! return the maximum encoded length for the ClueLineText packet
+#define getClueLineTextMaxDataLength() (CLUE_LINE_LEN_MAX+2)
 
 typedef struct
 {

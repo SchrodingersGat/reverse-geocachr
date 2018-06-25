@@ -114,6 +114,8 @@ USB_INTERFACE_DESCRIPTOR *find_IntfDesc(const uint8_t *pDesc, uint32_t intfClass
  */
 int main(void)
 {
+	Clue_t clue;
+
 	USBD_API_INIT_PARAM_T usb_param;
 	USB_CORE_DESCS_T desc;
 	ErrorCode_t ret = LPC_OK;
@@ -198,5 +200,16 @@ int main(void)
 	while (1)
 	{
 		PauseMs(100);
+
+		ReadClueFromMemory(&clue, settings.currentClue);
+
+		settings.currentClue++;
+		settings.currentClue %= BOX_ARRAY_SIZE;
+
+		/*if (clues[3].waypoint.lat > clues[2].waypoint.lng)
+		{
+			PauseMs(20);
+		}
+		*/
 	}
 }
