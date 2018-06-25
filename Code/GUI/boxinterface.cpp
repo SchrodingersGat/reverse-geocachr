@@ -473,15 +473,16 @@ bool Box::RequestClueHint(int clueIndex, Clue_t *c, int line)
 
         uint8_t index_tmp;
         uint8_t line_tmp;
-        clue_line text_tmp;
-        if (decodeClueLinePacket(rxBuf,&index_tmp,&line_tmp,text_tmp))
+        ClueLine_t text_tmp;
+
+        if (decodeClueLineTextPacket(rxBuf, &index_tmp, &line_tmp, &text_tmp))
         {
             //Extract clue line text
             if ((index_tmp == clueIndex) &&
                 (line_tmp == line))
             {
                 //Copy the text data acrosss
-                memcpy(c->lines[line],text_tmp,sizeof(clue_line));
+                c->lines[line] = text_tmp;
             }
 
             return true;
@@ -534,7 +535,7 @@ bool Box::SetClueHint(int clueIndex, Clue_t *c, int line)
 
     txBuf[i++] = 0;
 
-    encodeClueLinePacket(&txBuf[1],clueIndex,line,c->lines[line]);
+    encodeClueLineTextPacket(&txBuf[1], clueIndex, line, &c->lines[line]);
 
     res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
 
@@ -629,7 +630,8 @@ bool Box::SetNumberOfClues(int nClues)
 {
     Debug("Setting number of clues - " + QString::number(nClues));
 
-    if (nClues < 0 || nClues > MAX_CLUES) {
+    if (nClues < 0 || nClues > BOX_MAX_CLUES)
+    {
         Debug("Number of clues invalid");
         return false;
     }
@@ -638,7 +640,8 @@ bool Box::SetNumberOfClues(int nClues)
 
     int i = 0;
 
-    if (HIDConnect() == false) {
+    if (HIDConnect() == false)
+    {
         return false;
     }
 
@@ -647,17 +650,20 @@ bool Box::SetNumberOfClues(int nClues)
 
     res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
 
-    if (res != (HID_REPORT_SIZE + 1)) {
+    if (res != (HID_REPORT_SIZE + 1))
+    {
         Debug("HIDWrite failed");
         return false;
     }
 
-    if (!RequestBoxInfo()) {
+    if (!RequestBoxInfo())
+    {
         Debug("RequestBoxInfo failed");
         return false;
     }
 
-    if (nClues != boxStatus.totalClues) {
+    if (nClues != boxSettings.totalClues)
+    {
         Debug("Clue count mismatch " + QString::number(nClues));
         return false;
     }

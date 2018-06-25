@@ -15,7 +15,7 @@ void Clue_Init(Clue_t *clue)
     {
         for (j = 0; j < CLUE_LINE_LEN_MAX; j++)
         {
-            clue->lines[i][j] = 0; //zero-out the text
+            clue->lines[i].text[j] = 0; //zero-out the text
         }
     }
 }
@@ -140,13 +140,13 @@ void Clue_SetLine(Clue_t *c, uint8_t line, char *text)
 
 		if (endFound == 1)
 		{
-			c->lines[line][i] = 0;
+            c->lines[line].text[i] = 0;
 		} else
 		{
-			c->lines[line][i] = text[i];
+            c->lines[line].text[i] = text[i];
 		}
 	}
 
 	//Always zero-terminate!
-	c->lines[line][CLUE_LINE_LEN_MAX-1] = 0;
+    c->lines[line].text[CLUE_LINE_LEN_MAX-1] = 0;
 }

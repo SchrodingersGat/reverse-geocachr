@@ -303,7 +303,7 @@ void ClueList::SaveClue(QSettings &settings, Clue_t clue, int clueId)
 
     for (int i = 0; i < NUM_CLUE_LINES; i++)
     {
-        QString line(clue.lines[i]);
+        QString line(clue.lines[i].text);
         settings.setValue("Line_" + QString::number(i), line);
     }
 }
@@ -406,7 +406,7 @@ void ClueList::LoadClue(QSettings &settings, Clue_t &clue, int clueId)
 
         for (int j = 0; j < bytes.count() && j < CLUE_LINE_LEN_MAX; j++)
         {
-            clue.lines[i][j] = (char) bytes.at(j);
+            clue.lines[i].text[j] = (char) bytes.at(j);
         }
     }
 
@@ -461,12 +461,14 @@ void Clue_SetLineText(Clue_t *c, uint8_t line, QString text)
 
     for (int i=0;i<CLUE_LINE_LEN_MAX;i++)
     {
-        if (i >= text.count()) c->lines[line][i] = 0;
-        else c->lines[line][i] = (uint8_t) text.at(i).toLatin1();
+        if (i >= text.count())
+            c->lines[line].text[i] = 0;
+        else
+            c->lines[line].text[i] = (uint8_t) text.at(i).toLatin1();
     }
 
     //ensure the last char is zero-terminated
-    c->lines[line][CLUE_LINE_LEN_MAX - 1] = 0;
+    c->lines[line].text[CLUE_LINE_LEN_MAX - 1] = 0;
 }
 
 QString Clue_GetLineText(Clue_t *c, uint8_t line)
@@ -477,9 +479,9 @@ QString Clue_GetLineText(Clue_t *c, uint8_t line)
 
     for (int i=0;i<CLUE_LINE_LEN_MAX;i++)
     {
-        if (c->lines[line][i] != 0)
+        if (c->lines[line].text[i] != 0)
         {
-            text.append(QChar((char) c->lines[line][i]));
+            text.append(QChar((char) c->lines[line].text[i]));
         }
     }
 

@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-#include "box_defines.h"
+#include "boxdefines.h"
 
 #ifdef __cplusplus
 extern "C" {

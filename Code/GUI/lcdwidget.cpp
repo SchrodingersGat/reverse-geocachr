@@ -69,7 +69,7 @@ void LCDWidget::DrawClue(QPainter *painter)
         opt = 0;
         x = LINE_X_OFFSET;
 
-        QString line = QString::fromLocal8Bit(clue->lines[i]);
+        QString line = QString::fromLocal8Bit(clue->lines[i].text);
 
         if (i >= 7) break;
 

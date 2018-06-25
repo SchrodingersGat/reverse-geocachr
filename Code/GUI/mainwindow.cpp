@@ -221,7 +221,7 @@ bool MainWindow::downloadAllClues() {
 
     downloadProgress = new QProgressDialog("Downloading Clues ...", "Cancel",
                                            0,
-                                           box.boxStatus.totalClues + 2,
+                                           box.boxSettings.totalClues + 2,
                                            this);
 
     downloadProgress->setWindowModality(Qt::WindowModal);
@@ -340,7 +340,7 @@ bool MainWindow::uploadAllClues()
 
     downloadProgress = new QProgressDialog("Uploading Clues ...","Cancel",
                                            0,
-                                           box.boxStatus.totalClues + 2,
+                                           box.boxSettings.totalClues + 2,
                                            this);
 
     downloadProgress->setWindowModality(Qt::WindowModal);
@@ -382,7 +382,7 @@ bool MainWindow::uploadAllClues()
     Clue_t c;
 
 
-    for (int i = 0; i < box.boxStatus.totalClues; i++)
+    for (int i = 0; i < box.boxSettings.totalClues; i++)
     {
         if (!uploading) {
             cancelUploadDownload();
@@ -579,7 +579,7 @@ void MainWindow::refreshDisplay()
                     QString::number(box.boxVersion.versionMajor) + "." +
                     QString::number(box.boxVersion.versionMinor));
 
-        ui->nBoxClues->setText(QString::number(box.boxStatus.totalClues));
+        ui->nBoxClues->setText(QString::number(box.boxSettings.totalClues));
     }
 
     ui->boxStatus->setText(connectionString);
@@ -587,7 +587,7 @@ void MainWindow::refreshDisplay()
     QString s = "Box not connected";
 
     if (box.connected) {
-        switch (box.boxStatus.currentClue) {
+        switch (box.boxSettings.currentClue) {
         case BOX_WELCOME_MSG:
             s = "Welcome Message";
             break;
@@ -595,7 +595,7 @@ void MainWindow::refreshDisplay()
             s = "Completion Message";
             break;
         default:
-            s = "Clue " + QString::number(box.boxStatus.currentClue) + " of " + QString::number(box.boxStatus.totalClues);
+            s = "Clue " + QString::number(box.boxSettings.currentClue) + " of " + QString::number(box.boxSettings.totalClues);
             break;
         }
     }
@@ -712,7 +712,7 @@ void MainWindow::newMarkerRequested(double lat, double lng) {
     QMessageBox mb;
     mb.setStandardButtons(QMessageBox::Ok);
 
-    if (box.boxStatus.totalClues >= BOX_MAX_CLUES){
+    if (box.boxSettings.totalClues >= BOX_MAX_CLUES){
         mb.setWindowTitle("Maximum Clues Reached");
         mb.setText("You have reached the maximum number of clues");
 
