@@ -197,11 +197,18 @@ int main(void)
 		EE_WriteSettings();
 	}
 
+	ReadCluesFromMemory();
+
 	while (1)
 	{
 		PauseMs(100);
 
-		ReadClueFromMemory(&clue, settings.currentClue);
+		for (int i=0; i < BOX_MAX_CLUES; i++)
+		{
+			ReadClueFromMemory(&currentClue, i);
+		}
+
+		ReadClueFromMemory(&currentClue, settings.currentClue);
 
 		settings.currentClue++;
 		settings.currentClue %= BOX_ARRAY_SIZE;

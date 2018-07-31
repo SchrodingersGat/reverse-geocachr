@@ -13,7 +13,7 @@
 // Size of EEPROM memory
 #define EE_SIZE 4096
 
-#define EE_BUFFER_OFFSET 512
+#define EE_BUFFER_OFFSET 1024
 
 // Double-buffer the device settings
 

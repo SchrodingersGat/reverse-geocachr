@@ -2,6 +2,8 @@
 #include "types.h"
 #include "boxpackets.h"
 #include "box_defines.h"
+#include "waypoints.h"
+#include "eemem.h"
 
 bool Box_DecodeMessage()
 {
@@ -14,6 +16,8 @@ bool Box_DecodeMessage()
 
 	ClueLine_t clueLine;
 
+	Clue_t tmpClue;
+
 	if (decodeUnlockPacket(rxBuf))
 	{
 		//TODO - Unlock the box
@@ -24,15 +28,36 @@ bool Box_DecodeMessage()
 	}
 	else if (decodeNextCluePacket(rxBuf))
 	{
-		//TODO - Progress to the next clue
+		if (settings.currentClue <= settings.totalClues)
+		{
+			if (ReadClueFromMemory(&currentClue, settings.currentClue + 1))
+			{
+				settings.currentClue++;
+
+				EE_WriteSettings();
+			}
+		}
 	}
 	else if (decodePrevCluePacket(rxBuf))
 	{
-		//TODO - Go to the previous clue
+		if (settings.currentClue > 0)
+		{
+			if (ReadClueFromMemory(&currentClue, settings.currentClue - 1))
+			{
+				settings.currentClue--;
+
+				EE_WriteSettings();
+			}
+		}
 	}
 	else if (decodeFirstCluePacket(rxBuf))
 	{
-		//TODO - Go to the first clue
+		if (ReadClueFromMemory(&currentClue, 0))
+		{
+			settings.currentClue = 0;
+
+			EE_WriteSettings();
+		}
 	}
 	else if (decodeLastCluePacket(rxBuf))
 	{
@@ -60,18 +85,25 @@ bool Box_DecodeMessage()
 	}
 	else if (decodeRequestClueInfoPacket(rxBuf, &clueNum))
 	{
-		// Request information on a particular clue
-		//TODO
+		if (ReadClueFromMemory(&tmpClue, clueNum))
+		{
+			encodeClueInfoPacket(txBuf, clueNum, &tmpClue.waypoint);
+			response = true;
+		}
 	}
 	else if (decodeClueInfoPacket(rxBuf, &clueNum, &waypoint))
 	{
+
 		// Set clue information
 		//TODO
 	}
 	else if (decodeRequestClueLinePacket(rxBuf, &clueNum, &lineNum))
 	{
-		// Request text for a particular line of a particular clue
-		//TODO
+		if (ReadClueFromMemory(&tmpClue, clueNum))
+		{
+			encodeClueLineTextPacket(txBuf, clueNum, lineNum, &tmpClue.lines[lineNum]);
+			response = true;
+		}
 	}
 	else if (decodeClueLineTextPacket(rxBuf, &clueNum, &clueNum, &clueLine))
 	{
@@ -83,8 +115,6 @@ bool Box_DecodeMessage()
 		// Set the total number of clues
 		//TODO
 	}
-
-
 
 	return response;
 }

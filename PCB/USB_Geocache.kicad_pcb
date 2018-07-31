@@ -33,7 +33,7 @@
   )
 
   (setup
-    (last_trace_width 0.508)
+    (last_trace_width 0.254)
     (user_trace_width 0.3048)
     (user_trace_width 0.381)
     (user_trace_width 0.508)
@@ -61,10 +61,10 @@
     (pad_size 1 1)
     (pad_drill 0.65)
     (pad_to_mask_clearance 0)
-    (aux_axis_origin 0 0)
+    (aux_axis_origin 177.55 100.06)
     (visible_elements 7FFDFF7F)
     (pcbplotparams
-      (layerselection 0x010f0_80000007)
+      (layerselection 0x010f0_ffffffff)
       (usegerberextensions true)
       (usegerberattributes false)
       (usegerberadvancedattributes false)
