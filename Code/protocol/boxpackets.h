@@ -305,6 +305,27 @@ int decodeBoxSettingsPacket(const void* pkt, uint8_t* totalClues, uint8_t* curre
 //! return the maximum encoded length for the BoxSettings packet
 #define getBoxSettingsMaxDataLength() (38)
 
+typedef struct
+{
+    uint16_t pwmLocked;  
+    uint16_t pwmUnlocked;
+}SetBoxSettings_t;
+
+//! Create the SetBoxSettings packet
+void encodeSetBoxSettingsPacket(void* pkt, uint16_t pwmLocked, uint16_t pwmUnlocked);
+
+//! Decode the SetBoxSettings packet
+int decodeSetBoxSettingsPacket(const void* pkt, uint16_t* pwmLocked, uint16_t* pwmUnlocked);
+
+//! return the packet ID for the SetBoxSettings packet
+#define getSetBoxSettingsPacketID() (MSG_SYSTEM_SETTINGS)
+
+//! return the minimum encoded length for the SetBoxSettings packet
+#define getSetBoxSettingsMinDataLength() (4)
+
+//! return the maximum encoded length for the SetBoxSettings packet
+#define getSetBoxSettingsMaxDataLength() (4)
+
 //! Create the RequestBoxSettings packet
 void encodeRequestBoxSettingsPacket(void* pkt);
 

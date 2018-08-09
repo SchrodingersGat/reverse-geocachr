@@ -892,6 +892,56 @@ int decodeBoxSettingsPacket(const void* pkt, uint8_t* totalClues, uint8_t* curre
 }
 
 /*!
+ * \brief Create the SetBoxSettings packet
+ *
+
+ * \param pkt points to the packet which will be created by this function
+ * \param pwmLocked is 
+ * \param pwmUnlocked is 
+ */
+void encodeSetBoxSettingsPacket(void* pkt, uint16_t pwmLocked, uint16_t pwmUnlocked)
+{
+    uint8_t* data = getReverseGeocachePacketData(pkt);
+    int byteindex = 0;
+
+    uint16ToBeBytes((uint16_t)pwmLocked, data, &byteindex);
+
+    uint16ToBeBytes((uint16_t)pwmUnlocked, data, &byteindex);
+
+    // complete the process of creating the packet
+    finishReverseGeocachePacket(pkt, byteindex, getSetBoxSettingsPacketID());
+}
+
+/*!
+ * \brief Decode the SetBoxSettings packet
+ *
+
+ * \param pkt points to the packet being decoded by this function
+ * \param pwmLocked receives 
+ * \param pwmUnlocked receives 
+ * \return 0 is returned if the packet ID or size is wrong, else 1
+ */
+int decodeSetBoxSettingsPacket(const void* pkt, uint16_t* pwmLocked, uint16_t* pwmUnlocked)
+{
+    int byteindex = 0;
+    const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
+    int numBytes = getReverseGeocachePacketSize(pkt);
+
+    // Verify the packet identifier
+    if(getReverseGeocachePacketID(pkt) != getSetBoxSettingsPacketID())
+        return 0;
+
+    if(numBytes < getSetBoxSettingsMinDataLength())
+        return 0;
+
+    *pwmLocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
+
+    *pwmUnlocked = (uint16_t)uint16FromBeBytes(data, &byteindex);
+
+    return 1;
+}
+
+/*!
  * \brief Create the RequestBoxSettings packet
  *
 

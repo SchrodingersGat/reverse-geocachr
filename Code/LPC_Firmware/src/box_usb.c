@@ -18,6 +18,8 @@ bool Box_DecodeMessage()
 
 	uint32_t chk;
 
+	BoxSettings_t tmpSettings;
+
 	ClueLine_t clueLine;
 
 	if (decodeUnlockPacket(rxBuf))
@@ -67,11 +69,21 @@ bool Box_DecodeMessage()
 	/*
 	 * Request box settings
 	 */
+	else if (decodeSetBoxSettingsPacket(rxBuf, &tmpSettings.pwmLocked, &tmpSettings.pwmUnlocked))
+	{
+		verifyBoxSettings_t(&tmpSettings);
+
+		settings.pwmLocked = tmpSettings.pwmLocked;
+		settings.pwmUnlocked = tmpSettings.pwmUnlocked;
+
+		EE_WriteSettings();
+	}
 	else if (decodeRequestBoxSettingsPacket(rxBuf))
 	{
 		encodeBoxSettingsPacketStructure(txBuf, &settings);
 		response = true;
 	}
+
 	// Request box version information
 	else if (decodeRequestBoxVersionPacket(rxBuf))
 	{
@@ -80,6 +92,7 @@ bool Box_DecodeMessage()
 				VERSION_MAJOR,
 				VERSION_MINOR,
 				VERSION_PCB);
+
 		response = true;
 
 	}

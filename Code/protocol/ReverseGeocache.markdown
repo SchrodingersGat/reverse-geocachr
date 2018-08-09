@@ -281,6 +281,19 @@ USB Packet types
 | 6...37 | 5)password    | Zero-terminated string up to 32 bytes         || Password.                        |
 
 
+## <a name="MSG_SYSTEM_SETTINGS"></a>SetBoxSettings packet
+
+- packet identifier: `MSG_SYSTEM_SETTINGS` : 161
+- data length: 4
+
+
+[SetBoxSettings packet bytes]
+| Bytes | Name          | [Enc](#Enc) | Repeat | Description |
+| ----- | ------------- | :---------: | :----: | ----------- |
+| 0...1 | 1)pwmLocked   | U16         | 1      |             |
+| 2...3 | 2)pwmUnlocked | U16         | 1      |             |
+
+
 ## <a name="MSG_SYSTEM_SETTINGS"></a>RequestBoxSettings packet
 
 - packet identifier: `MSG_SYSTEM_SETTINGS` : 161
