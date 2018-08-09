@@ -30,48 +30,51 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    downloading = false;
-    uploading = false;
+    box.downloading = false;
+    box.uploading = false;
 
     clueTableBusy = false;
 
-    connect(ui->webView->page()->mainFrame(),SIGNAL(javaScriptWindowObjectCleared()),
+    connect(ui->webView->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
             this,
             SLOT(jsCleared()));
 
-    connect(ui->saveButton,SIGNAL(released()),this,SLOT(saveClues()));
-    connect(ui->loadButton,SIGNAL(released()),this,SLOT(loadClues()));
-    connect(ui->pushButton,SIGNAL(released()),this,SLOT(clearMap()));
-    connect(ui->fitMap,SIGNAL(released()),this,SLOT(jsFitMapToClues()));
+    connect(ui->saveButton, SIGNAL(released()), this, SLOT(saveClues()));
+    connect(ui->loadButton, SIGNAL(released()), this, SLOT(loadClues()));
+    connect(ui->pushButton, SIGNAL(released()), this, SLOT(clearMap()));
+    connect(ui->fitMap, SIGNAL(released()), this, SLOT(jsFitMapToClues()));
 
-    connect(ui->selectFirst,SIGNAL(released()),&clues,SLOT(SelectFirst()));
-    connect(ui->selectLast,SIGNAL(released()),&clues,SLOT(SelectLast()));
-    connect(ui->selectNext,SIGNAL(released()),&clues,SLOT(SelectNext()));
-    connect(ui->selectPrev,SIGNAL(released()),&clues,SLOT(SelectPrev()));
+    connect(ui->selectFirst, SIGNAL(released()), &clues, SLOT(SelectFirst()));
+    connect(ui->selectLast, SIGNAL(released()), &clues, SLOT(SelectLast()));
+    connect(ui->selectNext, SIGNAL(released()), &clues, SLOT(SelectNext()));
+    connect(ui->selectPrev, SIGNAL(released()), &clues, SLOT(SelectPrev()));
 
-    connect(ui->setThreshold,SIGNAL(released()),this,SLOT(setThreshold()));
+    connect(ui->setThreshold, SIGNAL(released()), this, SLOT(setThreshold()));
 
-    connect(ui->moveDown,SIGNAL(released()),&clues,SLOT(MoveClueDown()));
-    connect(ui->moveUp,SIGNAL(released()),&clues,SLOT(MoveClueUp()));
-    connect(ui->makeFirst,SIGNAL(released()),&clues,SLOT(MoveClueFirst()));
-    connect(ui->makeLast,SIGNAL(released()),&clues,SLOT(MoveClueLast()));
+    connect(ui->moveDown, SIGNAL(released()), &clues, SLOT(MoveClueDown()));
+    connect(ui->moveUp, SIGNAL(released()), &clues, SLOT(MoveClueUp()));
+    connect(ui->makeFirst, SIGNAL(released()), &clues, SLOT(MoveClueFirst()));
+    connect(ui->makeLast, SIGNAL(released()), &clues, SLOT(MoveClueLast()));
 
     //Box commands
-    connect(ui->boxUnlock,SIGNAL(released()),&box,SLOT(Unlock()));
-    connect(ui->boxLock,SIGNAL(released()),&box,SLOT(Lock()));
-    connect(ui->boxSkipToNextClue,SIGNAL(released()),&box,SLOT(SkipToNext()));
-    connect(ui->boxSkipToPrevClue,SIGNAL(released()),&box,SLOT(SkipToPrevious()));
-    connect(ui->boxUpload,SIGNAL(released()),this,SLOT(uploadClues()));
-    connect(ui->boxDownload,SIGNAL(released()),this,SLOT(downloadClues()));
+    connect(ui->boxUnlock, SIGNAL(released()), &box, SLOT(Unlock()));
+    connect(ui->boxLock, SIGNAL(released()), &box, SLOT(Lock()));
+    connect(ui->boxSkipToNextClue, SIGNAL(released()), &box, SLOT(SkipToNext()));
+    connect(ui->boxSkipToPrevClue, SIGNAL(released()), &box, SLOT(SkipToPrevious()));
+    connect(ui->boxUpload, SIGNAL(released()), this, SLOT(uploadClues()));
+    connect(ui->boxDownload, SIGNAL(released()), this, SLOT(downloadClues()));
 
     connect(ui->bootload, SIGNAL(released()), this, SLOT(bootload()));
     connect(ui->clearText, SIGNAL(released()), this, SLOT(clearText()));
 
-    connect(&clues,SIGNAL(clueUpdated()),this,SLOT(updateClues()));
+    connect(ui->setClosedPwm, SIGNAL(released()), this, SLOT(setPosLimits()));
+    connect(ui->setOpenPwm, SIGNAL(released()), this, SLOT(setPosLimits()));
+
+    connect(&clues, SIGNAL(clueUpdated()), this, SLOT(updateClues()));
 
     setupClueTable();
 
-    connect(ui->clueTable,SIGNAL(itemChanged(QTableWidgetItem*)),this,SLOT(cluesEdited(QTableWidgetItem*)));
+    connect(ui->clueTable, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(cluesEdited(QTableWidgetItem*)));
 
     QUrl url("qrc:/mapview.html");
 
@@ -87,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
     box.start();
 
     refreshTimer = new QTimer(this);
-    connect(refreshTimer,SIGNAL(timeout()),this,SLOT(refreshDisplay()));
+    connect(refreshTimer, SIGNAL(timeout()), this, SLOT(refreshDisplay()));
     refreshTimer->start(500); //2Hz
 
     //Add options to clue type box
@@ -98,8 +101,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->clueType->addItem("Show heading (deg)");
     ui->clueType->addItem("Cardinal directions");
 
-    connect(ui->clueType,SIGNAL(currentIndexChanged(int)),this,SLOT(clueTypeChanged(int)));
-    connect(ui->centerText,SIGNAL(released()),this,SLOT(clueOptionsChanged()));
+    connect(ui->clueType, SIGNAL(currentIndexChanged(int)), this, SLOT(clueTypeChanged(int)));
+    connect(ui->centerText, SIGNAL(released()), this, SLOT(clueOptionsChanged()));
 
     ui->clueTable->clear();
 
@@ -131,8 +134,8 @@ void MainWindow::incrementProgress()
 
 void MainWindow::cancelUploadDownload()
 {
-    downloading = false;
-    uploading = false;
+    box.downloading = false;
+    box.uploading = false;
 
     if (downloadProgress != NULL && downloadProgress->isVisible())
     {
@@ -143,13 +146,14 @@ void MainWindow::cancelUploadDownload()
 
 void MainWindow::downloadClues()
 {
-    if (downloading || uploading) return;
+    if (box.downloading || box.uploading) return;
 
     if (!box.connected) return;
 
     QMessageBox confirm;
 
-    if (clues.ClueCount() == 0){
+    if (clues.ClueCount() == 0)
+    {
         confirm.setWindowTitle("No Clues!");
         confirm.setText("Make some clues before downloading");
         confirm.setStandardButtons(QMessageBox::Ok);
@@ -172,10 +176,13 @@ void MainWindow::downloadClues()
     QMessageBox mb;
     mb.setStandardButtons(QMessageBox::Ok);
 
-    if (!res) {
+    if (!res)
+    {
         mb.setWindowTitle("Download Failed");
         mb.setText("Error downloading clues to box");
-    } else {
+    }
+    else
+    {
         mb.setWindowTitle("Download Success");
         mb.setText("Clues were successfully downloaded to box");
     }
@@ -215,22 +222,26 @@ void MainWindow::bootload()
     }
 }
 
-bool MainWindow::downloadAllClues() {
-
-    downloading = true;
+bool MainWindow::downloadAllClues()
+{
+    box.downloading = true;
 
     downloadProgress = new QProgressDialog("Downloading Clues ...", "Cancel",
                                            0,
-                                           box.boxSettings.totalClues + 2,
+                                           box.settings.totalClues + 2,
                                            this);
 
     downloadProgress->setWindowModality(Qt::WindowModal);
 
-    connect(downloadProgress,SIGNAL(canceled()),this,SLOT(cancelUploadDownload()));
-    connect(downloadProgress,SIGNAL(rejected()),this,SLOT(cancelUploadDownload()));
-    connect(downloadProgress,SIGNAL(accepted()),this,SLOT(cancelUploadDownload()));
+    connect(downloadProgress, SIGNAL(canceled()), this, SLOT(cancelUploadDownload()));
+    connect(downloadProgress, SIGNAL(rejected()), this, SLOT(cancelUploadDownload()));
+    connect(downloadProgress, SIGNAL(accepted()), this, SLOT(cancelUploadDownload()));
 
     downloadProgress->show();
+
+    downloadProgress->setValue(0);
+
+    incrementProgress();
 
     bool result = true;
     int TRIES = 5;
@@ -249,7 +260,8 @@ bool MainWindow::downloadAllClues() {
     //Write the WELCOME message
     result = box.WriteClueData(BOX_WELCOME_MSG, &clues.welcomeMessage, TRIES);
 
-    if (!result) {
+    if (!result)
+    {
         cancelUploadDownload();
         return false;
     }
@@ -268,15 +280,18 @@ bool MainWindow::downloadAllClues() {
 
     //Go through all the waypoints
 
-    for (int i=0;i<clues.ClueCount();i++) {
-        if (!downloading) {
+    for (int i=1; i<=clues.ClueCount(); i++)
+    {
+        if (!box.downloading)
+        {
             cancelUploadDownload();
             return false;
         }
 
-        result = box.WriteClueData(i+1, clues.GetClueAtIndex(i+1),TRIES);
+        result = box.WriteClueData(i, clues.GetClueAtIndex(i), TRIES);
 
-        if (!result) {
+        if (!result)
+        {
             cancelUploadDownload();
             return false;
         }
@@ -301,7 +316,7 @@ bool MainWindow::downloadAllClues() {
 
 void MainWindow::uploadClues()
 {
-    if (downloading || uploading) return;
+    if (box.downloading || box.uploading) return;
 
     if (!box.connected) return;
 
@@ -336,18 +351,18 @@ void MainWindow::uploadClues()
 
 bool MainWindow::uploadAllClues()
 {
-    uploading = true;
+    box.uploading = true;
 
-    downloadProgress = new QProgressDialog("Uploading Clues ...","Cancel",
+    downloadProgress = new QProgressDialog("Uploading Clues ...", "Cancel",
                                            0,
-                                           box.boxSettings.totalClues + 2,
+                                           box.settings.totalClues + 2,
                                            this);
 
     downloadProgress->setWindowModality(Qt::WindowModal);
 
-    connect(downloadProgress,SIGNAL(canceled()),this,SLOT(cancelUploadDownload()));
-    connect(downloadProgress,SIGNAL(rejected()),this,SLOT(cancelUploadDownload()));
-    connect(downloadProgress,SIGNAL(accepted()),this,SLOT(cancelUploadDownload()));
+    connect(downloadProgress, SIGNAL(canceled()), this, SLOT(cancelUploadDownload()));
+    connect(downloadProgress, SIGNAL(rejected()), this, SLOT(cancelUploadDownload()));
+    connect(downloadProgress, SIGNAL(accepted()), this, SLOT(cancelUploadDownload()));
 
     downloadProgress->show();
 
@@ -360,7 +375,7 @@ bool MainWindow::uploadAllClues()
 
     //Read out the 'welcome' message
 
-    result = box.ReadClueData(BOX_WELCOME_MSG,&clues.welcomeMessage,TRIES);
+    result = box.ReadClueData(BOX_WELCOME_MSG, &clues.welcomeMessage, TRIES);
 
     if (!result) {
         cancelUploadDownload();
@@ -370,7 +385,7 @@ bool MainWindow::uploadAllClues()
     incrementProgress();
 
     //Read out the completion message
-    result = box.ReadClueData(BOX_COMPLETE_MSG,&clues.completeMessage,TRIES);
+    result = box.ReadClueData(BOX_COMPLETE_MSG, &clues.completeMessage, TRIES);
 
     if (!result) {
         cancelUploadDownload();
@@ -382,9 +397,10 @@ bool MainWindow::uploadAllClues()
     Clue_t c;
 
 
-    for (int i = 0; i < box.boxSettings.totalClues; i++)
+    for (int i = 0; i < box.settings.totalClues; i++)
     {
-        if (!uploading) {
+        if (!box.uploading)
+        {
             cancelUploadDownload();
             return false;
         }
@@ -393,7 +409,8 @@ bool MainWindow::uploadAllClues()
 
         result = box.ReadClueData(i+1, &c, TRIES);
 
-        if (!result) {
+        if (!result)
+        {
             cancelUploadDownload();
             return false;
         }
@@ -421,7 +438,7 @@ void MainWindow::setupClueTable()
 
     ui->clueTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    for (int i=0;i<7;i++)
+    for (int i=0; i<7; i++)
     {
         QTableWidgetItem *item = new QTableWidgetItem("");
         ui->clueTable->setItem(i,0,item);
@@ -433,6 +450,8 @@ void MainWindow::setupClueTable()
 
 void MainWindow::cluesEdited(QTableWidgetItem *item)
 {
+    Q_UNUSED(item);
+
     if (!clueTableBusy)
     {
         saveCurrentClue();
@@ -565,6 +584,9 @@ void MainWindow::refreshDisplay()
         ui->boxCharge->setText("---");
         ui->boxVersion->setText("---");
         ui->nBoxClues->setText("---");
+
+        ui->closedPwm->setText("---");
+        ui->openPwm->setText("---");
     }
     else
     {
@@ -572,22 +594,27 @@ void MainWindow::refreshDisplay()
         //various messages depending on box status
 
         //Charge indicator
-        ui->boxCharge->setText(QString::number(box.boxStatus.charge) + "%");
+        ui->boxCharge->setText(QString::number(box.status.charge) + "%");
 
         //Firmware info
         ui->boxVersion->setText(
-                    QString::number(box.boxVersion.versionMajor) + "." +
-                    QString::number(box.boxVersion.versionMinor));
+                    QString::number(box.version.versionMajor) + "." +
+                    QString::number(box.version.versionMinor));
 
-        ui->nBoxClues->setText(QString::number(box.boxSettings.totalClues));
+        ui->nBoxClues->setText(QString::number(box.settings.totalClues));
+
+        ui->closedPwm->setText(QString::number(box.settings.pwmLocked));
+        ui->openPwm->setText(QString::number(box.settings.pwmUnlocked));
     }
 
     ui->boxStatus->setText(connectionString);
 
     QString s = "Box not connected";
 
-    if (box.connected) {
-        switch (box.boxSettings.currentClue) {
+    if (box.connected)
+    {
+        switch (box.settings.currentClue)
+        {
         case BOX_WELCOME_MSG:
             s = "Welcome Message";
             break;
@@ -595,7 +622,7 @@ void MainWindow::refreshDisplay()
             s = "Completion Message";
             break;
         default:
-            s = "Clue " + QString::number(box.boxSettings.currentClue) + " of " + QString::number(box.boxSettings.totalClues);
+            s = "Clue " + QString::number(box.settings.currentClue) + " of " + QString::number(box.settings.totalClues);
             break;
         }
     }
@@ -712,7 +739,7 @@ void MainWindow::newMarkerRequested(double lat, double lng) {
     QMessageBox mb;
     mb.setStandardButtons(QMessageBox::Ok);
 
-    if (box.boxSettings.totalClues >= BOX_MAX_CLUES){
+    if (box.settings.totalClues >= BOX_MAX_CLUES){
         mb.setWindowTitle("Maximum Clues Reached");
         mb.setText("You have reached the maximum number of clues");
 
@@ -757,8 +784,65 @@ void MainWindow::clueDeleted(int clue)
     updateClues();
 }
 
+
+void MainWindow::setPosLimits()
+{
+    auto* src = sender();
+
+    auto tmpSettings = box.settings;
+
+    bool ok = false;
+
+    if (src == ui->setClosedPwm)
+    {
+        tmpSettings.pwmLocked = QInputDialog::getInt(0,
+                                                     "Set Closed Position",
+                                                     "Set servo position for closed position (us)",
+                                                     tmpSettings.pwmLocked,
+                                                     500,
+                                                     2500,
+                                                     1,
+                                                     &ok);
+    }
+    else if (src == ui->setOpenPwm)
+    {
+        tmpSettings.pwmUnlocked = QInputDialog::getInt(0,
+                                                       "Set Open Positon",
+                                                       "Set servo position for open position (us)",
+                                                       tmpSettings.pwmUnlocked,
+                                                       500,
+                                                       2500,
+                                                       1,
+                                                       &ok);
+    }
+    else
+    {
+        return;
+    }
+
+    if (ok)
+    {
+        int tries = 5;
+
+        while (tries > 0)
+        {
+            if (box.WriteSettings(tmpSettings))
+            {
+                break;
+            }
+
+            Sleep(20);
+
+            tries--;
+        }
+    }
+}
+
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    Q_UNUSED(event);
+
     //Stop the box thread
     box.running = false;
     box.wait();

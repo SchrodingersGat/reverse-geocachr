@@ -23,6 +23,8 @@ LCDWidget::LCDWidget(QWidget *parent) : QWidget(parent)
 
 void LCDWidget::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event);
+
     QPainter painter(this);
 
     painter.fillRect(0,0,LCD_W,LCD_H,bgColor);

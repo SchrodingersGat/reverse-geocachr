@@ -75,6 +75,7 @@ extern ClueList clues;
 //Other waypoint functions
 void Clue_SetLineText(Clue_t *c, uint8_t line, QString text);
 QString Clue_GetLineText(Clue_t *c, uint8_t line);
+QString Clue_GetLineText(ClueLine_t line);
 QString escapeClueString(QString text);
 
 #endif // CLUE_LIST_H

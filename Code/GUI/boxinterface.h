@@ -14,6 +14,7 @@
 
 #include "box_defines.h"
 
+
 class Box : public QThread
 {
     Q_OBJECT
@@ -21,21 +22,31 @@ class Box : public QThread
 public:
     Box();
 
-    BoxStatus_t boxStatus;
-    BoxSettings_t boxSettings;
-    BoxVersion_t boxVersion;
+    // Box variables
+    BoxStatus_t status;
+    BoxSettings_t settings;
+    BoxVersion_t version;
 
-    //USB Specific stuff
-    volatile bool running;
-    bool connected;
+    // Cancel upload / download
+    void cancel()
+    {
+        uploading = false;
+        downloading = false;
+    }
 
-private:
+    bool connected = false;
+    bool uploading = false;
+    bool downloading = false;
+    bool running = false;
+
+protected:
+
+    hid_device* handle = nullptr;
+
+    HIDBuffer rxBuf;    // Buffer for reading USB data
+    HIDBuffer txBuf;    // Buffer for writing USB data
+
     QMutex mutex;
-
-    hid_device *handle;
-
-    HIDBuffer rxBuf;    //Buffer for reading USB messages
-    HIDBuffer txBuf;    //Buffer for writing USB messages
 
 public slots:
     void run();
@@ -51,6 +62,8 @@ public slots:
     bool RequestBoxStatus();
     bool RequestBoxSettings();
     bool RequestBoxVersion();
+
+    bool WriteSettings(BoxSettings_t settings);
 
     bool ReadClueData(int clueIndex, Clue_t *c, int tries);
     bool WriteClueData(int clueIndex, Clue_t *c, int tries);

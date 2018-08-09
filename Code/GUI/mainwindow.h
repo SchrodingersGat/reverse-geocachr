@@ -35,15 +35,14 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    bool downloading;
-    bool uploading;
-
     QProgressDialog *downloadProgress;
 
 public slots:
     //Signals coming FROM the javascript side
     void jsCleared();
     void newMarkerRequested(double lat, double lng);
+
+    void setPosLimits();
 
     void clueSelectionChanged(int clue);
     void clueMoved(int clue);

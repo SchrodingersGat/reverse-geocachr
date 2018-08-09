@@ -471,22 +471,32 @@ void Clue_SetLineText(Clue_t *c, uint8_t line, QString text)
     c->lines[line].text[CLUE_LINE_LEN_MAX - 1] = 0;
 }
 
-QString Clue_GetLineText(Clue_t *c, uint8_t line)
+
+QString Clue_GetLineText(ClueLine_t line)
 {
-    if (c == NULL || line >= NUM_CLUE_LINES) return "";
+    QString text;
 
-    QString text = "";
-
-    for (int i=0;i<CLUE_LINE_LEN_MAX;i++)
+    for (int i=0; i<CLUE_LINE_LEN_MAX; i++)
     {
-        if (c->lines[line].text[i] != 0)
-        {
-            text.append(QChar((char) c->lines[line].text[i]));
-        }
+        if (line.text[i] == 0)
+            break;
+
+        text.append(QChar((char) line.text[i]));
     }
 
-    return text;
+    return escapeClueString(text);
 }
+
+
+QString Clue_GetLineText(Clue_t *c, uint8_t line)
+{
+    if (c == NULL || line >= NUM_CLUE_LINES)
+        return QString();
+
+
+    return Clue_GetLineText(c->lines[line]);
+}
+
 
 QString escapeClueString(QString clue)
 {
