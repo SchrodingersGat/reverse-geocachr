@@ -182,6 +182,7 @@
     <Packet name="ClueInfo" ID="MSG_CLUE_INFO" file="boxpackets" parameterInterface="true">
         <Data name="clueNumber" inMemoryType="unsigned8"/>
         <Data name="clueInfo" struct="Waypoint"/>
+        <Data name="checksum" inMemoryType="unsigned32" comment="Waypoint checksum"/>
     </Packet>
 
     <Packet name="RequestClueInfo" ID="MSG_CLUE_INFO" file="boxpackets" parameterInterface="true">

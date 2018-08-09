@@ -368,22 +368,23 @@ typedef struct
 {
     uint8_t    clueNumber;
     Waypoint_t clueInfo;  
+    uint32_t   checksum;   //!< Waypoint checksum
 }ClueInfo_t;
 
 //! Create the ClueInfo packet
-void encodeClueInfoPacket(void* pkt, uint8_t clueNumber, const Waypoint_t* clueInfo);
+void encodeClueInfoPacket(void* pkt, uint8_t clueNumber, const Waypoint_t* clueInfo, uint32_t checksum);
 
 //! Decode the ClueInfo packet
-int decodeClueInfoPacket(const void* pkt, uint8_t* clueNumber, Waypoint_t* clueInfo);
+int decodeClueInfoPacket(const void* pkt, uint8_t* clueNumber, Waypoint_t* clueInfo, uint32_t* checksum);
 
 //! return the packet ID for the ClueInfo packet
 #define getClueInfoPacketID() (MSG_CLUE_INFO)
 
 //! return the minimum encoded length for the ClueInfo packet
-#define getClueInfoMinDataLength() (13)
+#define getClueInfoMinDataLength() (17)
 
 //! return the maximum encoded length for the ClueInfo packet
-#define getClueInfoMaxDataLength() (13)
+#define getClueInfoMaxDataLength() (17)
 
 //! Create the RequestClueInfo packet
 void encodeRequestClueInfoPacket(void* pkt, uint8_t clueNumber);

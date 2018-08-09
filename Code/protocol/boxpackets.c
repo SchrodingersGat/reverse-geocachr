@@ -1093,8 +1093,9 @@ int decodeRequestBoxVersionPacket(const void* pkt)
  * \param pkt points to the packet which will be created by this function
  * \param clueNumber is 
  * \param clueInfo is 
+ * \param checksum is Waypoint checksum
  */
-void encodeClueInfoPacket(void* pkt, uint8_t clueNumber, const Waypoint_t* clueInfo)
+void encodeClueInfoPacket(void* pkt, uint8_t clueNumber, const Waypoint_t* clueInfo, uint32_t checksum)
 {
     uint8_t* data = getReverseGeocachePacketData(pkt);
     int byteindex = 0;
@@ -1102,6 +1103,9 @@ void encodeClueInfoPacket(void* pkt, uint8_t clueNumber, const Waypoint_t* clueI
     uint8ToBytes((uint8_t)clueNumber, data, &byteindex);
 
     encodeWaypoint_t(data, &byteindex, clueInfo);
+
+    // Waypoint checksum
+    uint32ToBeBytes((uint32_t)checksum, data, &byteindex);
 
     // complete the process of creating the packet
     finishReverseGeocachePacket(pkt, byteindex, getClueInfoPacketID());
@@ -1114,9 +1118,10 @@ void encodeClueInfoPacket(void* pkt, uint8_t clueNumber, const Waypoint_t* clueI
  * \param pkt points to the packet being decoded by this function
  * \param clueNumber receives 
  * \param clueInfo receives 
+ * \param checksum receives Waypoint checksum
  * \return 0 is returned if the packet ID or size is wrong, else 1
  */
-int decodeClueInfoPacket(const void* pkt, uint8_t* clueNumber, Waypoint_t* clueInfo)
+int decodeClueInfoPacket(const void* pkt, uint8_t* clueNumber, Waypoint_t* clueInfo, uint32_t* checksum)
 {
     int byteindex = 0;
     const uint8_t* data = getReverseGeocachePacketDataConst(pkt);
@@ -1133,6 +1138,9 @@ int decodeClueInfoPacket(const void* pkt, uint8_t* clueNumber, Waypoint_t* clueI
 
     if(decodeWaypoint_t(data, &byteindex, clueInfo) == 0)
         return 0;
+
+    // Waypoint checksum
+    *checksum = (uint32_t)uint32FromBeBytes(data, &byteindex);
 
     return 1;
 }
