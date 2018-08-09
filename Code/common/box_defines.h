@@ -10,9 +10,16 @@ extern "C" {
 
 //Box configuration
 #define BOX_MAX_CLUES 25
+
+// Index of the welcome message
 #define BOX_WELCOME_MSG 0
+
+// Index of the first clue
 #define BOX_FIRST_CLUE 1
+
+// Index of the complete message
 #define BOX_COMPLETE_MSG (BOX_MAX_CLUES + 1)
+
 #define BOX_ARRAY_SIZE (BOX_MAX_CLUES + 2)
 
 #define CLUE_LINE_LEN_MAX 40 //!< Max number of chars allowed per clue

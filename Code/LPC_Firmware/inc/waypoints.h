@@ -11,7 +11,7 @@
 // Global define for main clue
 extern Clue_t currentClue;
 
-extern Clue_t clues[BOX_MAX_CLUES + 2];
+extern Clue_t clues[BOX_ARRAY_SIZE];
 
 uint32_t ClueChecksum(Clue_t* clue);
 

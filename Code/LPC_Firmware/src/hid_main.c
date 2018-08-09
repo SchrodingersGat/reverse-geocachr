@@ -201,22 +201,8 @@ int main(void)
 
 	while (1)
 	{
-		PauseMs(100);
+		PauseMs(10);
 
-		for (int i=0; i < BOX_MAX_CLUES; i++)
-		{
-			ReadClueFromMemory(&currentClue, i);
-		}
-
-		ReadClueFromMemory(&currentClue, settings.currentClue);
-
-		settings.currentClue++;
-		settings.currentClue %= BOX_ARRAY_SIZE;
-
-		/*if (clues[3].waypoint.lat > clues[2].waypoint.lng)
-		{
-			PauseMs(20);
-		}
-		*/
+		// TODO - Update LCD display
 	}
 }
