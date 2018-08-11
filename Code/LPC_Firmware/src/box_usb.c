@@ -22,6 +22,10 @@ bool Box_DecodeMessage()
 
 	ClueLine_t clueLine;
 
+	memset(&clueLine.text, 0, sizeof(clueLine.text));
+
+	memset(&txBuf, 0, sizeof(txBuf));
+
 	if (decodeUnlockPacket(rxBuf))
 	{
 		//TODO - Unlock the box
@@ -96,6 +100,14 @@ bool Box_DecodeMessage()
 		response = true;
 
 	}
+	else if (decodeClueInfoPacket(rxBuf, &clueNum, &waypoint, &chk))
+	{
+		if (clueNum < BOX_ARRAY_SIZE)
+		{
+			// Copy clue information into RAM
+			clues[clueNum + 1].waypoint = waypoint;
+		}
+	}
 	// Request waypoint information for a given clue
 	else if (decodeRequestClueInfoPacket(rxBuf, &clueNum))
 	{
@@ -105,32 +117,24 @@ bool Box_DecodeMessage()
 			response = true;
 		}
 	}
-	else if (decodeClueInfoPacket(rxBuf, &clueNum, &waypoint, &chk))
+	else if (decodeClueLineTextPacket(rxBuf, &clueNum, &lineNum, &clueLine))
 	{
+		// Set text for a particular line of a particular clue
+
 		if (clueNum < BOX_ARRAY_SIZE)
 		{
-			// Copy clue information into RAM
-			clues[clueNum + 1].waypoint = waypoint;
+			// Zero-out the clue first
+			memset(&(clues[clueNum].lines[lineNum]), 0, sizeof(ClueLine_t));
+
+			memcpy(&(clues[clueNum].lines[lineNum]), &clueLine, sizeof(ClueLine_t));
 		}
 	}
 	else if (decodeRequestClueLinePacket(rxBuf, &clueNum, &lineNum))
 	{
 		if (clueNum < BOX_ARRAY_SIZE)
 		{
-			// Zero-out the clue first
-			memset(&(clues[clueNum].lines[lineNum]), 0, sizeof(ClueLine_t));
-
 			encodeClueLineTextPacket(txBuf, clueNum, lineNum, &(clues[clueNum].lines[lineNum]));
 			response = true;
-		}
-	}
-	else if (decodeClueLineTextPacket(rxBuf, &clueNum, &clueNum, &clueLine))
-	{
-		// Set text for a particular line of a particular clue
-
-		if (clueNum < BOX_ARRAY_SIZE)
-		{
-			memcpy(&clues[clueNum].lines[lineNum], &clueLine, sizeof(ClueLine_t));
 		}
 	}
 	else if (decodeSetClueCountPacket(rxBuf, &clueNum))
@@ -143,7 +147,7 @@ bool Box_DecodeMessage()
 		}
 
 		// Now write the clues to memory!
-		WriteCluesToMemory();
+		// SWriteCluesToMemory();
 	}
 
 	return response;
