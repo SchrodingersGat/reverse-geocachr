@@ -17,6 +17,7 @@ ClueList::ClueList()
 void ClueList::Reset()
 {
     clues.clear();
+
     Clue_Init(&welcomeMessage);
     Clue_Init(&completeMessage);
 
@@ -55,11 +56,12 @@ Clue_t* ClueList::GetClueAtIndex(uint8_t index)
     if (index == BOX_WELCOME_MSG) return &welcomeMessage;
     if (index == BOX_COMPLETE_MSG) return &completeMessage;
 
-    if (index <= clues.count()) {
+    if (index <= clues.count())
+    {
         return &(clues[index - 1]);
     }
 
-    return NULL;
+    return nullptr;
 }
 
 QString ClueList::CurrentClueTitle()

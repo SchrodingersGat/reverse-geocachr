@@ -46,11 +46,6 @@ void Box::run()
             continue;
         }
 
-        if (mutex.tryLock(100))
-        {
-            continue;
-        }
-
         switch (cursor++)
         {
         default:
@@ -78,8 +73,6 @@ void Box::run()
         }
 
         connected = attempts > 0;
-
-        mutex.unlock();
     }
 
     HIDDisconnect();
@@ -93,6 +86,7 @@ bool Box::HIDConnect()
 {
     if (handle == NULL)
     {
+        Debug("Attempting connection");
         handle = hid_open(HID_VID, HID_PID, NULL);
     }
 
@@ -116,11 +110,97 @@ void Box::HIDDisconnect()
     handle = NULL;
 }
 
+
+bool Box::receive(int timeout)
+{
+    if (!mutex.tryLock(200))
+    {
+        return false;
+    }
+
+    if (!HIDConnect())
+    {
+        return false;
+    }
+
+    int n = hid_read_timeout(handle, rxBuf, HID_REPORT_SIZE, timeout);
+
+    bool result = false;
+
+    if (n == HID_REPORT_SIZE)
+    {
+        //qDebug() << "Received:" << QByteArray((const char*) rxBuf, rxBuf[1] + 2);
+        result = true;
+    }
+    else
+    {
+        qDebug() << "No data.";
+    }
+
+    Sleep(10);
+
+    mutex.unlock();
+
+    return result;
+}
+
+
+bool Box::transmit(int tries)
+{
+    bool result = false;
+    int n = -1;
+
+    if (!mutex.tryLock(200))
+    {
+        return false;
+    }
+
+    // First byte must always be zero
+    txBuf[0] = 0;
+
+    while (tries > 0)
+    {
+        tries--;
+
+        // Try to first ensure that we are connected
+        if (!HIDConnect()) continue;
+
+        n = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
+
+        // Transmission was not successful
+        if (n != (HID_REPORT_SIZE + 1))
+        {
+            HIDDisconnect();
+        }
+        else
+        {
+            // Transmission was successful
+            result = true;
+            break;
+        }
+    }
+
+    // Ensure some gap is left
+    Sleep(10);
+
+    mutex.unlock();
+
+    if (result)
+    {
+        //qDebug() << "Transmitted:" << QByteArray((const char*) &(txBuf[1]), txBuf[2] + 2);
+    }
+    else
+    {
+        qDebug() << "Transmit failed.";
+    }
+
+    return result;
+}
+
+
 bool Box::RequestBoxInfo(int tries)
 {
     bool result = true;
-
-    if (!mutex.tryLock(100)) return false;
 
     for (int i = 0; i < tries; i ++)
     {
@@ -142,8 +222,6 @@ bool Box::RequestBoxInfo(int tries)
         }
     }
 
-    mutex.unlock();
-
     return result;
 }
 
@@ -152,38 +230,10 @@ bool Box::RequestBoxInfo(int tries)
  */
 bool Box::RequestBoxStatus()
 {
-    int res;
-
-    if (HIDConnect() == false)
-    {
-        return false; //Connection failure
-    }
-
-    txBuf[0] = 0x00;
-
     encodeRequestBoxStatusPacket(&txBuf[1]);
 
-    res = hid_write(handle, txBuf, HID_REPORT_SIZE+1);
-
-    //HID write was not successful
-    if (res == -1)
-    {
-        HIDDisconnect();
-        Debug("HID Write Failed (-1)");
-        return false;
-    }
-
-    Sleep(20);
-
-    //Read out the feature report
-    res = hid_read_timeout(handle, rxBuf, HID_REPORT_SIZE, TIMEOUT);
-
-    if (res != HID_REPORT_SIZE)
-    {
-        HIDDisconnect();
-        Debug("HID Read Failed (res = " + QString::number(res) + ")");
-        return false;
-    }
+    // Send the request and await response
+    if (!txRx()) return false;
 
     BoxStatus_t tmpStatus;
 
@@ -205,35 +255,10 @@ bool Box::RequestBoxStatus()
 
 bool Box::RequestBoxSettings()
 {
-    int res;
-
-    if (!HIDConnect())
-    {
-        return false;
-    }
-
-    txBuf[0] = 0x00;
-
     encodeRequestBoxSettingsPacket(&txBuf[1]);
 
-    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
-
-    if (res == -1)
-    {
-        HIDDisconnect();
-        Debug("RequestBoxSettings failed");
-        return false;
-    }
-
-    Sleep(20);
-
-    res = hid_read_timeout(handle, rxBuf, HID_REPORT_SIZE, TIMEOUT);
-
-    if (res != HID_REPORT_SIZE)
-    {
-        HIDDisconnect();
-        return false;
-    }
+    // Send the request and await response
+    if (!txRx()) return false;
 
     BoxSettings_t tmpSettings;
 
@@ -253,34 +278,10 @@ bool Box::RequestBoxSettings()
 
 bool Box::RequestBoxVersion()
 {
-    int res = -1;
-
-    if (!HIDConnect())
-    {
-        return false;
-    }
-
-    txBuf[0] = 0x00;
     encodeRequestBoxVersionPacket(&txBuf[1]);
 
-    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
-
-    if (res == -1)
-    {
-        HIDDisconnect();
-        Debug("RequestBoxVersion write failed");
-        return false;
-    }
-
-    Sleep(20);
-
-    res = hid_read_timeout(handle, rxBuf, HID_REPORT_SIZE, TIMEOUT);
-
-    if (res != HID_REPORT_SIZE)
-    {
-        HIDDisconnect();
-        return false;
-    }
+    // Send the request and await response
+    if (!txRx()) return false;
 
     BoxVersion_t tmpVersion;
 
@@ -301,6 +302,7 @@ bool Box::RequestBoxVersion()
 
 bool Box::ResetIntoBootloader()
 {
+    /*
     int res = -1;
 
     if (downloading || uploading) return false;
@@ -330,71 +332,41 @@ bool Box::ResetIntoBootloader()
     mutex.unlock();
 
     return true;
+    */
+
+    return false;
 }
 
 
 bool Box::WriteSettings(BoxSettings_t settings)
 {
-    int res = -1;
-
     if (downloading || uploading) return false;
-
-    if (!mutex.tryLock(100))
-    {
-        return false;
-    }
-
-    if (!HIDConnect())
-    {
-        mutex.unlock();
-        return false;
-    }
-
-    txBuf[0] = 0;
 
     encodeSetBoxSettingsPacket(&txBuf[1],
             settings.pwmLocked,
             settings.pwmUnlocked);
 
-    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
+    if (!transmit()) return false;
 
-    if (res == -1)
-    {
-        HIDDisconnect();
-        Debug("Box::WriteSettings - hid_write() failed");
-        mutex.unlock();
-        return false;
-    }
-
-    mutex.unlock();
     return RequestBoxInfo();
 }
 
 
 bool Box::ReadClueData(int clueIndex, Clue_t *c, int tries)
 {
-    if (!mutex.tryLock(100))
-    {
-        return false;
-    }
-
     //Read out the clue data
-    if (RequestClueInfo(clueIndex, c, tries) == false)
+    if (!RequestClueInfo(clueIndex, c, tries))
     {
-        mutex.unlock();
         return false;
     }
 
-    for (int i=0;i<NUM_CLUE_LINES;i++)
+    for (int i = 0; i < NUM_CLUE_LINES; i++)
     {
-        if (RequestClueHint(clueIndex, c, i, tries) == false)
+        if (!RequestClueHint(clueIndex, c, i, tries))
         {
-            mutex.unlock();
             return false;
         }
     }
-
-    mutex.unlock();
 
     return true;
 }
@@ -402,28 +374,19 @@ bool Box::ReadClueData(int clueIndex, Clue_t *c, int tries)
 
 bool Box::WriteClueData(int clueIndex, Clue_t *c, int tries)
 {
-    if (!mutex.tryLock(100))
-    {
-        return false;
-    }
-
     //Write the clue data
-    if (SetClueInfo(clueIndex, c, tries) == false)
+    if (!SetClueInfo(clueIndex, c, tries))
     {
-        mutex.unlock();
         return false;
     }
 
     for (int i=0; i<NUM_CLUE_LINES; i++)
     {
-        if (SetClueHint(clueIndex, c, i, tries) == false)
+        if (!SetClueHint(clueIndex, c, i, tries))
         {
-            mutex.unlock();
             return false;
         }
     }
-
-    mutex.unlock();
 
     return true;
 }
@@ -433,58 +396,24 @@ bool Box::SetClueInfo(int clueIndex, Clue_t *c, int tries)
 {
     bool result = false;
 
-    do
+    if (!c) return false;
+
+    Debug("SetClueInfo @ index " + QString::number(clueIndex));
+
+    while (tries > 0)
     {
-        result = SetClueInfo(clueIndex, c);
         tries--;
-        Sleep(20);
-    } while (result == false && tries > 0);
+
+        encodeClueInfoPacket(&txBuf[1], clueIndex, &c->waypoint, c->checksum);
+
+        if (!transmit()) continue;
+
+        // TODO - Logic here to test that the data were transmitted correctly
+        result = true;
+        break;
+    }
 
     return result;
-}
-
-
-bool Box::SetClueInfo(int clueIndex, Clue_t *c)
-{
-    Debug("SetClueInfo - "  + QString::number(clueIndex));
-
-    if (c == NULL) {
-        Debug("Clue pointer is NULL");
-        return false;
-    }
-
-    int res = -1;
-    int i = 0;
-
-    if (!HIDConnect()) {
-        return false;
-    }
-
-    txBuf[i++] = 0;
-
-    encodeClueInfoPacket(&txBuf[1], clueIndex, &c->waypoint, c->checksum);
-
-    res = hid_write(handle, rxBuf, HID_REPORT_SIZE + 1);
-
-    if (res != (HID_REPORT_SIZE + 1))
-    {
-        HIDDisconnect();
-        Debug("HIDWrite failed");
-        return false;
-    }
-
-    Clue_t c_tmp;
-
-    if (!RequestClueInfo(clueIndex, &c_tmp))
-    {
-        Debug("RequestClueInfo failed");
-        return false;
-    }
-
-    //for now, assume they are the same
-//    return (w->checksum == w_tmp.checksum);
-
-    return true;
 }
 
 
@@ -492,88 +421,39 @@ bool Box::RequestClueInfo(int clueIndex, Clue_t *c, int tries)
 {
     bool result = false;
 
-    do
+    if (!c) return false;
+
+    uint8_t idx;
+    Waypoint_t wpTmp;
+    uint32_t chk;
+
+    Debug("RequestClueInfo @ index " + QString::number(clueIndex));
+
+    while (tries > 0)
     {
-        result = RequestClueInfo(clueIndex, c);
         tries--;
-        Sleep(20);
-    } while (result == false && tries > 0);
 
-    return result;
-}
+        encodeRequestClueInfoPacket(&txBuf[1], clueIndex);
 
+        // Request and response
+        if (!txRx()) continue;
 
-/* Request information on a particular clue */
-bool Box::RequestClueInfo(int clueIndex, Clue_t *c)
-{
-    int res = -1;
-    int i = 0;
-
-    Debug("RequestClueInfo - " + QString::number(clueIndex));
-
-    if (c == NULL)
-    {
-        Debug("Waypoint pointer is NULL");
-        return false;
-    }
-
-    if (HIDConnect() == false)
-    {
-        return false;
-    }
-
-    //Write clue info to the box
-    txBuf[i++] = 0;
-
-    encodeRequestClueInfoPacket(&txBuf[1], clueIndex);
-
-    res = hid_write(handle, txBuf, HID_REPORT_SIZE+1);
-
-    if (res == -1)
-    {
-        Debug("HIDWrite failed");
-        HIDDisconnect();
-        return false;
-    }
-
-    Sleep(20);
-
-    //read the dataz back
-    res = hid_read_timeout(handle, rxBuf, HID_REPORT_SIZE,TIMEOUT);
-
-    //HIDDisconnect();
-
-    if (res != HID_REPORT_SIZE)
-    {
-        HIDDisconnect();
-        Debug("HIDRead failed");
-        return false;
-    }
-
-    else
-    {
-        uint8_t index;
-        Waypoint_t wp_tmp;
-
-        uint32_t checksum;
-
-        if (decodeClueInfoPacket(rxBuf, &index, &wp_tmp, &checksum))
+        if (decodeClueInfoPacket(rxBuf, &idx, &wpTmp, &chk))
         {
-            // Copy waypoint and checksum information
-            c->checksum = checksum;
-            c->waypoint = wp_tmp;
+            c->checksum = chk;
+            c->waypoint = wpTmp;
 
-            return true;
+            result = true;
+            break;
         }
         else
         {
-            Debug("Decode_Waypoint_Message failed");
+            Debug("Error decoding ClueInfoPacket");
         }
 
-        return false;
     }
 
-    return true;
+    return result;
 }
 
 
@@ -581,94 +461,57 @@ bool Box::RequestClueHint(int clueIndex, Clue_t *c, int line, int tries)
 {
     bool result = false;
 
-    do
+    if (!c) return false;
+
+    uint8_t idxTmp;
+    uint8_t lineTmp;
+
+    ClueLine_t textTmp;
+
+    Debug("RequestClueHint @ index " + QString::number(clueIndex) + ", line " + QString::number(line));
+
+    while (tries > 0)
     {
-        result = RequestClueHint(clueIndex, c, line);
         tries--;
-        Sleep(20);
-    } while (result == false && tries > 0);
+
+        encodeRequestClueLinePacket(&txBuf[1], clueIndex, line);
+
+        // Request and response
+        if (!txRx()) continue;
+
+        // Zero out the line buffer first
+        memset(&textTmp.text, 0, sizeof(textTmp));
+
+        if (decodeClueLineTextPacket(rxBuf, &idxTmp, &lineTmp, &textTmp))
+        {
+            // Extract clue line text
+
+            if ((idxTmp == clueIndex) &&
+                (lineTmp == line))
+            {
+                // Copy the text data across
+                for (int i = 0; i < CLUE_LINE_LEN_MAX; i++)
+                {
+                    c->lines[line].text[i] = textTmp.text[i];
+                }
+
+                result = true;
+                break;
+            }
+            else
+            {
+                Debug("Mismatch in returned packet:");
+                Debug("Index: " + QString::number(clueIndex) + " - " + QString::number(idxTmp));
+                Debug("Line: " + QString::number(line) + " - " + QString::number(lineTmp));
+            }
+        }
+        else
+        {
+            Debug("Error decoding ClueLineTextPacket");
+        }
+    }
 
     return result;
-}
-
-
-bool Box::RequestClueHint(int clueIndex, Clue_t *c, int line)
-{
-    Debug("RequestClueHint() - " + QString::number(clueIndex) + " / " + QString::number(line));
-
-    if (c == NULL) {
-        Debug("Waypoint pointer is NULL");
-        return false;
-    }
-
-    if (line >= NUM_CLUE_LINES) {
-        Debug("Line number incorrect");
-        return false;
-    }
-
-    int res = -1;
-
-    int i = 0;
-
-    if (HIDConnect() == false) {
-        return false;
-    }
-
-    //Write clue info to the box
-    txBuf[i++] = 0;
-
-    encodeRequestClueLinePacket(&txBuf[1],clueIndex,line);
-
-    res = hid_write(handle, txBuf, HID_REPORT_SIZE+1);
-
-    if (res != (HID_REPORT_SIZE + 1))
-    {
-        HIDDisconnect();
-        Debug("HIDWrite failed");
-        return false;
-    }
-
-    Sleep(20);
-
-    //read the dataz back
-    res = hid_read_timeout(handle, rxBuf, HID_REPORT_SIZE, TIMEOUT);
-
-    if (res != HID_REPORT_SIZE)
-    {
-        HIDDisconnect();
-        Debug("HIDRead failed");
-        return false;
-    }
-
-    uint8_t index_tmp;
-    uint8_t line_tmp;
-    ClueLine_t text_tmp;
-
-    if (decodeClueLineTextPacket(rxBuf, &index_tmp, &line_tmp, &text_tmp))
-    {
-        //Extract clue line text
-        if ((index_tmp == clueIndex) &&
-            (line_tmp == line))
-        {
-            //Copy the text data acrosss
-            c->lines[line] = text_tmp;
-        }
-
-        qDebug() << "Read clue line @" << clueIndex << "," << line;
-        qDebug() << Clue_GetLineText(text_tmp);
-
-        return true;
-    }
-    else
-    {
-        Debug("Response doesn't match @ index" + QString::number(clueIndex));
-
-        qDebug() << "ID:" << MSG_CLUE_LINE << rxBuf[0];
-        qDebug() << "Index:" << clueIndex << "-" << index_tmp;
-        qDebug() << "Line:" << line << "-" << line_tmp;
-
-        return false;
-    }
 }
 
 
@@ -676,96 +519,51 @@ bool Box::SetClueHint(int clueIndex, Clue_t *c, int line, int tries)
 {
     bool result = false;
 
-    do
+    if (!c) return false;
+
+    QString text = Clue_GetLineText(c, line);
+
+    Debug("SetClueHint @ " + QString::number(clueIndex) + "," + QString::number(line) + " to - " + text);
+
+    Clue_t clueTmp;
+
+    while (tries > 0)
     {
-        result = SetClueHint(clueIndex, c, line);
         tries--;
-        Sleep(20); //give up control for a bit
-    } while (result == false && tries > 0);
+
+        encodeClueLineTextPacket(&txBuf[1], clueIndex, line, &c->lines[line]);
+
+        // Send the clue text
+        if (!transmit()) continue;
+
+        // Now request it back again
+        if (!RequestClueHint(clueIndex, &clueTmp, line, tries)) continue;
+
+        // The text should match!
+        QString txt = Clue_GetLineText(&clueTmp, line);
+
+        if (txt != text)
+        {
+            Debug("Text does not match:");
+            Debug("Sent: " + text);
+            Debug("Read: " + txt);
+
+            continue;
+        }
+
+        // Success!
+        result = true;
+        break;
+    }
 
     return result;
 }
 
 
-bool Box::SetClueHint(int clueIndex, Clue_t *c, int line)
-{
-    Debug("SetClueHint - " + QString::number(clueIndex) + " / " + QString::number(line));
-
-    if (c == NULL)
-    {
-        Debug("Waypoint pointer is NULL");
-        return false;
-    }
-
-    if (line > NUM_CLUE_LINES)
-    {
-        Debug("Line number (" + QString::number(line) + ") invalid");
-        return false;
-    }
-
-    int res = -1;
-
-    int i = 0;
-
-    if (HIDConnect() == false)
-    {
-        return false;
-    }
-
-    QString clueText = Clue_GetLineText(c,line);
-
-    txBuf[i++] = 0;
-
-    qDebug() << "SetClueHint -" << clueIndex << "/" << line << "-" << Clue_GetLineText(c, line);
-
-    encodeClueLineTextPacket(&txBuf[1], clueIndex, line, &c->lines[line]);
-
-    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
-
-    //Couldn't transmit the data
-    if (res == -1)
-    {
-        HIDDisconnect();
-        Debug("HIDWrite failed");
-        return false;
-    }
-
-    //Make a temp waypoint and read it back
-    Clue_t c_tmp;
-
-    if (RequestClueHint(clueIndex, &c_tmp, line, MAX_TRIES) == false)
-    {
-        Debug("RequestClueHint failed!");
-        return false;
-    }
-
-    QString clue2 = Clue_GetLineText(&c_tmp, line);
-
-    if (clueText != clue2)
-    {
-        Debug("Line mismatch!");
-        Debug("> " + clueText);
-        Debug("> " + clue2);
-
-        return false;
-    }
-
-    return true;
-}
-
 /* Send commands to the box */
 bool Box::Unlock()
 {
     if (downloading || uploading) return false;
-
-    if (!mutex.tryLock(100))
-    {
-        return false;
-    }
-
-    // TODO
-
-    mutex.unlock();
 
     return false;
 }
@@ -774,50 +572,17 @@ bool Box::Lock()
 {
     if (downloading || uploading) return false;
 
-    if (!mutex.tryLock(100))
-    {
-        return false;
-    }
-
-    //TODO
-
-    mutex.unlock();
-
     return false;
 }
 
 
 bool Box::SkipToNext()
 {
-    int res;
-
     if (downloading || uploading) return false;
-
-    if (!mutex.tryLock(100))
-    {
-        return false;
-    }
-
-    if (HIDConnect() == false)
-    {
-        mutex.unlock();
-        return false;
-    }
-
-    txBuf[0] = 0x00;
 
     encodeNextCluePacket(&txBuf[1]);
 
-    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
-
-    if (res == -1)
-    {
-        HIDDisconnect();
-        mutex.unlock();
-        return false;
-    }
-
-    mutex.unlock();
+    if (!transmit()) return false;
 
     return RequestBoxInfo();
 }
@@ -825,35 +590,11 @@ bool Box::SkipToNext()
 
 bool Box::SkipToPrevious()
 {
-    int res;
-
     if (downloading || uploading) return false;
-
-    if (!mutex.tryLock(100))
-    {
-        return false;
-    }
-
-    if (HIDConnect() == false)
-    {
-        mutex.unlock();
-        return false;
-    }
-
-    txBuf[0] = 0x00;
 
     encodePrevCluePacket(&txBuf[1]);
 
-    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
-
-    if (res == -1)
-    {
-        HIDDisconnect();
-        mutex.unlock();
-        return false;
-    }
-
-    mutex.unlock();
+    if (!transmit()) return false;
 
     return RequestBoxInfo();
 }
@@ -862,58 +603,29 @@ bool Box::SetNumberOfClues(int nClues, int tries)
 {
     bool result = false;
 
-    do
+    while (tries > 0)
     {
-        result = SetNumberOfClues(nClues);
         tries--;
-        Sleep(20);
-    } while (!result && tries > 0);
+
+        encodeSetClueCountPacket(&txBuf[1], (uint8_t) nClues);
+
+        if (!transmit()) continue;
+
+        if (!RequestBoxInfo(tries)) continue;
+
+        if (nClues == settings.totalClues)
+        {
+            Debug("Set total clues to " + QString::number(nClues));
+            result = true;
+            break;
+        }
+        else
+        {
+            Debug("Clue count mismatch:");
+            Debug("Sent: " + QString::number(nClues));
+            Debug("Read: " + QString::number(settings.totalClues));
+        }
+    }
 
     return result;
-}
-
-bool Box::SetNumberOfClues(int nClues)
-{
-    Debug("Setting number of clues - " + QString::number(nClues));
-
-    if (nClues < 0 || nClues > BOX_MAX_CLUES)
-    {
-        Debug("Number of clues invalid");
-        return false;
-    }
-
-    int res;
-
-    int i = 0;
-
-    if (HIDConnect() == false)
-    {
-        return false;
-    }
-
-    txBuf[i++] = 0x00;
-    encodeSetClueCountPacket(&txBuf[1],nClues & 0xFF);
-
-    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
-
-    if (res != (HID_REPORT_SIZE + 1))
-    {
-        HIDDisconnect();
-        Debug("HIDWrite failed");
-        return false;
-    }
-
-    if (!RequestBoxInfo())
-    {
-        Debug("RequestBoxInfo failed");
-        return false;
-    }
-
-    if (nClues != settings.totalClues)
-    {
-        Debug("Clue count mismatch " + QString::number(nClues));
-        return false;
-    }
-
-    return true;
 }

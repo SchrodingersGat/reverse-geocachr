@@ -41,6 +41,11 @@ public:
 
 protected:
 
+    bool receive(int timeout = 200);
+    bool transmit(int tries = 5);
+
+    bool txRx() { return transmit() && receive(); }
+
     hid_device* handle = nullptr;
 
     HIDBuffer rxBuf;    // Buffer for reading USB data
@@ -68,26 +73,18 @@ public slots:
     bool ReadClueData(int clueIndex, Clue_t *c, int tries);
     bool WriteClueData(int clueIndex, Clue_t *c, int tries);
 
-    bool RequestClueHint(int clueIndex, Clue_t *c, int line, int tries);
-    bool RequestClueHint(int clueIndex, Clue_t *c, int line);
+    bool RequestClueHint(int clueIndex, Clue_t *c, int line, int tries = 5);
+    bool SetClueHint(int clueIndex, Clue_t *c, int line, int tries = 5);
 
-    bool RequestClueInfo(int clueIndex, Clue_t *c, int tries);
-    bool RequestClueInfo(int clueIndex, Clue_t *c);
-
-    bool SetClueInfo(int clueIndex, Clue_t *c, int tries);
-    bool SetClueInfo(int clueIndex, Clue_t *c);
-
-    bool SetClueHint(int clueIndex, Clue_t *c, int line, int tries);
-    bool SetClueHint(int clueIndex, Clue_t *c, int line);
+    bool RequestClueInfo(int clueIndex, Clue_t *c, int tries = 5);
+    bool SetClueInfo(int clueIndex, Clue_t *c, int tries = 5);
 
     bool Unlock();
     bool Lock();
     bool SkipToPrevious();
     bool SkipToNext();
 
-    bool SetNumberOfClues(int nClues, int tries);
-    bool SetNumberOfClues(int nClues);
-
+    bool SetNumberOfClues(int nClues, int tries = 5);
 };
 
 extern Box box;
