@@ -116,6 +116,39 @@ int decodeWaypoint_t(const uint8_t* data, int* bytecount, Waypoint_t* user)
 }// decodeWaypoint_t
 
 /*!
+ * \brief Verify a Waypoint_t structure has acceptable values.
+ *
+ * Verify a Waypoint_t structure has acceptable values. Not all fields are
+ * verified, only those which the protocol specifies. Fields which are outside
+ * the allowable range are changed to the maximum or minimum allowable value. 
+ * \param user is the structure whose data are verified
+ * \return 1 if all verifiable data where valid, else 0 if data had to be corrected
+ */
+int verifyWaypoint_t(Waypoint_t* user)
+{
+    int good = 1;
+
+    // Distance threshold (m)
+    if(user->threshold < 25)
+    {
+        user->threshold = 25;
+        good = 0;
+    }
+    else if(user->threshold > 500)
+    {
+        user->threshold = 500;
+        good = 0;
+    }
+
+    // Extra clue options
+    if(!verifyClueOptionBits_t(&user->options))
+        good = 0;
+
+    return good;
+
+}// verifyWaypoint_t
+
+/*!
  * \brief Encode a ClueLine_t structure into a byte array
  *
 
@@ -214,5 +247,32 @@ int decodeClue_t(const uint8_t* data, int* bytecount, Clue_t* user)
     return 1;
 
 }// decodeClue_t
+
+/*!
+ * \brief Verify a Clue_t structure has acceptable values.
+ *
+ * Verify a Clue_t structure has acceptable values. Not all fields are
+ * verified, only those which the protocol specifies. Fields which are outside
+ * the allowable range are changed to the maximum or minimum allowable value. 
+ * \param user is the structure whose data are verified
+ * \return 1 if all verifiable data where valid, else 0 if data had to be corrected
+ */
+int verifyClue_t(Clue_t* user)
+{
+    int good = 1;
+    int i = 0;
+
+    // Waypoint data
+    if(!verifyWaypoint_t(&user->waypoint))
+        good = 0;
+
+    // Text data
+    for(i = 0; i < NUM_CLUE_LINES; i++)
+        if(!verifyClueLine_t(&user->lines[i]))
+            good = 0;
+
+    return good;
+
+}// verifyClue_t
 
 // end of boxdefines.c

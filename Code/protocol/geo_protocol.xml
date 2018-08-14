@@ -84,7 +84,7 @@
     <Structure name="Waypoint" file="boxdefines">
         <Data name="lat" inMemoryType="float" comment="Location latitude"/>
         <Data name="lng" inMemoryType="float" comment="Location longitude"/>
-        <Data name="threshold" inMemoryType="unsigned16" comment="Distance threshold (m)"/>
+        <Data name="threshold" inMemoryType="unsigned16" comment="Distance threshold (m)" verifyMinValue="25" verifyMaxValue="500"/>
         <Data name="type" inMemoryType="unsigned8" comment="Clue type"/>
         <Data name="options" struct="ClueOptionBits" comment="Extra clue options"/>
     </Structure>

@@ -37,6 +37,10 @@ typedef struct
     ClueOptionBits_t options;   //!< Extra clue options
 }Waypoint_t;
 
+// Initial and verify values for Waypoint
+#define ReverseGeocache_Waypoint_threshold_VerifyMin 25
+#define ReverseGeocache_Waypoint_threshold_VerifyMax 500
+
 //! return the minimum encoded length for the Waypoint_t structure
 #define getMinLengthOfWaypoint_t() (12)
 
@@ -45,6 +49,9 @@ void encodeWaypoint_t(uint8_t* data, int* bytecount, const Waypoint_t* user);
 
 //! Decode a Waypoint_t structure from a byte array
 int decodeWaypoint_t(const uint8_t* data, int* bytecount, Waypoint_t* user);
+
+//! Verify a Waypoint_t structure has acceptable values
+int verifyWaypoint_t(Waypoint_t* user);
 
 typedef struct
 {
@@ -75,6 +82,9 @@ void encodeClue_t(uint8_t* data, int* bytecount, const Clue_t* user);
 
 //! Decode a Clue_t structure from a byte array
 int decodeClue_t(const uint8_t* data, int* bytecount, Clue_t* user);
+
+//! Verify a Clue_t structure has acceptable values
+int verifyClue_t(Clue_t* user);
 
 #ifdef __cplusplus
 }

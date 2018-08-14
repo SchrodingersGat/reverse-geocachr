@@ -392,6 +392,9 @@ typedef struct
     uint32_t   checksum;   //!< Waypoint checksum
 }ClueInfo_t;
 
+//! Verify a ClueInfo_t structure has acceptable values
+int verifyClueInfo_t(ClueInfo_t* user);
+
 //! Create the ClueInfo packet
 void encodeClueInfoPacket(void* pkt, uint8_t clueNumber, const Waypoint_t* clueInfo, uint32_t checksum);
 

@@ -1137,6 +1137,26 @@ int decodeRequestBoxVersionPacket(const void* pkt)
 }
 
 /*!
+ * \brief Verify a ClueInfo_t structure has acceptable values.
+ *
+ * Verify a ClueInfo_t structure has acceptable values. Not all fields are
+ * verified, only those which the protocol specifies. Fields which are outside
+ * the allowable range are changed to the maximum or minimum allowable value. 
+ * \param user is the structure whose data are verified
+ * \return 1 if all verifiable data where valid, else 0 if data had to be corrected
+ */
+int verifyClueInfo_t(ClueInfo_t* user)
+{
+    int good = 1;
+
+    if(!verifyWaypoint_t(&user->clueInfo))
+        good = 0;
+
+    return good;
+
+}// verifyClueInfo_t
+
+/*!
  * \brief Create the ClueInfo packet
  *
 
