@@ -39,6 +39,12 @@ bool Box_DecodeMessage()
 		if (settings.currentClue < settings.totalClues)
 		{
 			settings.currentClue++;
+
+			if (settings.currentClue > settings.totalClues)
+			{
+				settings.currentClue = settings.totalClues;
+			}
+
 			EE_WriteSettings();		}
 	}
 	else if (decodePrevCluePacket(rxBuf))
@@ -46,6 +52,12 @@ bool Box_DecodeMessage()
 		if (settings.currentClue > 0)
 		{
 			settings.currentClue--;
+
+			if (settings.currentClue > settings.totalClues)
+			{
+				settings.currentClue = settings.totalClues;
+			}
+
 			EE_WriteSettings();
 		}
 	}
@@ -104,8 +116,11 @@ bool Box_DecodeMessage()
 	{
 		if (clueNum < BOX_ARRAY_SIZE)
 		{
+			// Validate the received clue
+			verifyWaypoint_t(&waypoint);
+
 			// Copy clue information into RAM
-			clues[clueNum + 1].waypoint = waypoint;
+			clues[clueNum].waypoint = waypoint;
 		}
 	}
 	// Request waypoint information for a given clue
@@ -147,7 +162,7 @@ bool Box_DecodeMessage()
 		}
 
 		// Now write the clues to memory!
-		// SWriteCluesToMemory();
+		WriteCluesToMemory();
 	}
 
 	return response;

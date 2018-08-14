@@ -12,13 +12,16 @@
  * - This equates to ~300 bytes. Use 512 bytes so that the waypoints fall on flash boundaries
  */
 
+#define SECTOR_SIZE  4096
+
 #define WAYPOINT_SIZE_IN_MEMORY 512
 
 #define WAYPOINT_FLASH_ADDR 0x3C000
 #define WAYPOINT_FLASH_SIZE 0x4000
 
 // 0x3C000 is the 60th sector
-#define WAYPOINT_FLASH_SECTOR 60
+#define WAYPOINT_FLASH_SECTOR_START 60
+#define WAYPOINT_FLASH_SECTOR_END   63
 
 Clue_t clues[BOX_ARRAY_SIZE];
 
@@ -44,6 +47,8 @@ void ReadCluesFromMemory()
 
 	Clue_t tmp;
 
+	__disable_irq();
+
 	for (int i = 0; i < BOX_ARRAY_SIZE; i++)
 	{
 		// Read out each clue, plus the welcome and completion messages
@@ -57,6 +62,8 @@ void ReadCluesFromMemory()
 			*ptr = tmp;
 		}
 	}
+
+	__enable_irq();
 }
 
 
@@ -69,21 +76,22 @@ bool ReadClueFromMemory(Clue_t* clue, int index)
 		return false;
 	}
 
-	__disable_irq();
-
 	uint8_t* ptr = (uint8_t*) (WAYPOINT_FLASH_ADDR + (index * WAYPOINT_SIZE_IN_MEMORY));
+
+	// Zero out the clue so the checksum is correctly calculated
+	memset(&tmpClue, 0, sizeof(Clue_t));
 
 	// Extract data directly from flash!
 	int result = decodeClue_t(ptr, &n, &tmpClue);
-
-	__enable_irq();
 
 	if (!result)
 	{
 		return false;
 	}
 
-	if (ClueChecksum(&tmpClue) == tmpClue.checksum)
+	uint32_t chk = ClueChecksum(&tmpClue);
+
+	if (chk == tmpClue.checksum)
 	{
 		// Copy clue data
 		*clue = tmpClue;
@@ -101,39 +109,57 @@ bool ReadClueFromMemory(Clue_t* clue, int index)
 
 void WriteCluesToMemory()
 {
-	Clue_t* clue;
-
 	int n = 0;
 
+	int i = 0;
+
 	uint32_t addr = WAYPOINT_FLASH_ADDR;
+
+	uint32_t sector;
 
 	uint8_t buffer[WAYPOINT_SIZE_IN_MEMORY];
 
 	__disable_irq();
 
 	// Erase the flash memory sector
-	Chip_IAP_PreSectorForReadWrite(WAYPOINT_FLASH_SECTOR, WAYPOINT_FLASH_SECTOR);
-	Chip_IAP_EraseSector(WAYPOINT_FLASH_SECTOR, WAYPOINT_FLASH_SECTOR);
-	Chip_IAP_PreSectorForReadWrite(WAYPOINT_FLASH_SECTOR, WAYPOINT_FLASH_SECTOR);
+	Chip_IAP_PreSectorForReadWrite(WAYPOINT_FLASH_SECTOR_START, WAYPOINT_FLASH_SECTOR_END);
+
+	Chip_IAP_EraseSector(WAYPOINT_FLASH_SECTOR_START, WAYPOINT_FLASH_SECTOR_END);
+
+	int result = 0;
 
 	// Write the clues
 
-	for (int i=0; i<BOX_ARRAY_SIZE; i++)
+	for (i = 0; i < BOX_ARRAY_SIZE; i++)
 	{
+		addr = WAYPOINT_FLASH_ADDR + (i * WAYPOINT_SIZE_IN_MEMORY);
+
+		sector = addr / SECTOR_SIZE;
+
+		result = Chip_IAP_PreSectorForReadWrite(sector, sector);
+
+		// Clear out the buffer
 		memset(buffer, 0, WAYPOINT_SIZE_IN_MEMORY);
 
-		clue = &(clues[i]);
-
 		// Calculate the checksum for the clue
-		clue->checksum = ClueChecksum(clue);
+		clues[i].checksum = ClueChecksum(&clues[i]);
+
+		// Important to reset the byte index!!
+		n = 0;
 
 		// Encode the clue to the buffer
-		encodeClue_t(buffer, &n, clue);
+		encodeClue_t(buffer, &n, &clues[i]);
 
-		Chip_IAP_CopyRamToFlash(addr + (i * WAYPOINT_SIZE_IN_MEMORY),
-								buffer,
+		result = Chip_IAP_CopyRamToFlash(addr,
+								(uint32_t*) &buffer,
 								WAYPOINT_SIZE_IN_MEMORY);
 	}
+
+	/* Start the signature generator for the last sector */
+	Chip_FMC_ComputeSignatureBlocks(WAYPOINT_FLASH_SECTOR_END, (SECTOR_SIZE / 16));
+
+	/* Check for signature geenration completion */
+	while (Chip_FMC_IsSignatureBusy()) {}
 
 	__enable_irq();
 }
