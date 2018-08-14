@@ -19,6 +19,9 @@ typedef struct
     unsigned centerText : 1; //!< Text is centered on the screen
 }ClueOptionBits_t;
 
+// Initial and verify values for ClueOptionBits
+#define ReverseGeocache_ClueOptionBits_centerText_VerifyMax 1
+
 //! return the minimum encoded length for the ClueOptionBits_t structure
 #define getMinLengthOfClueOptionBits_t() (1)
 
@@ -27,6 +30,9 @@ void encodeClueOptionBits_t(uint8_t* data, int* bytecount, const ClueOptionBits_
 
 //! Decode a ClueOptionBits_t structure from a byte array
 int decodeClueOptionBits_t(const uint8_t* data, int* bytecount, ClueOptionBits_t* user);
+
+//! Verify a ClueOptionBits_t structure has acceptable values
+int verifyClueOptionBits_t(ClueOptionBits_t* user);
 
 typedef struct
 {

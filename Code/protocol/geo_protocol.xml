@@ -78,7 +78,7 @@
     </Enum>
 
     <Structure name="ClueOptionBits" file="boxdefines">
-        <Data name="centerText" inMemoryType="bitfield1" comment="Text is centered on the screen"/>
+        <Data name="centerText" inMemoryType="bitfield1" comment="Text is centered on the screen" verifyMaxValue="1"/>
     </Structure>
 
     <Structure name="Waypoint" file="boxdefines">

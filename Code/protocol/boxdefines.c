@@ -50,6 +50,30 @@ int decodeClueOptionBits_t(const uint8_t* data, int* bytecount, ClueOptionBits_t
 }// decodeClueOptionBits_t
 
 /*!
+ * \brief Verify a ClueOptionBits_t structure has acceptable values.
+ *
+ * Verify a ClueOptionBits_t structure has acceptable values. Not all fields are
+ * verified, only those which the protocol specifies. Fields which are outside
+ * the allowable range are changed to the maximum or minimum allowable value. 
+ * \param user is the structure whose data are verified
+ * \return 1 if all verifiable data where valid, else 0 if data had to be corrected
+ */
+int verifyClueOptionBits_t(ClueOptionBits_t* user)
+{
+    int good = 1;
+
+    // Text is centered on the screen
+    if(user->centerText > 1)
+    {
+        user->centerText = 1;
+        good = 0;
+    }
+
+    return good;
+
+}// verifyClueOptionBits_t
+
+/*!
  * \brief Encode a Waypoint_t structure into a byte array
  *
 
