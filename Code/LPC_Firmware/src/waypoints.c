@@ -1,6 +1,7 @@
 #include "waypoints.h"
 #include "checksum.h"
 #include "chip.h"
+#include "waypoint.h"
 
 #include <iap.h>
 
@@ -29,16 +30,6 @@ static Clue_t tmpClue;
 
 // Globally defined current clue
 Clue_t currentClue;
-
-uint32_t ClueChecksum(Clue_t* clue)
-{
-	// Calculate 16-bit checksum on entire clue struct, minus the checksum bytes
-	uint32_t chk = Fletcher16((uint8_t*) clue, sizeof(Clue_t) - 4);
-
-	chk |= ((~chk) << 16);
-
-	return chk;
-}
 
 
 void ReadCluesFromMemory()
@@ -89,7 +80,7 @@ bool ReadClueFromMemory(Clue_t* clue, int index)
 		return false;
 	}
 
-	uint32_t chk = ClueChecksum(&tmpClue);
+	uint32_t chk = Clue_CalculateChecksum(&tmpClue);
 
 	if (chk == tmpClue.checksum)
 	{
@@ -142,7 +133,7 @@ void WriteCluesToMemory()
 		memset(buffer, 0, WAYPOINT_SIZE_IN_MEMORY);
 
 		// Calculate the checksum for the clue
-		clues[i].checksum = ClueChecksum(&clues[i]);
+		clues[i].checksum = Clue_CalculateChecksum(&clues[i]);
 
 		// Important to reset the byte index!!
 		n = 0;

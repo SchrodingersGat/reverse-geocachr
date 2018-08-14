@@ -11,7 +11,8 @@ extern "C" {
 #endif
 
 void Clue_Init(Clue_t *clue);
-uint16_t Clue_CalculateChecksum(Clue_t *clue);
+
+uint32_t Clue_CalculateChecksum(Clue_t *clue);
 
 void Waypoint_Init(Waypoint_t *waypoint);
 

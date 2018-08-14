@@ -2,6 +2,7 @@
 #include "types.h"
 #include "boxpackets.h"
 #include "box_defines.h"
+#include "waypoint.h"
 #include "waypoints.h"
 #include "eemem.h"
 
@@ -128,7 +129,7 @@ bool Box_DecodeMessage()
 	{
 		if (clueNum < BOX_ARRAY_SIZE)
 		{
-			encodeClueInfoPacket(txBuf, clueNum, &(clues[clueNum]).waypoint, ClueChecksum(&clues[clueNum]));
+			encodeClueInfoPacket(txBuf, clueNum, &(clues[clueNum]).waypoint, Clue_CalculateChecksum(&clues[clueNum]));
 			response = true;
 		}
 	}

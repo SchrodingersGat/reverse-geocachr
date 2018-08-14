@@ -291,9 +291,9 @@ int verifyClue_t(Clue_t* user)
         good = 0;
 
     // Text data
-    for(i = 0; i < NUM_CLUE_LINES; i++)
-        if(!verifyClueLine_t(&user->lines[i]))
-            good = 0;
+    //for(i = 0; i < NUM_CLUE_LINES; i++)
+    //    if(!verifyClueLine_t(&user->lines[i]))
+    //        good = 0;
 
     return good;
 

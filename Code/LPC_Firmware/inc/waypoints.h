@@ -13,8 +13,6 @@ extern Clue_t currentClue;
 
 extern Clue_t clues[BOX_ARRAY_SIZE];
 
-uint32_t ClueChecksum(Clue_t* clue);
-
 void ReadCluesFromMemory();
 
 bool ReadClueFromMemory(Clue_t* clue, int index);

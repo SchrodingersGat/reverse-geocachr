@@ -13,10 +13,7 @@ void Clue_Init(Clue_t *clue)
     
     for (i = 0; i < NUM_CLUE_LINES; i++)
     {
-        for (j = 0; j < CLUE_LINE_LEN_MAX; j++)
-        {
-            clue->lines[i].text[j] = 0; //zero-out the text
-        }
+        memset(&clue->lines[i], 0, CLUE_LINE_LEN_MAX);
     }
 }
 
@@ -41,18 +38,31 @@ uint8_t Waypoint_Validate(Waypoint_t *waypoint)
     return 1;
 }
 
-uint16_t Clue_CalculateChecksum(Clue_t *clue)
+uint32_t Clue_CalculateChecksum(Clue_t *clue)
 {
-    uint8_t i = 0;
-    uint8_t *ptr = (uint8_t*) clue;
-    uint16_t checksum = 0;
-    
-    for (i = 0; i < (sizeof(Clue_t) - 2); i++)
+    int i = 0;
+    int idx = 0;
+    // Manually construct the chekcksum for the clue
+
+    uint32_t chk = 0;
+
+    chk += ((uint32_t) (clue->waypoint.lat * 1000) << 20);
+    chk += ((uint32_t) (clue->waypoint.lng * 1000) << 10);
+
+    chk += clue->waypoint.type;
+    chk += clue->waypoint.threshold;
+
+    // Add in each clue character
+    for (i = 0; i < NUM_CLUE_LINES; i++)
     {
-        checksum ^= ptr[i];
+        while (clue->lines[i].text[idx] != 0 && idx < CLUE_LINE_LEN_MAX)
+        {
+            chk += (uint32_t) ((clue->lines[i].text[idx]) << i);
+            idx++;
+        }
     }
-   
-    return checksum;
+
+    return chk;
 }
 
 //Return distance to waypoint in metres
@@ -109,7 +119,8 @@ double Waypoint_Heading(double lat, double lng, Waypoint_t *w)
 	double x = cos(lat) * sin(w->lat) -
 			(sin(lat) * cos(w->lat) * cos(dLng));
 
-	double angle = atan2(y, x) * 180 / M_PI;
+	//double angle = atan2(y, x) * 180 / M_PI;
+	double angle = atan2(y, x) * 180 / PI;
 
 	while (angle < 0)
 	{
