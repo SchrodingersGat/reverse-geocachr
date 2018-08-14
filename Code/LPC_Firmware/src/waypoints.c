@@ -121,12 +121,12 @@ void WriteCluesToMemory()
 
 	__disable_irq();
 
-	// Erase the flash memory sector
-	Chip_IAP_PreSectorForReadWrite(WAYPOINT_FLASH_SECTOR_START, WAYPOINT_FLASH_SECTOR_END);
-
-	Chip_IAP_EraseSector(WAYPOINT_FLASH_SECTOR_START, WAYPOINT_FLASH_SECTOR_END);
-
 	int result = 0;
+
+	// Erase the flash memory sector
+	result = Chip_IAP_PreSectorForReadWrite(WAYPOINT_FLASH_SECTOR_START, WAYPOINT_FLASH_SECTOR_END);
+
+	result = Chip_IAP_EraseSector(WAYPOINT_FLASH_SECTOR_START, WAYPOINT_FLASH_SECTOR_END);
 
 	// Write the clues
 
@@ -155,11 +155,18 @@ void WriteCluesToMemory()
 								WAYPOINT_SIZE_IN_MEMORY);
 	}
 
-	/* Start the signature generator for the last sector */
-	Chip_FMC_ComputeSignatureBlocks(WAYPOINT_FLASH_SECTOR_END, (SECTOR_SIZE / 16));
+	/*
 
-	/* Check for signature geenration completion */
-	while (Chip_FMC_IsSignatureBusy()) {}
+	for (int sec = WAYPOINT_FLASH_SECTOR_START; sec <= WAYPOINT_FLASH_SECTOR_END; sec++)
+	{
+		// Start the signature generator for the last sector
+		Chip_FMC_ComputeSignatureBlocks(sec, (SECTOR_SIZE / 16));
+
+		// Check for signature generation completion
+		while (Chip_FMC_IsSignatureBusy()) {}
+	}
+
+	*/
 
 	__enable_irq();
 }
