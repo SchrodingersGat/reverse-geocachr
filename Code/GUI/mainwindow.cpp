@@ -704,7 +704,8 @@ void MainWindow::updateClueList()
     ui->editClues->setTitle("Edit Clues (" + QString::number(clues.ClueCount()) + " clues)");
     ui->selection->setText("Edit " + clues.CurrentClueTitle());
 
-    switch (clues.ClueIndex()) {
+    switch (clues.ClueIndex())
+    {
     case BOX_WELCOME_MSG:
         ui->clueIndexDescriptor->setText("This message is displayed before any clues");
         break;

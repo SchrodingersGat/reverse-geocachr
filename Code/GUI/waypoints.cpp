@@ -339,11 +339,12 @@ bool ClueList::LoadFromFile(QString filename)
     Clue_Init(&welcomeMessage);
     Clue_Init(&completeMessage);
 
-    //Welcome message
+    // Welcome message
     settings.beginGroup("WelcomeMessage");
     LoadClue(settings, welcomeMessage, BOX_WELCOME_MSG);
     settings.endGroup();
 
+    // Completion message
     settings.beginGroup("CompleteMessage");
     LoadClue(settings, completeMessage, BOX_COMPLETE_MSG);
     settings.endGroup();
