@@ -7,7 +7,6 @@
 void Clue_Init(Clue_t *clue)
 {
     uint8_t i = 0;
-    uint8_t j = 0;
 
     Waypoint_Init(&clue->waypoint);
     
@@ -19,8 +18,11 @@ void Clue_Init(Clue_t *clue)
 
 void Waypoint_Init(Waypoint_t *waypoint)
 {
+    memset(waypoint, 0, sizeof(Waypoint_t));
+
     waypoint->lat = 0;
     waypoint->lng = 0;
+
     waypoint->threshold = WAYPOINT_THRESHOLD_DEFAULT;
     waypoint->type = CLUE_SHOW_DISTANCE;
     

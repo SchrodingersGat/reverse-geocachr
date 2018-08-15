@@ -159,11 +159,23 @@ bool Box_DecodeMessage()
 		{
 			settings.totalClues = clueNum;
 
+			// Force reset to the first clue
+			settings.currentClue = 0;
+
 			EE_WriteSettings();
+		}
+		else
+		{
+			return false;
 		}
 
 		// Now write the clues to memory!
 		WriteCluesToMemory();
+	}
+	else if (decodeResetPacket(rxBuf))
+	{
+		// Reset into bootloader via IAP
+		Chip_IAP_ReinvokeISP();
 	}
 
 	return response;

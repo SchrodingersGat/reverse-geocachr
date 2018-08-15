@@ -354,41 +354,106 @@ bool Box::WriteSettings(BoxSettings_t settings)
 
 bool Box::ReadClueData(int clueIndex, Clue_t *c, int tries)
 {
-    //Read out the clue data
-    if (!RequestClueInfo(clueIndex, c, tries))
+    if (!c)
     {
         return false;
     }
 
-    for (int i = 0; i < NUM_CLUE_LINES; i++)
+    bool result = false;
+
+    Debug("ReadClueData - Index = " + QString::number(clueIndex));
+
+    while (tries > 0)
     {
-        if (!RequestClueHint(clueIndex, c, i, tries))
+        tries--;
+
+        //Read out the clue data
+        if (!RequestClueInfo(clueIndex, c, tries))
         {
-            return false;
+            continue;
+        }
+
+        for (int i = 0; i < NUM_CLUE_LINES; i++)
+        {
+            if (!RequestClueHint(clueIndex, c, i, tries))
+            {
+                continue;
+            }
+        }
+
+        if (c->checksum == Clue_CalculateChecksum(c))
+        {
+            result = true;
+            break;
+        }
+        else
+        {
+            Debug("Checksum mismatch:");
+            Debug("Expected: " + QString::number(Clue_CalculateChecksum(c)));
+            Debug("Received: " + QString::number(c->checksum));
         }
     }
 
-    return true;
+    return result;
 }
 
 
 bool Box::WriteClueData(int clueIndex, Clue_t *c, int tries)
 {
-    //Write the clue data
-    if (!SetClueInfo(clueIndex, c, tries))
+    if (!c)
     {
         return false;
     }
 
-    for (int i=0; i<NUM_CLUE_LINES; i++)
+    Debug("WriteClueData - Index = " + QString::number(clueIndex));
+
+    Clue_t tmpClue;
+
+    bool result = false;
+
+    uint32_t chk = Clue_CalculateChecksum(c);
+
+    while (tries > 0)
     {
-        if (!SetClueHint(clueIndex, c, i, tries))
+        tries--;
+
+        //Write the clue data
+        if (!SetClueInfo(clueIndex, c, tries))
         {
-            return false;
+            continue;
+        }
+
+        for (int i=0; i<NUM_CLUE_LINES; i++)
+        {
+            if (!SetClueHint(clueIndex, c, i, tries))
+            {
+                continue;
+            }
+        }
+
+        // Check that the checksum matches!
+        if (!RequestClueInfo(clueIndex, &tmpClue, tries))
+        {
+            continue;
+        }
+
+        if (tmpClue.checksum == chk)
+        {
+            Debug("Clue checksum match at index " + QString::number(clueIndex));
+            result = true;
+            break;
+        }
+        else
+        {
+            Debug("Clue checksum mismatch at index " + QString::number(clueIndex));
+            Debug("Expected: " + QString::number(chk));
+            Debug("Received: " + QString::number(tmpClue.checksum));
+
+            continue;
         }
     }
 
-    return true;
+    return result;
 }
 
 
@@ -440,6 +505,12 @@ bool Box::RequestClueInfo(int clueIndex, Clue_t *c, int tries)
 
         if (decodeClueInfoPacket(rxBuf, &idx, &wpTmp, &chk))
         {
+            if (idx != clueIndex)
+            {
+                Debug("Requested index " + QString::number(clueIndex) + " but received " + QString::number(idx));
+                continue;
+            }
+
             c->checksum = chk;
             c->waypoint = wpTmp;
 
