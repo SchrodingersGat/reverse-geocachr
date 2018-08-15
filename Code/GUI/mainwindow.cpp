@@ -108,6 +108,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     loadSettings();
 
+    /*
     if (clues.LoadFromFile("autosave.clue"))
     {
         updateClueList();
@@ -115,6 +116,7 @@ MainWindow::MainWindow(QWidget *parent) :
         jsFitMapToClues();
         reloadClueTable();
     }
+    */
 
     updateClues();
 }

@@ -302,39 +302,11 @@ bool Box::RequestBoxVersion()
 
 bool Box::ResetIntoBootloader()
 {
-    /*
-    int res = -1;
-
     if (downloading || uploading) return false;
 
-    if (!mutex.tryLock(100))
-        return false;
-
-    if (!HIDConnect())
-    {
-        mutex.unlock();
-        return false;
-    }
-
-    txBuf[0] = 0x00;
     encodeResetPacket(&txBuf[1]);
 
-    res = hid_write(handle, txBuf, HID_REPORT_SIZE + 1);
-
-    if (res != HID_REPORT_SIZE)
-    {
-        HIDDisconnect();
-        Debug("ResetIntoBootloader - hid_write() failed");
-        mutex.unlock();
-        return false;
-    }
-
-    mutex.unlock();
-
-    return true;
-    */
-
-    return false;
+    return transmit();
 }
 
 
