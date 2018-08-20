@@ -41,6 +41,10 @@
 #include "eemem.h"
 #include "waypoints.h"
 
+// Global vars
+BoxStatus_t status;
+BoxSettings_t settings;
+
 /*****************************************************************************
  * Private types/enumerations/variables
  ****************************************************************************/
@@ -189,7 +193,19 @@ int main(void)
 			/* now connect */
 			USBD_API->hw->Connect(g_hUsb, 1);
 		}
+	}
 
+	if (!EE_ReadSettings())
+	{
+		status.settingsError = 1;
+
+		settings.pwmLocked = 1000;
+		settings.pwmUnlocked = 2000;
+
+		settings.currentClue = 0;
+		settings.totalClues = 0;
+
+		EE_WriteSettings();
 	}
 
 	while (1)
