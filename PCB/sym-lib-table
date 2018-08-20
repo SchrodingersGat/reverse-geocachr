@@ -5,4 +5,5 @@
   (lib (name Memory_EEPROM)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/Memory_EEPROM.lib)(options "")(descr ""))
   (lib (name Display_Graphic)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/Display_Graphic.lib)(options "")(descr ""))
   (lib (name Driver_Display)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/Driver_Display.lib)(options "")(descr ""))
+  (lib (name MCU_NXP_LPC)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/MCU_NXP_LPC.lib)(options "")(descr ""))
 )

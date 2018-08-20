@@ -5,7 +5,7 @@
  * Generated linker script file for LPC11U68
  * Created from linkscript.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.23
- * MCUXpresso IDE v10.2.0 [Build 759] [2018-05-15]  on Aug 20, 2018 7:37:34 PM
+ * MCUXpresso IDE v10.2.0 [Build 759] [2018-05-15]  on Aug 20, 2018 8:09:52 PM
  */
 
 INCLUDE "ReverseGeocacheLPC11U68_Debug_library.ld"
@@ -15,6 +15,17 @@ ENTRY(ResetISR)
 
 SECTIONS
 {
+    .text_Flash2 : ALIGN(4)
+    {
+       FILL(0xff)
+        *(.text_Flash2*) /* for compatibility with previous releases */
+        *(.text_Waypoints*) /* for compatibility with previous releases */
+        *(.text.$Flash2*)
+        *(.text.$Waypoints*)
+        *(.rodata.$Flash2*)
+        *(.rodata.$Waypoints*)
+    } > Waypoints
+
     /* MAIN TEXT SECTION */
     .text : ALIGN(4)
     {

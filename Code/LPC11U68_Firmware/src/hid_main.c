@@ -35,6 +35,12 @@
 #include "app_usbd_cfg.h"
 #include "hid_generic.h"
 
+#include "timer.h"
+#include "types.h"
+#include "pins.h"
+#include "eemem.h"
+#include "waypoints.h"
+
 /*****************************************************************************
  * Private types/enumerations/variables
  ****************************************************************************/
@@ -55,6 +61,12 @@ const  USBD_API_T *g_pUsbApi;
  * Public functions
  ****************************************************************************/
 
+void SysTick_Handler(void)
+{
+	DecrementPauseTimer();
+}
+
+
 /**
  * @brief	Handle interrupt from USB
  * @return	Nothing
@@ -66,7 +78,7 @@ void USB_IRQHandler(void)
 	EP0_IN/OUT command list. Unlike for other endpoints HW will not clear the ACTIVE bit
 	after transfer is done. Thus SW should manually clear the bit whenever it receives
 	new setup packet and set it only after it has queued the data for control transfer as
-	shown in “Flowchart for control endpoint EP0” in the user manual. EP0 OUT ACTIVE bit
+	shown in ï¿½Flowchart for control endpoint EP0ï¿½ in the user manual. EP0 OUT ACTIVE bit
 	is handled inside the USBD ROM driver already, only EP0 IN ACTIVE bit needs to be cleared. */
 	if ( LPC_USB->DEVCMDSTAT & USB_SETUP_RCVD ) {  /* if setup packet is received */
 		addr[2] &= ~BUF_ACTIVE;    /* clear EP0_IN ACTIVE bit*/
@@ -115,11 +127,16 @@ int main(void)
 	USB_CORE_DESCS_T desc;
 	ErrorCode_t ret = LPC_OK;
 
+	SystemCoreClockUpdate();
+
 	/* Initialize board and chip */
 	Board_Init();
 
 	/* enable clocks and pinmux */
 	Chip_USB_Init();
+
+	// Enable SysTick (1kHz)
+	SysTick_Config(SystemCoreClock / 2000);
 
 	/* initialize USBD ROM API pointer. */
 	g_pUsbApi = (const USBD_API_T *) LPC_ROM_API->usbdApiBase;
@@ -175,8 +192,12 @@ int main(void)
 
 	}
 
-	while (1) {
-		/* Sleep until next IRQ happens */
-		__WFI();
+	while (1)
+	{
+		PauseMs(1000);
+
+		Chip_GPIO_SetPinToggle(LPC_GPIO, 2, 16);
+		//Chip_GPIO_SetPinToggle(LPC_GPIO, 2, 17);
+		//Chip_GPIO_SetPinToggle(LPC_GPIO, 2, 18);
 	}
 }
