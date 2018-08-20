@@ -16,7 +16,7 @@ Code/GUI/release/
 Code/GUI/debug/
 Code/GUI/Makefile
 
-Code/Firmware/Debug/
+Code/LPC11U68_Firmware/Debug/
 
 PCB/gerber/
 Datasheets/

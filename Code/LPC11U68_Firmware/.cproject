@@ -44,6 +44,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/inc/usbd}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}\..\protocol&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}\..\common&quot;"/>
 								</option>
 								<option id="com.crt.advproject.c.misc.dialect.1816214419" name="Language standard" superClass="com.crt.advproject.c.misc.dialect"/>
 								<option id="gnu.c.compiler.option.dialect.flags.17314096" name="Other dialect flags" superClass="gnu.c.compiler.option.dialect.flags"/>
@@ -210,6 +212,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/inc/usbd}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}\..\protocol&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}\..\common&quot;"/>
 								</option>
 								<option id="com.crt.advproject.c.misc.dialect.291387827" name="Language standard" superClass="com.crt.advproject.c.misc.dialect"/>
 								<option id="gnu.c.compiler.option.dialect.flags.892052278" name="Other dialect flags" superClass="gnu.c.compiler.option.dialect.flags"/>
@@ -401,6 +405,12 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.debug.980674977;com.crt.advproject.config.exe.debug.980674977.;com.crt.advproject.gcc.exe.debug.450112238;com.crt.advproject.compiler.input.1535886451">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.release.405218094;com.crt.advproject.config.exe.release.405218094.;com.crt.advproject.gcc.exe.release.1069676305;com.crt.advproject.compiler.input.1932068516">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.release.405218094;com.crt.advproject.config.exe.release.405218094.;com.crt.advproject.gas.exe.release.378511167;com.crt.advproject.assembler.input.1391619499">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
 		</scannerConfigBuildInfo>
 	</storageModule>

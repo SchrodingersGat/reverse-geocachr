@@ -31,6 +31,8 @@
 
 #include "app_usbd_cfg.h"
 
+#include "box_defines.h"
+
 /*****************************************************************************
  * Private types/enumerations/variables
  ****************************************************************************/
@@ -77,8 +79,8 @@ ALIGNED(4) const uint8_t USB_DeviceDescriptor[] = {
 	0x00,							/* bDeviceSubClass */
 	0x00,							/* bDeviceProtocol */
 	USB_MAX_PACKET0,				/* bMaxPacketSize0 */
-	WBVAL(0x1FC9),					/* idVendor */
-	WBVAL(0x0081),					/* idProduct */
+	WBVAL(HID_VID),					/* idVendor */
+	WBVAL(HID_PID),					/* idProduct */
 	WBVAL(0x0100),					/* bcdDevice */
 	0x01,							/* iManufacturer */
 	0x02,							/* iProduct */
