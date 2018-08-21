@@ -197,7 +197,11 @@ int main(void)
 		}
 	}
 
-	// Configure LCD pins
+	/* Configure LCD pins
+	 * CS = P0.2
+	 * DC = P2.3
+	 * RESET = P1.28
+	 */
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 2);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 2, 3);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 28);

@@ -8,13 +8,25 @@ Chip_SSP_DATA_SETUP_T spiXferCfg;
 
 void SPI_Init()
 {
+
+	/* Configure SPI pins:
+	 * SCK = P1.29
+	 * MISO = P0.8
+	 * MOSI = P0.9
+	 *
+	 * Refer to Table 83 in UM10732.pdf
+	 */
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 29, IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 8,  IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 9,  IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
+
 	Chip_SSP_Init(LPC_SSP);
 
 	spiCfg.frameFormat = SSP_FRAMEFORMAT_SPI;
 	spiCfg.bits = SSP_BITS_8;
-	spiCfg.clockMode = SSP_CLOCK_MODE2;
+	spiCfg.clockMode = SSP_CLOCK_MODE0;
 
-	Chip_SSP_SetBitRate(LPC_SSP, 10000000);
+	Chip_SSP_SetBitRate(LPC_SSP, 4000000);
 	Chip_SSP_SetFormat(LPC_SSP, spiCfg.bits, spiCfg.frameFormat, spiCfg.clockMode);
 	Chip_SSP_SetMaster(LPC_SSP, 1);
 
@@ -22,7 +34,7 @@ void SPI_Init()
 }
 
 
-uint8_t SPI_TxRx8Bit(uint8_t data)
+void SPI_Tx8Bit(uint8_t data)
 {
 	// If not configured in 8-bit mode
 	if (spiCfg.bits != SSP_BITS_8)
@@ -31,9 +43,24 @@ uint8_t SPI_TxRx8Bit(uint8_t data)
 		Chip_SSP_SetFormat(LPC_SSP, spiCfg.bits, spiCfg.frameFormat, spiCfg.clockMode);
 	}
 
-	Chip_SSP_SendFrame(LPC_SSP, data);
+	// Wait until there is space in the TX FIFO
+	while (Chip_SSP_GetStatus(LPC_SSP, SSP_STAT_TNF) == 0)
+	{}
 
-	return Chip_SSP_ReceiveFrame(LPC_SSP);
+	Chip_SSP_SendFrame(LPC_SSP, data);
+}
+
+
+uint8_t SPI_TxRx8Bit(uint8_t data)
+{
+	SPI_Tx8Bit(data);
+
+	// Wait for transmit to complete
+	while (Chip_SSP_GetStatus(LPC_SSP, SSP_STAT_RNE) == 0)
+	{
+	}
+
+	return (uint8_t) Chip_SSP_ReceiveFrame(LPC_SSP);
 }
 
 
@@ -44,6 +71,10 @@ void SPI_TxRx16Bit(uint16_t data)
 		spiCfg.bits = SSP_BITS_16;
 		Chip_SSP_SetFormat(LPC_SSP, spiCfg.bits, spiCfg.frameFormat, spiCfg.clockMode);
 	}
+
+	// Wait for room in the TX buffer
+	while (Chip_SSP_GetStatus(LPC_SSP, SSP_STAT_TNF) == 0)
+	{}
 
 	Chip_SSP_SendFrame(LPC_SSP, data);
 }
