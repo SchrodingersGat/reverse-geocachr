@@ -134,7 +134,7 @@ bool Box::receive(int timeout)
     }
     else
     {
-        qDebug() << "No data.";
+        qDebug() << "No data (" + QString::number(n) + " bytes)";
     }
 
     Sleep(10);

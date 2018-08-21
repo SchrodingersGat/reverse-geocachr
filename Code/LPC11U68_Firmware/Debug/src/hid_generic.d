@@ -53,7 +53,13 @@ src/hid_generic.o src/hid_generic.d: ../src/hid_generic.c \
  C:\Users\Oliver\Programming\Reverse\ GeoCache\ Box\Code\LPC11U68_Firmware\inc\usbd/usbd_hiduser.h \
  C:\Users\Oliver\Programming\Reverse\ GeoCache\ Box\Code\LPC11U68_Firmware\inc\usbd/usbd_hid.h \
  C:\Users\Oliver\Programming\Reverse\ GeoCache\ Box\Code\LPC11U68_Firmware\inc\usbd/usbd_cdcuser.h \
- C:\Users\Oliver\Programming\Reverse\ GeoCache\ Box\Code\LPC11U68_Firmware\inc\usbd/usbd_cdc.h
+ C:\Users\Oliver\Programming\Reverse\ GeoCache\ Box\Code\LPC11U68_Firmware\inc\usbd/usbd_cdc.h \
+ c:\users\oliver\programming\reverse\ geocache\ box\code\protocol\boxpackets.h \
+ c:\users\oliver\programming\reverse\ geocache\ box\code\protocol\ReverseGeocacheProtocol.h \
+ c:\users\oliver\programming\reverse\ geocache\ box\code\common\box_defines.h \
+ c:\users\oliver\programming\reverse\ geocache\ box\code\protocol\boxdefines.h \
+ C:\Users\Oliver\Programming\Reverse\ GeoCache\ Box\Code\LPC11U68_Firmware\inc/types.h \
+ C:\Users\Oliver\Programming\Reverse\ GeoCache\ Box\Code\LPC11U68_Firmware\inc/box_usb.h
 
 C:\Users\Oliver\Documents\MCUXpressoIDE_10.2.0_759\workspace\lpc_board_nxp_lpcxpresso_11u68\inc/board.h:
 
@@ -164,3 +170,15 @@ C:\Users\Oliver\Programming\Reverse\ GeoCache\ Box\Code\LPC11U68_Firmware\inc\us
 C:\Users\Oliver\Programming\Reverse\ GeoCache\ Box\Code\LPC11U68_Firmware\inc\usbd/usbd_cdcuser.h:
 
 C:\Users\Oliver\Programming\Reverse\ GeoCache\ Box\Code\LPC11U68_Firmware\inc\usbd/usbd_cdc.h:
+
+c:\users\oliver\programming\reverse\ geocache\ box\code\protocol\boxpackets.h:
+
+c:\users\oliver\programming\reverse\ geocache\ box\code\protocol\ReverseGeocacheProtocol.h:
+
+c:\users\oliver\programming\reverse\ geocache\ box\code\common\box_defines.h:
+
+c:\users\oliver\programming\reverse\ geocache\ box\code\protocol\boxdefines.h:
+
+C:\Users\Oliver\Programming\Reverse\ GeoCache\ Box\Code\LPC11U68_Firmware\inc/types.h:
+
+C:\Users\Oliver\Programming\Reverse\ GeoCache\ Box\Code\LPC11U68_Firmware\inc/box_usb.h:

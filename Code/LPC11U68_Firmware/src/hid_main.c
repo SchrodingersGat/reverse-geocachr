@@ -35,11 +35,13 @@
 #include "app_usbd_cfg.h"
 #include "hid_generic.h"
 
+#include "spi.h"
 #include "timer.h"
 #include "types.h"
 #include "pins.h"
 #include "eemem.h"
 #include "waypoints.h"
+#include "ILI9340.h"
 
 // Global vars
 BoxStatus_t status;
@@ -195,6 +197,14 @@ int main(void)
 		}
 	}
 
+	// Configure LCD pins
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 2);
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 2, 3);
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 28);
+
+	// Enable SPI interface
+	SPI_Init();
+
 	if (!EE_ReadSettings())
 	{
 		status.settingsError = 1;
@@ -208,12 +218,21 @@ int main(void)
 		EE_WriteSettings();
 	}
 
+	ReadCluesFromMemory();
+
+	ILI9340_Reset_Low();
+	PauseMs(50);
+	ILI9340_Reset();
+	ILI9340_Rotate(3);
+
 	while (1)
 	{
 		PauseMs(1000);
 
 		Chip_GPIO_SetPinToggle(LPC_GPIO, 2, 16);
-		//Chip_GPIO_SetPinToggle(LPC_GPIO, 2, 17);
-		//Chip_GPIO_SetPinToggle(LPC_GPIO, 2, 18);
+
+		ILI9340_FillScreen(RED);
+		ILI9340_FillScreen(GREEN);
+		ILI9340_FillScreen(BLUE);
 	}
 }

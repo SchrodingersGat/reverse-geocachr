@@ -34,11 +34,18 @@
 #include <string.h>
 #include "usbd_rom_api.h"
 
+#include "boxpackets.h"
+#include "types.h"
+#include "box_usb.h"
+
 /*****************************************************************************
  * Private types/enumerations/variables
  ****************************************************************************/
 
 static uint8_t *loopback_report;
+
+HIDBuffer rxBuf;
+HIDBuffer txBuf;
 
 /*****************************************************************************
  * Public types/enumerations/variables
@@ -104,10 +111,16 @@ static ErrorCode_t HID_Ep_Hdlr(USBD_HANDLE_T hUsb, void *data, uint32_t event)
 		break;
 
 	case USB_EVT_OUT:
-		/* Read the new report received. */
-		USBD_API->hw->ReadEP(hUsb, pHidCtrl->epout_adr, loopback_report);
-		/* loopback the report received. */
-		USBD_API->hw->WriteEP(hUsb, pHidCtrl->epin_adr, loopback_report, 1);
+		// Extract data payload bytes
+		if (USBD_API->hw->ReadEP(hUsb, pHidCtrl->epout_adr, rxBuf) > 0)
+		{
+			// Decode the message. Returns true if a response is required.
+			// Response is automatically stored in txBuf
+			if (Box_DecodeMessage())
+			{
+				USBD_API->hw->WriteEP(hUsb, pHidCtrl->epin_adr, txBuf, BUF_SIZE);
+			}
+		}
 		break;
 	}
 	return LPC_OK;

@@ -5,6 +5,7 @@
 #include "waypoint.h"
 #include "waypoints.h"
 #include "eemem.h"
+#include "timer.h"
 
 bool Box_DecodeMessage()
 {
@@ -174,6 +175,14 @@ bool Box_DecodeMessage()
 	}
 	else if (decodeResetPacket(rxBuf))
 	{
+		// Pull the DCON bit low (UM10732 15.4.3)
+		LPC_USB->DEVCMDSTAT = 0x00;
+
+		for (int i = 0; i < 0xFFF; i++)
+		{
+			__NOP();
+		}
+
 		// Reset into bootloader via IAP
 		Chip_IAP_ReinvokeISP();
 	}
