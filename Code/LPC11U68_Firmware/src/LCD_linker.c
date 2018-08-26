@@ -18,7 +18,7 @@ void ILI9340_CS_Low()
 void ILI9340_CS_High()
 {
 	// Pause until all pending SPI transactions are completed
-	while (Chip_SSP_GetStatus(LPC_SSP0, SSP_STAT_TFE == 0))
+	while (Chip_SSP_GetStatus(LPC_SSP0, SSP_STAT_TFE) == 0)
 	{}
 
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, true);

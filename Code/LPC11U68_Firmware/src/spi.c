@@ -40,6 +40,10 @@ void SPI_Tx8Bit(uint8_t data)
 	// If not configured in 8-bit mode
 	if (spiCfg.bits != SSP_BITS_8)
 	{
+		// Wait for any 16-bit transactions to clear
+		while (Chip_SSP_GetStatus(LPC_SSP, SSP_STAT_TFE) == 0)
+		{}
+
 		spiCfg.bits = SSP_BITS_8;
 		Chip_SSP_SetFormat(LPC_SSP, spiCfg.bits, spiCfg.frameFormat, spiCfg.clockMode);
 	}
@@ -67,14 +71,12 @@ uint8_t SPI_TxRx8Bit(uint8_t data)
 
 void SPI_TxRx16Bit(uint16_t data)
 {
-	// For now, send 8-bit data
-	SPI_Tx8Bit((uint8_t) (data >> 8));
-	SPI_Tx8Bit((uint8_t) (data & 0xFF));
-
-	return;
-
 	if (spiCfg.bits != SSP_BITS_16)
 	{
+		// Wait for pending 8-bit transactions to clear
+		while (Chip_SSP_GetStatus(LPC_SSP, SSP_STAT_TFE) == 0)
+		{}
+
 		spiCfg.bits = SSP_BITS_16;
 		Chip_SSP_SetFormat(LPC_SSP, spiCfg.bits, spiCfg.frameFormat, spiCfg.clockMode);
 	}
