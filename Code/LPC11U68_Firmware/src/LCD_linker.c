@@ -8,6 +8,7 @@
  * RESET = P1.28
  */
 
+
 void ILI9340_CS_Low()
 {
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, false);
@@ -16,19 +17,23 @@ void ILI9340_CS_Low()
 
 void ILI9340_CS_High()
 {
+	// Pause until all pending SPI transactions are completed
+	while (Chip_SSP_GetStatus(LPC_SSP0, SSP_STAT_TFE == 0))
+	{}
+
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, true);
 }
 
 
 void ILI9340_DC_Low()
 {
-	Chip_GPIO_SetPinState(LPC_GPIO, 2, 3, false);
+	Chip_GPIO_SetPinState(LPC_GPIO, 1, 25, false);
 }
 
 
 void ILI9340_DC_High()
 {
-	Chip_GPIO_SetPinState(LPC_GPIO, 2, 3, true);
+	Chip_GPIO_SetPinState(LPC_GPIO, 1, 25, true);
 }
 
 

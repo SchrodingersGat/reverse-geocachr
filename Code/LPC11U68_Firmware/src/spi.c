@@ -26,7 +26,8 @@ void SPI_Init()
 	spiCfg.bits = SSP_BITS_8;
 	spiCfg.clockMode = SSP_CLOCK_MODE0;
 
-	Chip_SSP_SetBitRate(LPC_SSP, 4000000);
+	// 8MHz clock
+	Chip_SSP_SetBitRate(LPC_SSP, 8000000);
 	Chip_SSP_SetFormat(LPC_SSP, spiCfg.bits, spiCfg.frameFormat, spiCfg.clockMode);
 	Chip_SSP_SetMaster(LPC_SSP, 1);
 
@@ -66,6 +67,12 @@ uint8_t SPI_TxRx8Bit(uint8_t data)
 
 void SPI_TxRx16Bit(uint16_t data)
 {
+	// For now, send 8-bit data
+	SPI_Tx8Bit((uint8_t) (data >> 8));
+	SPI_Tx8Bit((uint8_t) (data & 0xFF));
+
+	return;
+
 	if (spiCfg.bits != SSP_BITS_16)
 	{
 		spiCfg.bits = SSP_BITS_16;

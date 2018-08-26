@@ -203,7 +203,8 @@ int main(void)
 	 * RESET = P1.28
 	 */
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 2);
-	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 2, 3);
+	//Chip_GPIO_SetPinDIROutput(LPC_GPIO, 2, 3);
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 25);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 28);
 
 	// Enable SPI interface
@@ -231,12 +232,13 @@ int main(void)
 
 	while (1)
 	{
-		PauseMs(1000);
+		PauseMs(50);
 
 		Chip_GPIO_SetPinToggle(LPC_GPIO, 2, 16);
 
 		ILI9340_FillScreen(RED);
 		ILI9340_FillScreen(GREEN);
 		ILI9340_FillScreen(BLUE);
+
 	}
 }
