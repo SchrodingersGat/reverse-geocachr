@@ -29,7 +29,7 @@ all: ReverseGeocacheLPC11U68.axf
 ReverseGeocacheLPC11U68.axf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU Linker'
-	arm-none-eabi-gcc -nostdlib -L"C:\Users\Oliver\Documents\MCUXpressoIDE_10.2.0_759\workspace\lpc_chip_11u6x\Debug" -L"C:\Users\Oliver\Documents\MCUXpressoIDE_10.2.0_759\workspace\lpc_board_nxp_lpcxpresso_11u68\Debug" -Xlinker -Map="ReverseGeocacheLPC11U68.map" -Xlinker --gc-sections -Xlinker --allow-multiple-definition -mcpu=cortex-m0 -mthumb -T "ReverseGeocacheLPC11U68_Debug.ld" -o "ReverseGeocacheLPC11U68.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -nostdlib -L"C:\Users\Oliver\Documents\MCUXpressoIDE_10.2.0_759\workspace\lpc_chip_11u6x\Debug" -L"C:\Users\Oliver\Documents\MCUXpressoIDE_10.2.0_759\workspace\lpc_board_nxp_lpcxpresso_11u68\Debug" -Xlinker -Map="ReverseGeocacheLPC11U68.map" -Xlinker --gc-sections -Xlinker --allow-multiple-definition -mcpu=cortex-m0 -mthumb -T "ReverseGeocacheLPC11U68_Debug.ld" -u _printf_float -u _scanf_float -o "ReverseGeocacheLPC11U68.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build
