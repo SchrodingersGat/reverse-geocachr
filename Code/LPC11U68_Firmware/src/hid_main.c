@@ -35,6 +35,7 @@
 #include "app_usbd_cfg.h"
 #include "hid_generic.h"
 
+#include "gps.h"
 #include "spi.h"
 #include "timer.h"
 #include "types.h"
@@ -197,6 +198,7 @@ int main(void)
 		}
 	}
 
+
 	/* Configure LCD pins
 	 * CS = P0.2
 	 * DC = P2.3
@@ -225,6 +227,9 @@ int main(void)
 
 	ReadCluesFromMemory();
 
+	// Setup the GPS UART port
+	GPS_UART_Init();
+
 	ILI9340_Reset_Low();
 	PauseMs(50);
 	ILI9340_Reset();
@@ -239,6 +244,12 @@ int main(void)
 		ILI9340_FillScreen(RED);
 		ILI9340_FillScreen(GREEN);
 		ILI9340_FillScreen(BLUE);
+
+		ILI9340_SetBackgroundColor(BLUE);
+
+		ILI9340_DrawString(50, 50, "Hello world\nThis is a new line!", YELLOW);
+
+		PauseMs(1000);
 
 	}
 }
