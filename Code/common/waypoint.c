@@ -105,7 +105,9 @@ double Waypoint_Distance(double lat, double lng, Waypoint_t *w)
     c = atan2(a2,a3);
     c *= 2;
 
-    return c * 6371 * 1000;
+    c *= 6371000;
+
+    return c;
 }
 
 

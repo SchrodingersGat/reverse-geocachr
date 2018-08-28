@@ -57,6 +57,12 @@ bool EE_WriteSettings()
 {
 	uint16_t chk;
 
+	// Validate the settings
+	if (settings.currentClue > (settings.totalClues + 1))
+	{
+		settings.currentClue = 0;
+	}
+
 	// Encode settings as a packet (for forward compatibility)
 	// Packet data starts at index 2 (first two bytes are for checksum)
 	encodeBoxSettingsPacketStructure(&(buffer[2]), &settings);

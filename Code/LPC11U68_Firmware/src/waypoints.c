@@ -14,16 +14,15 @@
  * - This equates to ~300 bytes. Use 512 bytes so that the waypoints fall on flash boundaries
  */
 
-#define SECTOR_SIZE  4096
+#define SECTOR_SIZE  0x8000
 
 #define WAYPOINT_SIZE_IN_MEMORY 512
 
-#define WAYPOINT_FLASH_ADDR 0x3C000
-#define WAYPOINT_FLASH_SIZE 0x4000
+#define WAYPOINT_FLASH_ADDR 0x38000
+#define WAYPOINT_FLASH_SIZE 0x8000
 
-// 0x3C000 is the 60th sector
-#define WAYPOINT_FLASH_SECTOR_START 60
-#define WAYPOINT_FLASH_SECTOR_END   63
+// 0x38000 is the 28th sector (Refer Table 361)
+#define WAYPOINT_FLASH_SECTOR 28
 
 Clue_t clues[BOX_ARRAY_SIZE];
 
@@ -129,9 +128,9 @@ void WriteCluesToMemory()
 	int result = 0;
 
 	// Erase the flash memory sector
-	result = Chip_IAP_PreSectorForReadWrite(WAYPOINT_FLASH_SECTOR_START, WAYPOINT_FLASH_SECTOR_END);
+	result = Chip_IAP_PreSectorForReadWrite(WAYPOINT_FLASH_SECTOR, WAYPOINT_FLASH_SECTOR);
 
-	result = Chip_IAP_EraseSector(WAYPOINT_FLASH_SECTOR_START, WAYPOINT_FLASH_SECTOR_END);
+	result = Chip_IAP_EraseSector(WAYPOINT_FLASH_SECTOR, WAYPOINT_FLASH_SECTOR);
 
 	// Write the clues
 
@@ -141,7 +140,7 @@ void WriteCluesToMemory()
 
 		sector = addr / SECTOR_SIZE;
 
-		result = Chip_IAP_PreSectorForReadWrite(sector, sector);
+		result = Chip_IAP_PreSectorForReadWrite(WAYPOINT_FLASH_SECTOR, WAYPOINT_FLASH_SECTOR);
 
 		// Clear out the buffer
 		memset(buffer, 0, WAYPOINT_SIZE_IN_MEMORY);

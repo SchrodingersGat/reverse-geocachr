@@ -41,6 +41,7 @@
 #include "types.h"
 #include "pins.h"
 #include "eemem.h"
+#include "waypoint.h"
 #include "waypoints.h"
 #include "ILI9340.h"
 #include "display.h"
@@ -294,16 +295,6 @@ int main(void)
 	while (1)
 	{
 
-		//ILI9340_DrawString(10, 20, "HELLO WORLD", BLACK);
-
-		//ILI9340_DrawString(10, 50, "ABCDEFHIJKLM", BLUE);
-
-		//ILI9340_DrawString(10, 90, "abcdefghijklm", GREEN);
-
-		//PauseMs(100);
-
-		//continue;
-
 		if (GPS_CopyData(&gps))
 		{
 			status.gpsStatus = gps.pfi;
@@ -338,8 +329,27 @@ int main(void)
 		{
 		// Progress between GPS acquisition states
 		case STATE_POWERON:
-			if (timers.stateTimer > 3)
+
+			// Welcome message (pause on this for a little bit
+			if (settings.currentClue == BOX_WELCOME_MSG)
 			{
+				if (timers.stateTimer > 10)
+				{
+					if (settings.totalClues > 0)
+					{
+						settings.currentClue = 1;
+
+						EE_WriteSettings();
+					}
+
+					SetBoxState(STATE_GPS_ACQUIRING);
+				}
+			}
+
+			// Otherwise wait for one second
+			else if (timers.stateTimer > 2)
+			{
+
 				SetBoxState(STATE_GPS_ACQUIRING);
 			}
 			break;
@@ -381,12 +391,26 @@ int main(void)
 		  }
 		  break;
 		case STATE_GPS_LOCKED:
-		  if (timers.stateTimer > 1) // Two seconds
-		  {
-			  //TODO - Check distance to current waypoint here
-			  SetBoxState(STATE_TOO_FAR);
-		  }
-		  break;
+		{
+			Clue_t* clue = CurrentClue();
+
+			if (timers.stateTimer > 1) // Two seconds
+			{
+				if (Waypoint_Distance(gps.lat, gps.lng, &clue->waypoint) <= clue->waypoint.threshold)
+				{
+					// Progress to the next clue
+
+					// TODO
+
+					SetBoxState(STATE_TOO_FAR);
+				}
+				else
+				{
+					SetBoxState(STATE_TOO_FAR);
+				}
+			}
+			break;
+		}
 		}
 
 		LCD_Update();

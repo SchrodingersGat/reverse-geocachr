@@ -2,7 +2,7 @@
 #include "display.h"
 #include "types.h"
 #include "waypoints.h"
-
+#include "waypoint.h"
 
 char sbuf[64];
 
@@ -163,9 +163,10 @@ void Draw_Battery_Indicator()
 void Draw_Header_String()
 {
 	static int state = -1;
-	static int currentClue = -1;
 
 	uint16_t color = YELLOW;
+
+
 
 	if (state != status.state)
 	{
@@ -183,8 +184,16 @@ void Draw_Header_String()
 		case STATE_GPS_ACQUIRING:
 		case STATE_GPS_LOCKING:
 		case STATE_GPS_LOCKED:
-			sprintf(sbuf, "Clue 2 of 10");
-			color = GREEN;
+			if (settings.totalClues == 0)
+			{
+				sprintf(sbuf, "No clues programmed");
+				color = YELLOW;
+			}
+			else
+			{
+				sprintf(sbuf, "Clue %d of %d", settings.currentClue, settings.totalClues);
+				color = GREEN;
+			}
 			break;
 		case STATE_GPS_NO_DATA:
 		case STATE_GPS_NO_MSG:
@@ -402,6 +411,9 @@ void Draw_Clue_Hint()
 	case CLUE_SHOW_DISTANCE:
 	{
 		double d = Waypoint_Distance(gps.lat, gps.lng, &(clue->waypoint));
+
+		if (d < 1)
+			d = 0;
 
 		if (d >= 1000)
 		{
