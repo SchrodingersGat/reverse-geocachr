@@ -1,5 +1,6 @@
 #include "gps.h"
 #include "uart_0_11u6x.h"
+#include "types.h"
 
 #include <stdio.h>
 
@@ -104,6 +105,8 @@ bool GPS_Parse()
 
 bool GPS_CopyData(GPSData_t* data)
 {
+	// TODO - Disable UART RX interrupt
+
 	bool result = _gps.newData;
 
 	if (result)
@@ -113,6 +116,8 @@ bool GPS_CopyData(GPSData_t* data)
 
 		_gps.newData = false;
 	}
+
+	// TODO - Disable UART TX interrupt
 
 	return result;
 }
@@ -130,6 +135,9 @@ void USART0_IRQHandler(void)
 		{
 			// TODO
 		}
+
+		// Reset the UART reception timer
+		timers.gpsNoRx = 0;
 	}
 }
 
