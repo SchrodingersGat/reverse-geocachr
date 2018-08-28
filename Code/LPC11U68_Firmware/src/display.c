@@ -32,7 +32,7 @@ void Draw_Clue()
 {
 	static int currentClue = -1;
 
-	if (currentClue == 0)
+	if (currentClue == settings.currentClue)
 		return;
 
 	currentClue = settings.currentClue;
