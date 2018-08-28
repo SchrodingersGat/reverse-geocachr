@@ -43,10 +43,13 @@
 #include "eemem.h"
 #include "waypoints.h"
 #include "ILI9340.h"
+#include "display.h"
 
 // Global vars
 BoxStatus_t status;
 BoxSettings_t settings;
+GPSData_t gps;
+Timers_t timers;
 
 /*****************************************************************************
  * Private types/enumerations/variables
@@ -70,7 +73,61 @@ const  USBD_API_T *g_pUsbApi;
 
 void SysTick_Handler(void)
 {
+	static uint16_t secondTimer = 1000;
+	static uint8_t servoTimer = 20;
+
 	DecrementPauseTimer();
+
+	if (servoTimer > 0)
+	{
+		servoTimer--;
+	}
+	else
+	{
+		servoTimer = 20;
+
+		// Do servo thing
+	}
+
+	if (secondTimer > 0)
+	{
+		secondTimer--;
+	}
+	else
+	{
+		secondTimer = 1000;
+
+		// Increment the once-per-second timers
+		  // Increment the no lock timer if GPS lock not yet achieved
+		if (status.gpsStatus < 2 && timers.gpsNoLock < 0xF000)
+		{
+			timers.gpsNoLock++;
+		}
+
+		// Increment the no Rx timer if no GPS messages have been received
+		if (timers.gpsNoRx < 0xF000)
+		{
+			timers.gpsNoRx++;
+		}
+
+		// Keep track of how long box has been in current state
+		if (timers.stateTimer < 0xF000)
+		{
+			timers.stateTimer++;
+		}
+	}
+}
+
+void SetBoxState(uint8_t state)
+{
+	if (state == status.state)
+	{
+		return;
+	}
+
+	status.state = state;
+
+	timers.stateTimer = 0;
 }
 
 
@@ -132,7 +189,7 @@ int main(void)
 {
 	USBD_API_INIT_PARAM_T usb_param;
 	USB_CORE_DESCS_T desc;
-	ErrorCode_t ret = LPC_OK;
+ 	ErrorCode_t ret = LPC_OK;
 
 	SystemCoreClockUpdate();
 
@@ -230,26 +287,111 @@ int main(void)
 	// Setup the GPS UART port
 	GPS_UART_Init();
 
-	ILI9340_Reset_Low();
-	PauseMs(50);
-	ILI9340_Reset();
-	ILI9340_Rotate(3);
+	LCD_Initialize();
+
+	SetBoxState(STATE_POWERON);
 
 	while (1)
 	{
+
+		//ILI9340_DrawString(10, 20, "HELLO WORLD", BLACK);
+
+		//ILI9340_DrawString(10, 50, "ABCDEFHIJKLM", BLUE);
+
+		//ILI9340_DrawString(10, 90, "abcdefghijklm", GREEN);
+
+		//PauseMs(100);
+
+		//continue;
+
+		if (GPS_CopyData(&gps))
+		{
+			status.gpsStatus = gps.pfi;
+			status.gpsConnection = 1;
+
+			// Position Fix Indicator
+			switch (gps.pfi)
+			{
+			case 0:
+				status.gpsStatus = 0;
+				break;
+			case 1:
+				// SPS mode, look at HDoP
+				if (gps.hdp < 2.5f)
+				{
+					status.gpsStatus = 2;
+				}
+				else
+				{
+					status.gpsStatus = 1;
+				}
+				break;
+			default:
+				status.gpsStatus = gps.pfi;
+				break;
+			}
+
+		}
+
+		// Update main state machine
+		switch (status.state)
+		{
+		// Progress between GPS acquisition states
+		case STATE_POWERON:
+			if (timers.stateTimer > 3)
+			{
+				SetBoxState(STATE_GPS_ACQUIRING);
+			}
+			break;
+		case STATE_GPS_ACQUIRING:
+		case STATE_GPS_LOCKING:
+		  // GPS is connected
+		  if (status.gpsConnection)
+		  {
+			  // No lock for 5 minutes
+			  if (timers.gpsNoLock > TIMEOUT_NO_GPS_LOCK)
+			  {
+				  SetBoxState(STATE_GPS_NO_LOCK);
+			  }
+			  else
+			  {
+				  // Test if GPS fix is valid
+				  switch (status.gpsStatus)
+				  {
+				  case 0: // No lock yet
+					  SetBoxState(STATE_GPS_ACQUIRING);
+					  break;
+				  case 1:
+					  SetBoxState(STATE_GPS_LOCKING);
+					  break;
+				  case 2:
+				  case 3:
+					  SetBoxState(STATE_GPS_LOCKED);
+					  break;
+				  default:
+					  SetBoxState(STATE_GPS_ERROR);
+					  break;
+				  }
+			  }
+		  }
+
+		  if (timers.gpsNoRx > TIMEOUT_NO_GPS_DATA)
+		  {
+			  SetBoxState(STATE_GPS_NO_DATA);
+		  }
+		  break;
+		case STATE_GPS_LOCKED:
+		  if (timers.stateTimer > 1) // Two seconds
+		  {
+			  //TODO - Check distance to current waypoint here
+			  SetBoxState(STATE_TOO_FAR);
+		  }
+		  break;
+		}
+
+		LCD_Update();
+
 		PauseMs(50);
-
-		Chip_GPIO_SetPinToggle(LPC_GPIO, 2, 16);
-
-		ILI9340_FillScreen(RED);
-		ILI9340_FillScreen(GREEN);
-		ILI9340_FillScreen(BLUE);
-
-		ILI9340_SetBackgroundColor(BLUE);
-
-		ILI9340_DrawString(50, 50, "Hello world\nThis is a new line!", YELLOW);
-
-		PauseMs(1000);
 
 	}
 }

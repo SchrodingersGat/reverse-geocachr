@@ -2,6 +2,7 @@
 #include "checksum.h"
 #include "chip.h"
 #include "waypoint.h"
+#include "types.h"
 
 #include <iap.h>
 
@@ -29,8 +30,21 @@ Clue_t clues[BOX_ARRAY_SIZE];
 static Clue_t tmpClue;
 
 // Globally defined current clue
-Clue_t currentClue;
 
+Clue_t* CurrentClue()
+{
+	if (settings.currentClue >= BOX_ARRAY_SIZE)
+	{
+		settings.currentClue = 0;
+	}
+
+	if (settings.currentClue > (settings.totalClues + 1))
+	{
+		settings.currentClue = 0;
+	}
+
+	return &(clues[settings.currentClue]);
+}
 
 void ReadCluesFromMemory()
 {

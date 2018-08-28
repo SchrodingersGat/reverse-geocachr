@@ -27,7 +27,7 @@ void SPI_Init()
 	spiCfg.clockMode = SSP_CLOCK_MODE0;
 
 	// 8MHz clock
-	Chip_SSP_SetBitRate(LPC_SSP, 8000000);
+	Chip_SSP_SetBitRate(LPC_SSP, 5000000);
 	Chip_SSP_SetFormat(LPC_SSP, spiCfg.bits, spiCfg.frameFormat, spiCfg.clockMode);
 	Chip_SSP_SetMaster(LPC_SSP, 1);
 

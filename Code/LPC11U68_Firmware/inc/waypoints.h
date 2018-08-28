@@ -9,9 +9,9 @@
 #include "box_defines.h"
 
 // Global define for main clue
-extern Clue_t currentClue;
-
 extern Clue_t clues[BOX_ARRAY_SIZE];
+
+Clue_t* CurrentClue();
 
 void ReadCluesFromMemory();
 

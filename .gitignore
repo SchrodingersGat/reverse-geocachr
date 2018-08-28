@@ -11,7 +11,7 @@
 *.Release
 *.pdf
 *.pyc
-
+*.d 
 Code/GUI/release/
 Code/GUI/debug/
 Code/GUI/Makefile
