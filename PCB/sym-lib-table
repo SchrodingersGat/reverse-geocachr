@@ -1,6 +1,5 @@
 (sym_lib_table
   (lib (name USB_Geocache-rescue)(type Legacy)(uri ${KIPRJMOD}/USB_Geocache-rescue.lib)(options "")(descr ""))
-  (lib (name MCU_ST_STM32)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/MCU_ST_STM32.lib)(options "")(descr ""))
   (lib (name ProjectLib)(type Legacy)(uri "C:/Users/Oliver/Programming/Reverse GeoCache Box/PCB/ProjectLib.lib")(options "")(descr ""))
   (lib (name Memory_EEPROM)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/Memory_EEPROM.lib)(options "")(descr ""))
   (lib (name Display_Graphic)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/Display_Graphic.lib)(options "")(descr ""))
