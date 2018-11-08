@@ -182,6 +182,24 @@ USB_INTERFACE_DESCRIPTOR *find_IntfDesc(const uint8_t *pDesc, uint32_t intfClass
 	return pIntfDesc;
 }
 
+
+void InitPins()
+{
+	// Configure LCD GPIO Pins
+
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, LCD_CS_PORT,  LCD_CS_PIN);
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, LCD_DC_PORT,  LCD_DC_PIN);
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, LCD_RST_PORT, LCD_RST_PIN);
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, LCD_BL_PORT,  LCD_BL_PIN);
+
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, ENABLE_PORT, ENABLE_PIN);
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, SERVO_EN_PORT, SERVO_EN_PIN);
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, GPS_PWR_PORT, GPS_PWR_PIN);
+
+	Chip_GPIO_SetPinDIRInput(LPC_GPIO, BUTTON_PORT, BUTTON_PIN);
+}
+
+
 /**
  * @brief	main routine for USB device example
  * @return	Function should not exit.
@@ -256,16 +274,8 @@ int main(void)
 		}
 	}
 
-
-	/* Configure LCD pins
-	 * CS = P0.2
-	 * DC = P2.3
-	 * RESET = P1.28
-	 */
-	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 2);
-	//Chip_GPIO_SetPinDIROutput(LPC_GPIO, 2, 3);
-	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 25);
-	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 1, 28);
+	// Initialize GPIO pins
+	InitPins();
 
 	// Enable SPI interface
 	SPI_Init();

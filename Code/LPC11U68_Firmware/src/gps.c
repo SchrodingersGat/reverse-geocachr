@@ -1,6 +1,7 @@
 #include "gps.h"
 #include "uart_0_11u6x.h"
 #include "types.h"
+#include "pins.h"
 
 #include <stdio.h>
 
@@ -144,18 +145,8 @@ void USART0_IRQHandler(void)
 
 void GPS_UART_Init()
 {
-	/* Configure the pin mux for UART
-	 *
-	 * UART0 peripheral
-	 * P1.26 = RX
-	 * P1.27 = TX
-	 *
-	 * Pin function 2 (Ref Table 83 of UM10732.pdf)
-	 *
-	 */
-
-	Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 26, IOCON_FUNC2 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
-	Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 27, IOCON_FUNC2 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, UART_RX_PORT, UART_RX_PIN, IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, UART_TX_PORT, UART_TX_PIN, IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
 
 	Chip_UART0_Init(LPC_USART0);
 	Chip_UART0_SetBaud(LPC_USART0, 9600);

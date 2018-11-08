@@ -1,5 +1,6 @@
 #include "spi.h"
 #include "chip.h"
+#include "pins.h"
 
 SSP_ConfigFormat spiCfg;
 Chip_SSP_DATA_SETUP_T spiXferCfg;
@@ -8,17 +9,9 @@ Chip_SSP_DATA_SETUP_T spiXferCfg;
 
 void SPI_Init()
 {
-
-	/* Configure SPI pins:
-	 * SCK = P1.29
-	 * MISO = P0.8
-	 * MOSI = P0.9
-	 *
-	 * Refer to Table 83 in UM10732.pdf
-	 */
-	Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 29, IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
-	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 8,  IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
-	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 9,  IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, SPI_SCK_PORT,  SPI_SCK_PIN,   IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, SPI_MISO_PORT, SPI_MISO_PIN,  IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, SPI_MOSI_PORT, SPI_MOSI_PIN,  IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
 
 	Chip_SSP_Init(LPC_SSP);
 

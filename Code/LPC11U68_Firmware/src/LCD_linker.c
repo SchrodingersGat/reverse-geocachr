@@ -1,17 +1,12 @@
 #include "ILI9340.h"
 #include "spi.h"
 #include "timer.h"
-
-/* LCD GPIO Pins as follows:
- * CS = P0.2
- * DC = P2.3
- * RESET = P1.28
- */
+#include "pins.h"
 
 
 void ILI9340_CS_Low()
 {
-	Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, false);
+	Chip_GPIO_SetPinState(LPC_GPIO, LCD_CS_PORT, LCD_CS_PIN, false);
 }
 
 
@@ -21,31 +16,31 @@ void ILI9340_CS_High()
 	while (Chip_SSP_GetStatus(LPC_SSP0, SSP_STAT_TFE) == 0)
 	{}
 
-	Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, true);
+	Chip_GPIO_SetPinState(LPC_GPIO, LCD_CS_PORT, LCD_CS_PIN, true);
 }
 
 
 void ILI9340_DC_Low()
 {
-	Chip_GPIO_SetPinState(LPC_GPIO, 1, 25, false);
+	Chip_GPIO_SetPinState(LPC_GPIO, LCD_DC_PORT, LCD_DC_PIN, false);
 }
 
 
 void ILI9340_DC_High()
 {
-	Chip_GPIO_SetPinState(LPC_GPIO, 1, 25, true);
+	Chip_GPIO_SetPinState(LPC_GPIO, LCD_DC_PORT, LCD_DC_PIN, true);
 }
 
 
 void ILI9340_Reset_Low()
 {
-	Chip_GPIO_SetPinState(LPC_GPIO, 1, 28, false);
+	Chip_GPIO_SetPinState(LPC_GPIO, LCD_RST_PORT, LCD_RST_PIN, false);
 }
 
 
 void ILI9340_Reset_High()
 {
-	Chip_GPIO_SetPinState(LPC_GPIO, 1, 28, true);
+	Chip_GPIO_SetPinState(LPC_GPIO, LCD_RST_PORT, LCD_RST_PIN, true);
 }
 
 
