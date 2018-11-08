@@ -40,10 +40,10 @@
 #define LCD_CS_PIN 11
 
 #define LCD_DC_PORT 0
-#define LCD_DC_PIN 12
+#define LCD_DC_PIN 13
 
 #define LCD_RST_PORT 0
-#define LCD_RST_PIN 13
+#define LCD_RST_PIN 12
 
 #define LCD_BL_PORT 0
 #define LCD_BL_PIN 14

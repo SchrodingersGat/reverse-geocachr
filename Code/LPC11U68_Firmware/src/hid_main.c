@@ -187,6 +187,13 @@ void InitPins()
 {
 	// Configure LCD GPIO Pins
 
+	// P0.11 -> P0.14 are not GPIO pins in their default mapping
+	Chip_IOCON_PinMuxSet(LPC_IOCON, LCD_CS_PORT,  LCD_CS_PIN,  IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, LCD_DC_PORT,  LCD_DC_PIN,  IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, LCD_RST_PORT, LCD_RST_PIN, IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, LCD_BL_PORT,  LCD_BL_PIN,  IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
+
+
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, LCD_CS_PORT,  LCD_CS_PIN);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, LCD_DC_PORT,  LCD_DC_PIN);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, LCD_RST_PORT, LCD_RST_PIN);
@@ -301,6 +308,11 @@ int main(void)
 	LCD_Initialize();
 
 	SetBoxState(STATE_POWERON);
+
+	PauseMs(100);
+
+	// Enable the LCD backlight
+	Chip_GPIO_SetPinState(LPC_GPIO, LCD_BL_PORT, LCD_BL_PIN, false);
 
 	while (1)
 	{

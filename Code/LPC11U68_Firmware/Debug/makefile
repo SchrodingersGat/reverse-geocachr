@@ -41,7 +41,7 @@ clean:
 
 post-build:
 	-@echo 'Performing post-build steps'
-	-arm-none-eabi-size "ReverseGeocacheLPC11U68.axf"; # arm-none-eabi-objcopy -O binary "ReverseGeocacheLPC11U68.axf" "ReverseGeocacheLPC11U68.bin" ; checksum -p LPC11U68 -d "ReverseGeocacheLPC11U68.bin";
+	-arm-none-eabi-size "ReverseGeocacheLPC11U68.axf" ; arm-none-eabi-objcopy -O binary "ReverseGeocacheLPC11U68.axf" "ReverseGeocacheLPC11U68.bin" ; checksum -p LPC11U68 -d "ReverseGeocacheLPC11U68.bin"
 	-@echo ' '
 
 .PHONY: all clean dependents post-build

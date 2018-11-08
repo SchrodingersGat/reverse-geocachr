@@ -1,6 +1,6 @@
 EESchema Schematic File Version 4
 LIBS:USB_Geocache-cache
-EELAYER 26 0
+EELAYER 29 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
@@ -2000,4 +2000,14 @@ Text Label 10400 10150 0    60   ~ 0
 CS_EEPROM
 Wire Wire Line
 	10400 10150 10150 10150
+Text Notes 11150 9550 0    60   ~ 0
+ARGH MISO/MOSI ARE FLIPPED
+Wire Notes Line
+	10900 9500 11050 9500
+Wire Notes Line
+	11050 9500 11050 9600
+Wire Notes Line
+	11050 9600 10900 9600
+Text Notes 5250 8550 0    60   ~ 0
+BOOT PIN POLARITY IS WRONG\n\n- Pulling it HIGH signals BOOT mode\n- ERMERGERD
 $EndSCHEMATC
