@@ -14,8 +14,8 @@
  * GPS_PWR = P0.17
  */
 
-#define ENABLE_PORT 0
-#define ENABLE_PIN 5
+#define ENABLE_PORT 1
+#define ENABLE_PIN 20
 
 #define BUTTON_PORT 0
 #define BUTTON_PIN 4
@@ -75,5 +75,10 @@
 #define UART_TX_PIN 19
 
 void InitPins(void);
+
+// Pin functions
+void LCD_BacklightOn(bool on);
+void GPS_PowerOn(bool on);
+void Servo_PowerOn(bool on);
 
 #endif /* INC_PINS_H_ */

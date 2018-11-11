@@ -74,6 +74,7 @@ const  USBD_API_T *g_pUsbApi;
 
 void SysTick_Handler(void)
 {
+	static uint16_t secondsSinceReset = 0;
 	static uint16_t secondTimer = 1000;
 	static uint8_t servoTimer = 20;
 
@@ -115,6 +116,20 @@ void SysTick_Handler(void)
 		if (timers.stateTimer < 0xF000)
 		{
 			timers.stateTimer++;
+		}
+
+		secondsSinceReset++;
+
+		// Turn the box off after 10 minutes
+		// TODO - Don't turn the box off if we are in USB mode
+		if (secondsSinceReset > 600)
+		{
+			LCD_BacklightOn(false);
+			GPS_PowerOn(false);
+			Servo_PowerOn(false);
+
+			// Turn the box off
+			Chip_GPIO_SetPinState(LPC_GPIO, ENABLE_PORT, ENABLE_PIN, false);
 		}
 	}
 }
@@ -193,15 +208,19 @@ void InitPins()
 	Chip_IOCON_PinMuxSet(LPC_IOCON, LCD_RST_PORT, LCD_RST_PIN, IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
 	Chip_IOCON_PinMuxSet(LPC_IOCON, LCD_BL_PORT,  LCD_BL_PIN,  IOCON_FUNC1 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
 
+	Chip_IOCON_PinMuxSet(LPC_IOCON, ENABLE_PORT,  ENABLE_PIN,  IOCON_FUNC0 | IOCON_MODE_INACT | IOCON_DIGMODE_EN);
 
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, LCD_CS_PORT,  LCD_CS_PIN);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, LCD_DC_PORT,  LCD_DC_PIN);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, LCD_RST_PORT, LCD_RST_PIN);
-	Chip_GPIO_SetPinDIROutput(LPC_GPIO, LCD_BL_PORT,  LCD_BL_PIN);
+
+	// Initially configure these pins as inputs (connected to P-FET)
+	Chip_GPIO_SetPinDIRInput(LPC_GPIO, LCD_BL_PORT,  LCD_BL_PIN);
+	Chip_GPIO_SetPinDIRInput(LPC_GPIO, SERVO_EN_PORT, SERVO_EN_PIN);
+	Chip_GPIO_SetPinDIRInput(LPC_GPIO, GPS_PWR_PORT, GPS_PWR_PIN);
 
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, ENABLE_PORT, ENABLE_PIN);
-	Chip_GPIO_SetPinDIROutput(LPC_GPIO, SERVO_EN_PORT, SERVO_EN_PIN);
-	Chip_GPIO_SetPinDIROutput(LPC_GPIO, GPS_PWR_PORT, GPS_PWR_PIN);
+
 
 	Chip_GPIO_SetPinDIRInput(LPC_GPIO, BUTTON_PORT, BUTTON_PIN);
 }
@@ -305,14 +324,17 @@ int main(void)
 	// Setup the GPS UART port
 	GPS_UART_Init();
 
+	// Turn GPS on
+	GPS_PowerOn(true);
+
 	LCD_Initialize();
 
 	SetBoxState(STATE_POWERON);
 
 	PauseMs(100);
 
-	// Enable the LCD backlight
-	Chip_GPIO_SetPinState(LPC_GPIO, LCD_BL_PORT, LCD_BL_PIN, false);
+	// Latch the power ON
+	Chip_GPIO_SetPinState(LPC_GPIO, ENABLE_PORT, ENABLE_PIN, true);
 
 	while (1)
 	{
@@ -439,5 +461,49 @@ int main(void)
 
 		PauseMs(50);
 
+		// Turn the backlight on (after the first screen draw)
+		LCD_BacklightOn(true);
+	}
+}
+
+
+void LCD_BacklightOn(bool on)
+{
+	if (on)
+	{
+		Chip_GPIO_SetPinState(LPC_GPIO, LCD_BL_PORT, LCD_BL_PIN, false);
+		Chip_GPIO_SetPinDIROutput(LPC_GPIO, LCD_BL_PORT, LCD_BL_PIN);
+	}
+	else
+	{
+		Chip_GPIO_SetPinDIRInput(LPC_GPIO, LCD_BL_PORT, LCD_BL_PIN);
+	}
+}
+
+
+void GPS_PowerOn(bool on)
+{
+	if (on)
+	{
+		Chip_GPIO_SetPinState(LPC_GPIO, GPS_PWR_PORT, GPS_PWR_PIN, false);
+		Chip_GPIO_SetPinDIROutput(LPC_GPIO, GPS_PWR_PORT, GPS_PWR_PIN);
+	}
+	else
+	{
+		Chip_GPIO_SetPinDIRInput(LPC_GPIO, GPS_PWR_PORT, GPS_PWR_PIN);
+	}
+}
+
+
+void Servo_PowerOn(bool on)
+{
+	if (on)
+	{
+		Chip_GPIO_SetPinState(LPC_GPIO, SERVO_EN_PORT, SERVO_EN_PIN, false);
+		Chip_GPIO_SetPinDIROutput(LPC_GPIO, SERVO_EN_PORT, SERVO_EN_PIN);
+	}
+	else
+	{
+		Chip_GPIO_SetPinDIRInput(LPC_GPIO, SERVO_EN_PORT, SERVO_EN_PIN);
 	}
 }

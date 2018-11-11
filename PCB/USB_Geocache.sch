@@ -1887,7 +1887,7 @@ Wire Wire Line
 Text Notes 900  9200 0    60   ~ 0
 SWD \nDebug interface
 $Comp
-L ProjectLib:LPC11U68JBD48E U3
+L USB_Geocache-rescue:LPC11U68JBD48E-ProjectLib U3
 U 1 1 5B99596C
 P 9250 9350
 F 0 "U3" H 8500 10350 60  0000 C CNN
@@ -2010,4 +2010,10 @@ Wire Notes Line
 	11050 9600 10900 9600
 Text Notes 5250 8550 0    60   ~ 0
 BOOT PIN POLARITY IS WRONG\n\n- Pulling it HIGH signals BOOT mode\n- ERMERGERD
+Text Notes 10800 9950 0    60   ~ 0
+PIN names on micro are flipped\n
+Text Notes 16600 4050 0    60   ~ 0
+TODO for next revision:\n\n- Fix MOSI / MISO pins for LCD (reversed)\n- Fix BOOT pin (should be held high normally)\n- Fix labels for DC / RST pins\n- Diode OR 5V power into switcher\n- Move pins off PIO0_4 and PIO0_5 (these are open-drain pins)
+Text Notes 11000 9000 0    60   ~ 0
+P0_5 and P0_4 are OPEN-DRAIN OUTPUTS :'(
 $EndSCHEMATC
