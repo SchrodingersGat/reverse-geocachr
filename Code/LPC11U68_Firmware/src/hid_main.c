@@ -68,12 +68,39 @@ const  USBD_API_T *g_pUsbApi;
  * Private functions
  ****************************************************************************/
 
+void PowerDown();
+
+
 /*****************************************************************************
  * Public functions
  ****************************************************************************/
 
+void PowerDown()
+{
+	GPS_PowerOn(false);
+	Servo_PowerOn(false);
+
+	// Turn the box off
+	Chip_GPIO_SetPinState(LPC_GPIO, ENABLE_PORT, ENABLE_PIN, false);
+
+	// Display message on the screen
+	ILI9340_FillScreen(BLACK);
+
+	ILI9340_SetTextOptions(ALIGN_CENTRE);
+
+	ILI9340_SetBackgroundColor(BLACK);
+
+	ILI9340_DrawString(160, 100, "Release button", WHITE);
+	ILI9340_DrawString(160, 120, "to turn off", WHITE);
+
+	while (1)
+	{}
+}
+
+
 void SysTick_Handler(void)
 {
+	static uint16_t buttonTimer = 0;
 	static uint16_t secondsSinceReset = 0;
 	static uint16_t secondTimer = 1000;
 	static uint8_t servoTimer = 20;
@@ -124,13 +151,23 @@ void SysTick_Handler(void)
 		// TODO - Don't turn the box off if we are in USB mode
 		if (secondsSinceReset > 600)
 		{
-			LCD_BacklightOn(false);
-			GPS_PowerOn(false);
-			Servo_PowerOn(false);
-
-			// Turn the box off
-			Chip_GPIO_SetPinState(LPC_GPIO, ENABLE_PORT, ENABLE_PIN, false);
+			PowerDown();
 		}
+	}
+
+	if (Chip_GPIO_GetPinState(LPC_GPIO, BUTTON_PORT, BUTTON_PIN) == true)
+	{
+		buttonTimer++;
+
+		// Button held for 3 seconds
+		if (buttonTimer > 3000)
+		{
+			PowerDown();
+		}
+	}
+	else
+	{
+		buttonTimer = 0;
 	}
 }
 
@@ -232,6 +269,8 @@ void InitPins()
  */
 int main(void)
 {
+	bool firstOn = false;
+
 	USBD_API_INIT_PARAM_T usb_param;
 	USB_CORE_DESCS_T desc;
  	ErrorCode_t ret = LPC_OK;
@@ -461,8 +500,12 @@ int main(void)
 
 		PauseMs(50);
 
-		// Turn the backlight on (after the first screen draw)
-		LCD_BacklightOn(true);
+		if (!firstOn)
+		{
+			// Turn the backlight on (after the first screen draw)
+			LCD_BacklightOn(true);
+			firstOn = true;
+		}
 	}
 }
 
